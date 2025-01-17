@@ -52,6 +52,10 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        if (type == PieceType.KING){
+           // kingmove ArrayList<>() = new KingsMoveCalculator(board,myPosition);
+            return new ArrayList<>();
+        }
         return new ArrayList<>();
     }
 }

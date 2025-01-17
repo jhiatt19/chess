@@ -1,10 +1,7 @@
 package chess;
+import java.util.Collection;
 
 public interface ChessMovesCalculator {
-    void KingsMoveCalculator();
-    void QueensMoveCalculator();
-    void BishopsMoveCalculator();
-    void PawnMoveCalculator();
-    void KnightsMoveCalculator();
-    void RooksMoveCalculator();
+    public Collection<ChessMove> calculator();
+
 }
