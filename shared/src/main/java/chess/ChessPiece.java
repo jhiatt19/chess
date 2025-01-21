@@ -53,9 +53,18 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         if (type == PieceType.KING){
-           // kingmove ArrayList<>() = new KingsMoveCalculator(board,myPosition);
-            return new ArrayList<>();
+            return new KingsMoveCalculator(board,myPosition,pieceColor).pieceMoves(board,myPosition);
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }

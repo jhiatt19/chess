@@ -30,4 +30,14 @@ public class ChessPosition {
     public int getColumn() {
         return col + 1;
     }
+
+    @Override
+    public int hashCode() {
+        return ChessPosition.getColumn() * ChessPosition.getRow();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 }
