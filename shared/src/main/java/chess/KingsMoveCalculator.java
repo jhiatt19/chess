@@ -16,7 +16,7 @@ public class KingsMoveCalculator implements ChessMovesCalculator {
     }
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position){
         for (String aj : ajSquares){
-            if (aj == "UL") {
+            if (aj == "UL" && position.getColumn() > 0 && position.getRow() < 7) {
                 int tempR = position.getRow()+1;
                 int tempC = position.getColumn()-1;
                 ChessPosition endPos = new ChessPosition(tempR,tempC);
@@ -24,49 +24,49 @@ public class KingsMoveCalculator implements ChessMovesCalculator {
                 legalMoves.put(aj, new ChessMove(position, endPos,null));
                 //System.out.println(tempR + " " + tempC + " " + aj);
             }
-            else if (aj == "UM"){
+            else if (aj == "UM" && position.getRow() < 7){
                 int tempR = position.getRow()+1;
                 int tempC = position.getColumn();
                 ChessPosition endPos = new ChessPosition(tempR,tempC);
                 legalMoves.put(aj, new ChessMove(position, endPos,null));
                 //System.out.println(tempR + " " + tempC + " " + aj);
             }
-            else if (aj == "UR"){
+            else if (aj == "UR" && position.getColumn() < 7 && position.getRow() < 7){
                 int tempR = position.getRow()+1;
                 int tempC = position.getColumn()+1;
                 ChessPosition endPos = new ChessPosition(tempR,tempC);
                 legalMoves.put(aj, new ChessMove(position, endPos,null));
                 //System.out.println(tempR + " " + tempC + " " + aj);
             }
-            else if (aj == "R"){
+            else if (aj == "R" && position.getColumn() < 7){
                 int tempR = position.getRow();
                 int tempC = position.getColumn()+1;
                 ChessPosition endPos = new ChessPosition(tempR,tempC);
                 legalMoves.put(aj, new ChessMove(position, endPos,null));
                 //System.out.println(tempR + " " + tempC + " " + aj);
             }
-            else if (aj == "BR"){
+            else if (aj == "BR" && position.getColumn() < 7 && position.getRow() > 0){
                 int tempR = position.getRow()-1;
                 int tempC = position.getColumn()+1;
                 ChessPosition endPos = new ChessPosition(tempR,tempC);
                 legalMoves.put(aj, new ChessMove(position, endPos,null));
                 //System.out.println(tempR + " " + tempC + " " + aj);
             }
-            else if (aj == "BM"){
+            else if (aj == "BM" && position.getRow() > 0){
                 int tempR = position.getRow()-1;
                 int tempC = position.getColumn();
                 ChessPosition endPos = new ChessPosition(tempR,tempC);
                 legalMoves.put(aj, new ChessMove(position, endPos,null));
                 //System.out.println(tempR + " " + tempC + " " + aj);
             }
-            else if (aj == "BL"){
+            else if (aj == "BL" && position.getColumn() > 0 && position.getRow() > 0){
                 int tempR = position.getRow()-1;
                 int tempC = position.getColumn()-1;
                 ChessPosition endPos = new ChessPosition(tempR,tempC);
                 legalMoves.put(aj, new ChessMove(position, endPos,null));
                 //System.out.println(tempR + " " + tempC + " " + aj);
             }
-            else if (aj == "L") {
+            else if (aj == "L" && position.getColumn() > 0) {
                 int tempR = position.getRow();
                 int tempC = position.getColumn() - 1;
                 ChessPosition endPos = new ChessPosition(tempR,tempC);
@@ -79,11 +79,14 @@ public class KingsMoveCalculator implements ChessMovesCalculator {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return 31 * board.hashCode() * position.getRow() * position.getColumn();
     }
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;;
+        KingsMoveCalculator checker = (KingsMoveCalculator) obj;
+        return position == checker.position && board == checker.board;
     }
 }

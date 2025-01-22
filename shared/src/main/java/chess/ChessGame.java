@@ -34,9 +34,19 @@ public class ChessGame {
      * Enum identifying the 2 possible teams in a chess game
      */
     public enum TeamColor {
-        WHITE,
-        BLACK
+        WHITE(1),
+        BLACK(2);
+
+        private final int value;
+
+        TeamColor(int value){
+            this.value = value;
+        }
+        public int getTeamColor() {
+            return value;
+        }
     }
+
 
     /**
      * Gets a valid moves for a piece at the given location

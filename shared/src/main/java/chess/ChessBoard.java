@@ -7,7 +7,7 @@ package chess;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    private ChessPiece[][] squares = new ChessPiece[8][8];
+    private ChessPiece[][] squares = new ChessPiece[9][9];
     public ChessBoard() {
         
     }
@@ -42,10 +42,10 @@ public class ChessBoard {
         for (int i = 1; i <= 8; i++){
             for (int j = 1; j <= 8; ++j) {
                 ChessPosition pos = new ChessPosition(i,j);
-                if (i == 2){
+                //if (i == 2){
 
 
-                    }
+                    //}
                 }
             }
         }
@@ -53,11 +53,27 @@ public class ChessBoard {
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        ChessBoard checker = (ChessBoard) obj;
+        for (int i = 0; i < 9; i++){
+            for (int j = 0; j < 9; j++){
+                if (!squares[i][j].equals(checker.squares[i][j])){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        int hashcode = 0;
+        for (int i = 0; i < 9; i++){
+            for (int j = 0; i < 9; j++){
+                hashcode = squares[i][j].hashCode() + hashcode;
+            }
+        }
+        return hashcode;
     }
 }

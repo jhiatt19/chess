@@ -14,7 +14,7 @@ public class ChessPiece {
     private ChessPiece.PieceType type;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
-        this.pieceColor =pieceColor;
+        this.pieceColor = pieceColor;
         this.type = type;
     }
 
@@ -22,12 +22,21 @@ public class ChessPiece {
      * The various different chess piece options
      */
     public enum PieceType {
-        KING,
-        QUEEN,
-        BISHOP,
-        KNIGHT,
-        ROOK,
-        PAWN
+        KING(1),
+        QUEEN(2),
+        BISHOP(3),
+        KNIGHT(4),
+        ROOK(5),
+        PAWN(6);
+
+        private final int value;
+        PieceType(int value){
+            this.value = value;
+        }
+
+        public int getPieceTypeVal(){
+            return value;
+        }
     }
 
     /**
@@ -55,16 +64,21 @@ public class ChessPiece {
         if (type == PieceType.KING){
             return new KingsMoveCalculator(board,myPosition).pieceMoves(board,myPosition);
         }
+        else if (type == PieceType.KNIGHT){
+            return new KnightsMoveCalculator(board,myPosition).pieceMoves(board,myPosition);        }
         return new ArrayList<>();
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return 31 * pieceColor.getTeamColor() * type.getPieceTypeVal();
     }
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        ChessPiece checker = (ChessPiece) obj;
+        return pieceColor == checker.pieceColor && type == checker.type;
     }
 }

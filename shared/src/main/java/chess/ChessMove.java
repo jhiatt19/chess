@@ -45,11 +45,14 @@ public class ChessMove {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return 31 * startPosition.getRow() * startPosition.getColumn() * endPosition.getRow() * endPosition.getColumn() ;
     }
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        ChessMove checker = (ChessMove) obj;
+        return startPosition == checker.startPosition && endPosition == checker.endPosition;
     }
 }
