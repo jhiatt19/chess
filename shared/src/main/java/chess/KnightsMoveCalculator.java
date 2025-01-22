@@ -16,7 +16,7 @@ public class KnightsMoveCalculator implements ChessMovesCalculator{
 
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position){
         for (String fk : forkMoves){
-            if (fk.equals("fkul") && position.getColumn() > 1 && position.getRow() < 5){
+            if (fk.equals("fkul") && position.getColumn() >= 1 && position.getRow() <= 5){
                 int tempR = position.getRow()+3;
                 int tempC = position.getColumn()-1;
                 ChessPosition endPos = new ChessPosition(tempR,tempC);
@@ -27,73 +27,80 @@ public class KnightsMoveCalculator implements ChessMovesCalculator{
                     legalMoves.put(fk,new ChessMove(position,endPos,null));
                 }
             }
-            else if (fk.equals("fkur") && position.getRow() < 5 && position.getColumn() < 7) {
+            else if (fk.equals("fkur") && position.getRow() <= 5 && position.getColumn() <= 7) {
                 int tempR = position.getRow() + 3;
                 int tempC = position.getColumn() + 1;
                 ChessPosition endPos = new ChessPosition(tempR, tempC);
                 if (board.getPiece(endPos) == null) {
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
-                } else if (board.getPiece(endPos).getTeamColor() != board.getPiece(position).getTeamColor()) {
+                }
+                else if (board.getPiece(endPos).getTeamColor() != board.getPiece(position).getTeamColor()) {
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
                 }
             }
-            else if (fk.equals("fkr") && position.getRow() < 7 && position.getColumn() < 5) {
+            else if (fk.equals("fkr") && position.getRow() <= 7 && position.getColumn() <= 5) {
                 int tempR = position.getRow() + 1;
                 int tempC = position.getColumn() + 3;
                 ChessPosition endPos = new ChessPosition(tempR, tempC);
                 if (board.getPiece(endPos) == null) {
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
-                } else if (board.getPiece(endPos).getTeamColor() != board.getPiece(position).getTeamColor()) {
+                }
+                else if (board.getPiece(endPos).getTeamColor() != board.getPiece(position).getTeamColor()) {
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
                 }
             }
-            else if (fk.equals("fklr") && position.getColumn() < 5 && position.getRow() > 1) {
+            else if (fk.equals("fklr") && position.getColumn() <= 5 && position.getRow() >= 1) {
                 int tempR = position.getRow() - 1;
                 int tempC = position.getColumn() + 3;
                 ChessPosition endPos = new ChessPosition(tempR, tempC);
                 if (board.getPiece(endPos) == null) {
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
-                } else if (board.getPiece(endPos).getTeamColor() != board.getPiece(position).getTeamColor()) {
+                }
+                else if (board.getPiece(endPos).getTeamColor() != board.getPiece(position).getTeamColor()) {
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
                 }
             }
-            else if (fk.equals("fkdr") && position.getColumn() < 7 && position.getRow() > 3) {
+            else if (fk.equals("fkdr") && position.getColumn() <= 7 && position.getRow() >= 3) {
                 int tempR = position.getRow() - 3;
                 int tempC = position.getColumn() + 1;
                 ChessPosition endPos = new ChessPosition(tempR, tempC);
                 if (board.getPiece(endPos) == null) {
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
-                } else if (board.getPiece(endPos).getTeamColor() != board.getPiece(position).getTeamColor()) {
+                }
+                else if (board.getPiece(endPos).getTeamColor() != board.getPiece(position).getTeamColor()) {
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
                 }
             }
-            else if (fk.equals("fkdl") && position.getColumn() > 1 && position.getRow() > 3) {
+            else if (fk.equals("fkdl") && position.getColumn() >= 1 && position.getRow() >= 3) {
                 int tempR = position.getRow() - 3;
                 int tempC = position.getColumn() - 1 ;
                 ChessPosition endPos = new ChessPosition(tempR, tempC);
                 if (board.getPiece(endPos) == null) {
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
-                } else if (board.getPiece(endPos).getTeamColor() != board.getPiece(position).getTeamColor()) {
+                }
+                else if (board.getPiece(endPos).getTeamColor() != board.getPiece(position).getTeamColor()) {
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
                 }
             }
-            else if (fk.equals("fkll") && position.getColumn() > 3 && position.getRow() < 7) {
+            else if (fk.equals("fkll") && position.getColumn() >= 3 && position.getRow() >= 1) {
                 int tempR = position.getRow() - 1;
                 int tempC = position.getColumn() - 3 ;
                 ChessPosition endPos = new ChessPosition(tempR, tempC);
                 if (board.getPiece(endPos) == null) {
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
-                } else if (board.getPiece(endPos).getTeamColor() != board.getPiece(position).getTeamColor()) {
+                }
+                else if (board.getPiece(endPos).getTeamColor() != board.getPiece(position).getTeamColor()) {
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
                 }
             }
-            else if (fk.equals("fkl") && position.getColumn() > 3 && position.getRow() > 1) {
-                int tempR = position.getRow() - 1;
+            else if (fk.equals("fkl") && position.getColumn() >= 3 && position.getRow() <= 7) {
+                int tempR = position.getRow() + 1;
                 int tempC = position.getColumn() - 3 ;
                 ChessPosition endPos = new ChessPosition(tempR, tempC);
                 if (board.getPiece(endPos) == null) {
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
-                } else if (board.getPiece(endPos).getTeamColor() != board.getPiece(position).getTeamColor()) {
+                }
+                else if (board.getPiece(endPos).getTeamColor() != board.getPiece(position).getTeamColor()) {
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
                 }
             }
@@ -103,7 +110,12 @@ public class KnightsMoveCalculator implements ChessMovesCalculator{
 
     @Override
     public int hashCode() {
-        return 31 * position.hashCode() * board.hashCode();
+        int hashVal = 17;
+        hashVal = hashVal * board.hashCode();
+        hashVal = hashVal - 31;
+        hashVal = hashVal * position.hashCode();
+        hashVal = (hashVal * 7) - 321;
+        return hashVal;
     }
 
     @Override
@@ -111,6 +123,6 @@ public class KnightsMoveCalculator implements ChessMovesCalculator{
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         KnightsMoveCalculator checker = (KnightsMoveCalculator) obj;
-        return position.equals(checker.position) && board.equals(board);
+        return position.equals(checker.position) && board.equals(checker.board);
     }
 }
