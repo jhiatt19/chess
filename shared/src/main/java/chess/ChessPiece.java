@@ -61,10 +61,10 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        if (type == PieceType.KING){
+        if (type.equals(PieceType.KING)){
             return new KingsMoveCalculator(board,myPosition).pieceMoves(board,myPosition);
         }
-        else if (type == PieceType.KNIGHT){
+        else if (type.equals(PieceType.KNIGHT)){
             return new KnightsMoveCalculator(board,myPosition).pieceMoves(board,myPosition);        }
         return new ArrayList<>();
     }
@@ -79,6 +79,6 @@ public class ChessPiece {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         ChessPiece checker = (ChessPiece) obj;
-        return pieceColor == checker.pieceColor && type == checker.type;
+        return pieceColor.equals(checker.pieceColor) && type.equals(checker.type);
     }
 }

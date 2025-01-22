@@ -53,6 +53,6 @@ public class ChessMove {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         ChessMove checker = (ChessMove) obj;
-        return startPosition == checker.startPosition && endPosition == checker.endPosition;
+        return startPosition.equals(checker.startPosition) && endPosition.equals(checker.endPosition);
     }
 }
