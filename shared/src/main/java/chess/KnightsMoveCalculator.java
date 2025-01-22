@@ -16,8 +16,8 @@ public class KnightsMoveCalculator implements ChessMovesCalculator{
 
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position){
         for (String fk : forkMoves){
-            if (fk.equals("fkul") && position.getColumn() >= 1 && position.getRow() <= 5){
-                int tempR = position.getRow()+3;
+            if (fk.equals("fkul") && position.getColumn() > 1 && position.getRow() <= 6){
+                int tempR = position.getRow()+2;
                 int tempC = position.getColumn()-1;
                 ChessPosition endPos = new ChessPosition(tempR,tempC);
                 if (board.getPiece(endPos) == null) {
@@ -27,8 +27,8 @@ public class KnightsMoveCalculator implements ChessMovesCalculator{
                     legalMoves.put(fk,new ChessMove(position,endPos,null));
                 }
             }
-            else if (fk.equals("fkur") && position.getRow() <= 5 && position.getColumn() <= 7) {
-                int tempR = position.getRow() + 3;
+            else if (fk.equals("fkur") && position.getRow() <= 6 && position.getColumn() <= 7) {
+                int tempR = position.getRow() + 2;
                 int tempC = position.getColumn() + 1;
                 ChessPosition endPos = new ChessPosition(tempR, tempC);
                 if (board.getPiece(endPos) == null) {
@@ -38,9 +38,9 @@ public class KnightsMoveCalculator implements ChessMovesCalculator{
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
                 }
             }
-            else if (fk.equals("fkr") && position.getRow() <= 7 && position.getColumn() <= 5) {
+            else if (fk.equals("fkr") && position.getRow() <= 7 && position.getColumn() <= 6) {
                 int tempR = position.getRow() + 1;
-                int tempC = position.getColumn() + 3;
+                int tempC = position.getColumn() + 2;
                 ChessPosition endPos = new ChessPosition(tempR, tempC);
                 if (board.getPiece(endPos) == null) {
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
@@ -49,9 +49,9 @@ public class KnightsMoveCalculator implements ChessMovesCalculator{
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
                 }
             }
-            else if (fk.equals("fklr") && position.getColumn() <= 5 && position.getRow() >= 1) {
+            else if (fk.equals("fklr") && position.getColumn() <= 6 && position.getRow() > 1) {
                 int tempR = position.getRow() - 1;
-                int tempC = position.getColumn() + 3;
+                int tempC = position.getColumn() + 2;
                 ChessPosition endPos = new ChessPosition(tempR, tempC);
                 if (board.getPiece(endPos) == null) {
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
@@ -61,7 +61,7 @@ public class KnightsMoveCalculator implements ChessMovesCalculator{
                 }
             }
             else if (fk.equals("fkdr") && position.getColumn() <= 7 && position.getRow() >= 3) {
-                int tempR = position.getRow() - 3;
+                int tempR = position.getRow() - 2;
                 int tempC = position.getColumn() + 1;
                 ChessPosition endPos = new ChessPosition(tempR, tempC);
                 if (board.getPiece(endPos) == null) {
@@ -71,8 +71,8 @@ public class KnightsMoveCalculator implements ChessMovesCalculator{
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
                 }
             }
-            else if (fk.equals("fkdl") && position.getColumn() >= 1 && position.getRow() >= 3) {
-                int tempR = position.getRow() - 3;
+            else if (fk.equals("fkdl") && position.getColumn() > 1 && position.getRow() >= 3) {
+                int tempR = position.getRow() - 2;
                 int tempC = position.getColumn() - 1 ;
                 ChessPosition endPos = new ChessPosition(tempR, tempC);
                 if (board.getPiece(endPos) == null) {
@@ -82,9 +82,9 @@ public class KnightsMoveCalculator implements ChessMovesCalculator{
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
                 }
             }
-            else if (fk.equals("fkll") && position.getColumn() >= 3 && position.getRow() >= 1) {
+            else if (fk.equals("fkll") && position.getColumn() >= 3 && position.getRow() > 1) {
                 int tempR = position.getRow() - 1;
-                int tempC = position.getColumn() - 3 ;
+                int tempC = position.getColumn() - 2 ;
                 ChessPosition endPos = new ChessPosition(tempR, tempC);
                 if (board.getPiece(endPos) == null) {
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
@@ -95,7 +95,7 @@ public class KnightsMoveCalculator implements ChessMovesCalculator{
             }
             else if (fk.equals("fkl") && position.getColumn() >= 3 && position.getRow() <= 7) {
                 int tempR = position.getRow() + 1;
-                int tempC = position.getColumn() - 3 ;
+                int tempC = position.getColumn() - 2 ;
                 ChessPosition endPos = new ChessPosition(tempR, tempC);
                 if (board.getPiece(endPos) == null) {
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
@@ -104,18 +104,14 @@ public class KnightsMoveCalculator implements ChessMovesCalculator{
                     legalMoves.put(fk, new ChessMove(position, endPos, null));
                 }
             }
+            //System.out.println(legalMoves.keySet());
         }
         return legalMoves.values();
     }
 
     @Override
     public int hashCode() {
-        int hashVal = 17;
-        hashVal = hashVal * board.hashCode();
-        hashVal = hashVal - 31;
-        hashVal = hashVal * position.hashCode();
-        hashVal = (hashVal * 7) - 321;
-        return hashVal;
+        return (17 * position.hashCode() * legalMoves.keySet().hashCode() ^ board.hashCode());
     }
 
     @Override
