@@ -23,7 +23,7 @@ public class KingsMoveCalculator implements ChessMovesCalculator {
             if (aj == "UL") {
                 int tempR = position.getRow()+1;
                 int tempC = position.getColumn()-1;
-                legalMoves.put(aj, new ChessMove(position, new ChessPosition(tempR,tempC),null).hashCode());
+                legalMoves.put(aj, new ChessMove(position, new ChessPosition(tempR,tempC),null));
                 //System.out.println(tempR + " " + tempC + " " + aj);
             }
             else if (aj == "UM"){
