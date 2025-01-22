@@ -48,6 +48,6 @@ public class ChessBoard {
 
     @Override
     public int hashCode() {
-        return ;
+        return super.hashCode();
     }
 }

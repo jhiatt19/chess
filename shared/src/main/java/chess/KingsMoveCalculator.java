@@ -1,41 +1,84 @@
 package chess;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.Hashtable;
 
 public class KingsMoveCalculator implements ChessMovesCalculator {
-    private ChessBoard board;
-    private ChessPosition position;
-    private ChessGame.TeamColor color;
-    private String ajsquares[] = {"UL","UM","UR","R","BR","BM","BL","L"};
+    private final ChessBoard board;
+    private final ChessPosition position;
+    private final String ajSquares[] = {"UM","UR","R","BR","BM","BL","L","UL"};
     private Hashtable<String,ChessPosition> tempMoves = new Hashtable<>(8);
     private Hashtable<String,ChessMove> legalMoves = new Hashtable<>();
-    public KingsMoveCalculator(ChessBoard board, ChessPosition position,ChessGame.TeamColor color) {
+    public KingsMoveCalculator(ChessBoard board, ChessPosition position) {
         this.board = board;
         this.position = position;
-        this.color = color;
-            //System.out.println("Key: " + aj + " Value: " + tempMoves.get(aj));
 
     }
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position){
-        for (String aj : ajsquares) {
+        for (String aj : ajSquares) {
             tempMoves.put(aj, position);
         }
         for (String aj : tempMoves.keySet()){
             if (aj == "UL") {
-                ChessMove temp = [position.getRow()][position.getColumn()];
-                legalMoves.put(aj,temp);
+                int tempR = position.getRow()+1;
+                int tempC = position.getColumn()-1;
+                legalMoves.put(aj, new ChessMove(position, new ChessPosition(tempR,tempC),null).hashCode());
+                //System.out.println(tempR + " " + tempC + " " + aj);
+            }
+            else if (aj == "UM"){
+                int tempR = position.getRow()+1;
+                int tempC = position.getColumn();
+                legalMoves.put(aj, new ChessMove(position, new ChessPosition(tempR,tempC),null));
+                //System.out.println(tempR + " " + tempC + " " + aj);
+            }
+            else if (aj == "UR"){
+                int tempR = position.getRow()+1;
+                int tempC = position.getColumn()+1;
+                legalMoves.put(aj, new ChessMove(position, new ChessPosition(tempR,tempC),null));
+                //System.out.println(tempR + " " + tempC + " " + aj);
+            }
+            else if (aj == "R"){
+                int tempR = position.getRow();
+                int tempC = position.getColumn()+1;
+                legalMoves.put(aj, new ChessMove(position, new ChessPosition(tempR,tempC),null));
+                //System.out.println(tempR + " " + tempC + " " + aj);
+            }
+            else if (aj == "BR"){
+                int tempR = position.getRow()-1;
+                int tempC = position.getColumn()+1;
+                legalMoves.put(aj, new ChessMove(position, new ChessPosition(tempR,tempC),null));
+                //System.out.println(tempR + " " + tempC + " " + aj);
+            }
+            else if (aj == "BM"){
+                int tempR = position.getRow()-1;
+                int tempC = position.getColumn();
+                legalMoves.put(aj, new ChessMove(position, new ChessPosition(tempR,tempC),null));
+                //System.out.println(tempR + " " + tempC + " " + aj);
+            }
+            else if (aj == "BL"){
+                int tempR = position.getRow()-1;
+                int tempC = position.getColumn()-1;
+                legalMoves.put(aj, new ChessMove(position, new ChessPosition(tempR,tempC),null));
+                //System.out.println(tempR + " " + tempC + " " + aj);
+            }
+            else if (aj == "L") {
+                int tempR = position.getRow();
+                int tempC = position.getColumn() - 1;
+                legalMoves.put(aj, new ChessMove(position, new ChessPosition(tempR,tempC),null));
+                //System.out.println(tempR + " " + tempC + " " + aj);
             }
         }
-            return legalMoves.values();
+        return legalMoves.values();
     }
 
     @Override
-    public boolean equals(Object obj){
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        return false;
+    public int hashCode() {
+        return super.hashCode();
     }
 
-
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 }

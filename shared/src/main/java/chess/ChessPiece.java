@@ -53,7 +53,7 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         if (type == PieceType.KING){
-            return new KingsMoveCalculator(board,myPosition,pieceColor).pieceMoves(board,myPosition);
+            return new KingsMoveCalculator(board,myPosition).pieceMoves(board,myPosition);
         }
         return new ArrayList<>();
     }
