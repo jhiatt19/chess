@@ -38,8 +38,18 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
-    }
+
+        for (int i = 1; i <= 8; i++){
+            for (int j = 1; j <= 8; ++j) {
+                ChessPosition pos = new ChessPosition(i,j);
+                if (i == 2){
+
+
+                    }
+                }
+            }
+        }
+
 
     @Override
     public boolean equals(Object obj) {
