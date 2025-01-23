@@ -18,22 +18,17 @@ public class PawnsMoveCalculator implements ChessMovesCalculator {
         for (String mv : pawnMoves) {
             if (mv.equals("atckl")) { //Black atckl
                 pawnAttackLeft(mv);
-                System.out.println(mv + " " + legalMoves);
             }
             if (mv.equals("atckr")) {
                 pawnAttackRight(mv);
-               System.out.println(mv + " " + legalMoves);
             }
         
             if (mv.equals("mv1") && position.getColumn() < 9) {
                 pawnMove1(mv);
-                System.out.println(mv + " " + legalMoves);
             }
-
-            }
-            System.out.println("All: " + legalMoves);
-            return legalMoves;
         }
+        return legalMoves;
+    }
 
     public void pawnPromotion(ChessPosition endPos) {
             for (String pm2 : pawnPromote) {
@@ -48,7 +43,7 @@ public class PawnsMoveCalculator implements ChessMovesCalculator {
                 }
         }
     }
-    public void pawnMove1(String mv){
+    public void pawnMove1(String mv) {
         if (board.getPiece(position).getTeamColor().equals(ChessGame.TeamColor.BLACK)) {
             int tempR = position.getRow() - 1;
             int tempC = position.getColumn();
@@ -56,38 +51,36 @@ public class PawnsMoveCalculator implements ChessMovesCalculator {
             if (board.getPiece(endPos) == null) {
                 if (endPos.getRow() == 1) {
                     pawnPromotion(endPos);
-                }
-                else { 
+                } else {
                     legalMoves.add(new ChessMove(position, endPos, null));
                 }
-                if (position.getRow() == 7){
+                if (position.getRow() == 7) {
                     int tempR2 = position.getRow() - 2;
                     int tempC2 = position.getColumn();
                     ChessPosition endPos2 = new ChessPosition(tempR2, tempC2);
-                    if (board.getPiece(endPos2) == null){
+                    if (board.getPiece(endPos2) == null) {
                         legalMoves.add(new ChessMove(position, endPos2, null));
                     }
                 }
             }
-        }
-        else {
+        } else {
             int tempR = position.getRow() + 1;
             int tempC = position.getColumn();
             ChessPosition endPos = new ChessPosition(tempR, tempC);
             if (board.getPiece(endPos) == null) {
-                if (endPos.getRow() == 8){
+                if (endPos.getRow() == 8) {
                     pawnPromotion(endPos);
-                }
-                else {
+                } else {
                     legalMoves.add(new ChessMove(position, endPos, null));
                 }
-                if (position.getRow() == 2){
+                if (position.getRow() == 2) {
                     int tempR2 = position.getRow() + 2;
                     int tempC2 = position.getColumn();
                     ChessPosition endPos2 = new ChessPosition(tempR2, tempC2);
-                    if (board.getPiece(endPos2) == null){
+                    if (board.getPiece(endPos2) == null) {
                         legalMoves.add(new ChessMove(position, endPos2, null));
                     }
+                }
             }
         }
     }
