@@ -1,7 +1,6 @@
 package chess;
 
 import java.util.*;
-import java.util.ArrayList;
 import java.util.Collection;
 
 public class KnightsMoveCalculator implements ChessMovesCalculator{
