@@ -36,13 +36,13 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
         int tempC = startPos.getColumn() + 1;
         ChessPosition newPos = new ChessPosition(tempR,tempC);
         if (board.getPiece(newPos) == null){
-            legalMoves.add(new ChessMove(startPos,newPos,null));
+            legalMoves.add(new ChessMove(position,newPos,null));
             System.out.println(newPos.getRow() + " " + newPos.getColumn());
             return diagonalUpRight(newPos);
         }
         else if (board.getPiece(newPos) != null){
             if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
-                legalMoves.add(new ChessMove(startPos, newPos, null));
+                legalMoves.add(new ChessMove(position, newPos, null));
                 System.out.println("DURx " + newPos.getRow() + " " + newPos.getColumn());
             }
         }
@@ -57,13 +57,13 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
         int tempC = startPos.getColumn() - 1;
         ChessPosition newPos = new ChessPosition(tempR,tempC);
         if (board.getPiece(newPos) == null){
-            legalMoves.add(new ChessMove(startPos,newPos,null));
+            legalMoves.add(new ChessMove(position,newPos,null));
             System.out.println(newPos.getRow() + " " + newPos.getColumn());
             return diagonalUpLeft(newPos);
         }
         else if (board.getPiece(newPos) != null){
             if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
-                legalMoves.add(new ChessMove(startPos, newPos, null));
+                legalMoves.add(new ChessMove(position, newPos, null));
                 System.out.println("DULx " + newPos.getRow() + " " + newPos.getColumn());
             }
         }
@@ -79,13 +79,13 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
         int tempC = startPos.getColumn() + 1;
         ChessPosition newPos = new ChessPosition(tempR,tempC);
         if (board.getPiece(newPos) == null){
-            legalMoves.add(new ChessMove(startPos,newPos,null));
+            legalMoves.add(new ChessMove(position,newPos,null));
             System.out.println(newPos.getRow() + " " + newPos.getColumn());
             return diagonalDownRight(newPos);
         }
         else if (board.getPiece(newPos) != null){
             if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
-                legalMoves.add(new ChessMove(startPos, newPos, null));
+                legalMoves.add(new ChessMove(position, newPos, null));
                 System.out.println("DDRx " + newPos.getRow() + " " + newPos.getColumn());
             }
         }
@@ -101,13 +101,13 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
         int tempC = startPos.getColumn() - 1;
         ChessPosition newPos = new ChessPosition(tempR,tempC);
         if (board.getPiece(newPos) == null){
-            legalMoves.add(new ChessMove(startPos,newPos,null));
+            legalMoves.add(new ChessMove(position,newPos,null));
             System.out.println(newPos.getRow() + " " + newPos.getColumn());
             return diagonalDownLeft(newPos);
         }
         else if (board.getPiece(newPos) != null){
             if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
-                legalMoves.add(new ChessMove(startPos, newPos, null));
+                legalMoves.add(new ChessMove(position, newPos, null));
                 System.out.println("DDLx " + newPos.getRow() + " " + newPos.getColumn());
             }
         }
