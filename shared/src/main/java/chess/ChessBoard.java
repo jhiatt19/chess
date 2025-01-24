@@ -1,5 +1,8 @@
 package chess;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
@@ -50,30 +53,42 @@ public class ChessBoard {
             }
         }
 
-
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        ChessBoard checker = (ChessBoard) obj;
-        for (int i = 0; i < 9; i++){
-            for (int j = 0; j < 9; j++){
-                if (!squares[i][j].equals(checker.squares[i][j])){
-                    return false;
-                }
-            }
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
         }
-        return true;
+        ChessBoard that = (ChessBoard) o;
+        return Objects.deepEquals(squares, that.squares);
     }
 
     @Override
     public int hashCode() {
-        int hashcode = 0;
-        for (int i = 0; i < 9; i++){
-            for (int j = 0; i < 9; j++){
-                hashcode = squares[i][j].hashCode() + hashcode;
-            }
-        }
-        return hashcode;
+        return Arrays.deepHashCode(squares);
     }
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (this == obj) return true;
+//        if (obj == null || getClass() != obj.getClass()) return false;
+//        ChessBoard checker = (ChessBoard) obj;
+//        for (int i = 0; i < 9; i++){
+//            for (int j = 0; j < 9; j++){
+//                if (!squares[i][j].equals(checker.squares[i][j])){
+//                    return false;
+//                }
+//            }
+//        }
+//        return true;
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        int hashcode = 0;
+//        for (int i = 0; i < 9; i++){
+//            for (int j = 0; i < 9; j++){
+//                hashcode = squares[i][j].hashCode() + hashcode;
+//            }
+//        }
+//        return hashcode;
+    //}
 }

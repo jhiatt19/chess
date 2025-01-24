@@ -37,7 +37,7 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
         ChessPosition newPos = new ChessPosition(tempR,tempC);
         if (board.getPiece(newPos) == null){
             legalMoves.add(new ChessMove(startPos,newPos,null));
-            System.out.println("DUR");
+            System.out.println(newPos.getRow() + " " + newPos.getColumn());
             return diagonalUpRight(newPos);
         }
         else if (board.getPiece(newPos) != null){
@@ -58,7 +58,7 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
         ChessPosition newPos = new ChessPosition(tempR,tempC);
         if (board.getPiece(newPos) == null){
             legalMoves.add(new ChessMove(startPos,newPos,null));
-            System.out.println("DUL");
+            System.out.println(newPos.getRow() + " " + newPos.getColumn());
             return diagonalUpLeft(newPos);
         }
         else if (board.getPiece(newPos) != null){
@@ -80,7 +80,7 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
         ChessPosition newPos = new ChessPosition(tempR,tempC);
         if (board.getPiece(newPos) == null){
             legalMoves.add(new ChessMove(startPos,newPos,null));
-            System.out.println("DDR");
+            System.out.println(newPos.getRow() + " " + newPos.getColumn());
             return diagonalDownRight(newPos);
         }
         else if (board.getPiece(newPos) != null){
@@ -102,7 +102,7 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
         ChessPosition newPos = new ChessPosition(tempR,tempC);
         if (board.getPiece(newPos) == null){
             legalMoves.add(new ChessMove(startPos,newPos,null));
-            System.out.println("DDL");
+            System.out.println(newPos.getRow() + " " + newPos.getColumn());
             return diagonalDownLeft(newPos);
         }
         else if (board.getPiece(newPos) != null){
@@ -125,6 +125,10 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
 
     @Override
     public int hashCode() {
-        return Objects.hash(board, position, legalMoves);
+        int hash = Objects.hash(board);
+        hash = hash ^ Objects.hash(position);
+        hash = hash * Objects.hash(legalMoves);
+        hash = hash ^ 7;
+        return hash;
     }
 }
