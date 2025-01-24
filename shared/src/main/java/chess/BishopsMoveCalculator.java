@@ -1,31 +1,29 @@
 package chess;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 public class BishopsMoveCalculator implements ChessMovesCalculator{
     private final ChessBoard board;
     private final ChessPosition position;
-    private ArrayList<ChessMove> legalMoves = new ArrayList<>();
+    private final ArrayList<ChessMove> legalMoves = new ArrayList<>();
 
     public BishopsMoveCalculator(ChessBoard board, ChessPosition position){
         this.board = board;
         this.position = position;
     }
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
-        if (board.getPiece(position).getTeamColor().equals(ChessGame.TeamColor.WHITE)) {
+        //if (board.getPiece(position).getTeamColor().equals(ChessGame.TeamColor.WHITE)) {
             diagonalUpRight(position);
             diagonalDownRight(position);
             diagonalDownLeft(position);
             diagonalUpLeft(position);
-        }
-        else {
-            diagonalDownRight(position);
-            diagonalDownLeft(position);
-            diagonalUpLeft(position);
-            diagonalUpRight(position);
-        }
+//        }
+//        else {
+//            diagonalDownLeft(position);
+//            diagonalUpLeft(position);
+//            diagonalUpRight(position);
+//            diagonalDownRight(position);
+//        }
         return legalMoves;
     }
 
@@ -43,9 +41,9 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
             return diagonalUpRight(newPos);
         }
         else if (board.getPiece(newPos) != null){
-            if (board.getPiece(newPos).getTeamColor() != board.getPiece(position).getTeamColor()){
+            if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
                 legalMoves.add(new ChessMove(startPos, newPos, null));
-                System.out.println("DURx");
+                System.out.println("DURx " + newPos.getRow() + " " + newPos.getColumn());
             }
         }
         return newPos;
@@ -64,9 +62,9 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
             return diagonalUpLeft(newPos);
         }
         else if (board.getPiece(newPos) != null){
-            if (board.getPiece(newPos).getTeamColor() != board.getPiece(position).getTeamColor()){
+            if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
                 legalMoves.add(new ChessMove(startPos, newPos, null));
-                System.out.println("DULx");
+                System.out.println("DULx " + newPos.getRow() + " " + newPos.getColumn());
             }
         }
         return newPos;
@@ -86,9 +84,9 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
             return diagonalDownRight(newPos);
         }
         else if (board.getPiece(newPos) != null){
-            if (board.getPiece(newPos).getTeamColor() != board.getPiece(position).getTeamColor()){
+            if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
                 legalMoves.add(new ChessMove(startPos, newPos, null));
-                System.out.println("DDRx");
+                System.out.println("DDRx " + newPos.getRow() + " " + newPos.getColumn());
             }
         }
         return newPos;
@@ -108,9 +106,9 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
             return diagonalDownLeft(newPos);
         }
         else if (board.getPiece(newPos) != null){
-            if (board.getPiece(newPos).getTeamColor() != board.getPiece(position).getTeamColor()){
+            if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
                 legalMoves.add(new ChessMove(startPos, newPos, null));
-                System.out.println("DDLx");
+                System.out.println("DDLx " + newPos.getRow() + " " + newPos.getColumn());
             }
         }
         return newPos;

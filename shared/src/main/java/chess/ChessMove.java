@@ -45,20 +45,6 @@ public class ChessMove {
         return promotionPiece;
     }
 
-
-//    @Override
-//    public int hashCode() {
-//        return 31 * startPosition.getRow() * startPosition.getColumn() * endPosition.getRow() * endPosition.getColumn() ;
-//    }
-//
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (this == obj) return true;
-//        if (obj == null || getClass() != obj.getClass()) return false;
-//        ChessMove checker = (ChessMove) obj;
-//        return startPosition.equals(checker.startPosition) && endPosition.equals(checker.endPosition);
-//    }
-
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
