@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 public class RooksMoveCalculator implements ChessMovesCalculator{
     private final ChessBoard board;
@@ -13,15 +14,15 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
         this.position = position;
     }
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
-        VerticalUp(position);
-        VerticalDown(position);
-        HorizontalLeft(position);
-        HorizontalRight(position);
+        verticalUp(position);
+        verticalDown(position);
+        horizontalLeft(position);
+        horizontalRight(position);
 
         return legalMoves;
     }
 
-    public ChessPosition VerticalUp(ChessPosition startPos){
+    public ChessPosition verticalUp(ChessPosition startPos){
         if (startPos.getRow() >= 8){
             System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
             return startPos;
@@ -32,7 +33,7 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
         if (board.getPiece(newPos) == null){
             legalMoves.add(new ChessMove(position,newPos,null));
             System.out.println(newPos.getRow() + " " + newPos.getColumn());
-            return  VerticalUp(newPos);
+            return  verticalUp(newPos);
         }
         else if (board.getPiece(newPos) != null){
             if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
@@ -43,7 +44,7 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
         return newPos;
     }
 
-    public ChessPosition VerticalDown(ChessPosition startPos){
+    public ChessPosition verticalDown(ChessPosition startPos){
         if (startPos.getRow() <= 1){
             System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
             return startPos;
@@ -54,7 +55,7 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
         if (board.getPiece(newPos) == null){
             legalMoves.add(new ChessMove(position,newPos,null));
             System.out.println(newPos.getRow() + " " + newPos.getColumn());
-            return VerticalDown(newPos);
+            return verticalDown(newPos);
         }
         else if (board.getPiece(newPos) != null){
             if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
@@ -65,7 +66,7 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
         return newPos;
     }
 
-    public ChessPosition HorizontalRight(ChessPosition startPos){
+    public ChessPosition horizontalRight(ChessPosition startPos){
         if (startPos.getColumn() >= 8){
             System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
             return startPos;
@@ -76,7 +77,7 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
         if (board.getPiece(newPos) == null){
             legalMoves.add(new ChessMove(position,newPos,null));
             System.out.println(newPos.getRow() + " " + newPos.getColumn());
-            return HorizontalRight(newPos);
+            return horizontalRight(newPos);
         }
         else if (board.getPiece(newPos) != null){
             if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
@@ -87,7 +88,7 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
         return newPos;
     }
 
-    public ChessPosition HorizontalLeft(ChessPosition startPos){
+    public ChessPosition horizontalLeft(ChessPosition startPos){
         if (startPos.getColumn() <= 1){
             System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
             return startPos;
@@ -98,7 +99,7 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
         if (board.getPiece(newPos) == null){
             legalMoves.add(new ChessMove(position,newPos,null));
             System.out.println(newPos.getRow() + " " + newPos.getColumn());
-            return HorizontalLeft(newPos);
+            return horizontalLeft(newPos);
         }
         else if (board.getPiece(newPos) != null){
             if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
@@ -107,5 +108,19 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
             }
         }
         return newPos;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        RooksMoveCalculator that = (RooksMoveCalculator) o;
+        return Objects.equals(board, that.board) && Objects.equals(position, that.position) && Objects.equals(legalMoves, that.legalMoves);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(board, position, legalMoves);
     }
 }
