@@ -42,16 +42,43 @@ public class ChessBoard {
      */
     public void resetBoard() {
 
-        for (int i = 1; i <= 8; i++){
+        for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; ++j) {
-                ChessPosition pos = new ChessPosition(i,j);
-                //if (i == 2){
-
-
-                    //}
+                ChessPosition pos = new ChessPosition(i, j);
+                if (i == 1) {
+                    if (j == 1 || j == 8) {
+                        addPiece(pos, new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
+                    } else if (j == 2 || j == 7) {
+                        addPiece(pos, new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT));
+                    } else if (j == 3 || j == 6) {
+                        addPiece(pos, new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP));
+                    } else if (j == 4) {
+                        addPiece(pos, new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN));
+                    } else {
+                        addPiece(pos, new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING));
+                    }
+                } else if (i == 8) {
+                    if (j == 1 || j == 8) {
+                        addPiece(pos, new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK));
+                    } else if (j == 2 || j == 7) {
+                        addPiece(pos, new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT));
+                    } else if (j == 3 || j == 6) {
+                        addPiece(pos, new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP));
+                    } else if (j == 4) {
+                        addPiece(pos, new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN));
+                    } else {
+                        addPiece(pos, new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING));
+                    }
+                } else if (i == 2) {
+                    addPiece(pos, new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN));
+                } else if (i == 7) {
+                    addPiece(pos, new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
+                } else {
+                    squares[i][j] = null;
                 }
             }
         }
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -66,29 +93,5 @@ public class ChessBoard {
     public int hashCode() {
         return Arrays.deepHashCode(squares);
     }
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (this == obj) return true;
-//        if (obj == null || getClass() != obj.getClass()) return false;
-//        ChessBoard checker = (ChessBoard) obj;
-//        for (int i = 0; i < 9; i++){
-//            for (int j = 0; j < 9; j++){
-//                if (!squares[i][j].equals(checker.squares[i][j])){
-//                    return false;
-//                }
-//            }
-//        }
-//        return true;
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        int hashcode = 0;
-//        for (int i = 0; i < 9; i++){
-//            for (int j = 0; i < 9; j++){
-//                hashcode = squares[i][j].hashCode() + hashcode;
-//            }
-//        }
-//        return hashcode;
-    //}
+
 }
