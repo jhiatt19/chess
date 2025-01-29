@@ -1,158 +1,166 @@
 package chess;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Objects;
 
-public class PawnsMoveCalculator implements ChessMovesCalculator {
-    private ChessBoard board;
+public class PawnsMoveCalculator implements ChessMovesCalculator{
+    private final ChessBoard board;
     private final ChessPosition position;
-    private final String pawnMoves[] = {"atckl", "atckr", "mv1", "mv2"};
-    private final String pawnPromote[] = {"pmQ", "pmK", "pmB", "pmR"};
-    private ArrayList<ChessMove> legalMoves = new ArrayList<>();
-    
-    public PawnsMoveCalculator(ChessBoard board, ChessPosition position) {
+    private final ArrayList<ChessMove> legalMoves = new ArrayList<>();
+    public PawnsMoveCalculator(ChessBoard board, ChessPosition position){
         this.board = board;
         this.position = position;
     }
-
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
-        for (String mv : pawnMoves) {
-            if (mv.equals("atckl")) { //Black atckl
-                pawnAttackLeft(mv);
-            }
-            if (mv.equals("atckr")) {
-                pawnAttackRight(mv);
-            }
-        
-            if (mv.equals("mv1") && position.getColumn() < 9) {
-                pawnMove1(mv);
-            }
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition startPos){
+        if (board.getPiece(startPos).getTeamColor().equals(ChessGame.TeamColor.WHITE)) {
+            moveForward(startPos);
+            //System.out.println("White Attack Moves: " + legalMoves.size());
+            whiteAttack(startPos);
+            //System.out.println("White Forward Moves: " + legalMoves.size());
+        }
+        else {
+            moveBackward(startPos);
+            //System.out.println("Black Forward Moves: " + legalMoves.size());
+            blackAttack(startPos);
+            //System.out.println("Black Attack Moves: " + legalMoves.size());
         }
         return legalMoves;
     }
 
-    public void pawnPromotion(ChessPosition endPos) {
-            for (String pm2 : pawnPromote) {
-                if (pm2.equals("pmQ")) {
-                    legalMoves.add((new ChessMove(position, endPos, ChessPiece.PieceType.QUEEN)));
-                } else if (pm2.equals("pmR")) {
-                    legalMoves.add(new ChessMove(position, endPos, ChessPiece.PieceType.ROOK));
-                } else if (pm2.equals("pmK")) {
-                    legalMoves.add(new ChessMove(position, endPos, ChessPiece.PieceType.KNIGHT));
-                } else if (pm2.equals("pmB")) {
-                    legalMoves.add(new ChessMove(position, endPos, ChessPiece.PieceType.BISHOP));
+    public void whiteAttack(ChessPosition startPos){
+        if (startPos.getColumn() < 8) {
+            int tempR = startPos.getRow() + 1;
+            int tempC = startPos.getColumn() + 1;
+            ChessPosition tempPos = new ChessPosition(tempR, tempC);
+            if (board.getPiece(tempPos) != null && !board.getPiece(tempPos).getTeamColor().equals(board.getPiece(position).getTeamColor())) {
+                if (tempPos.getRow() != 8) {
+                    legalMoves.add(new ChessMove(position, tempPos, null));
                 }
+                else {
+                    legalMoves.add(new ChessMove(position,tempPos, ChessPiece.PieceType.QUEEN));
+                    legalMoves.add(new ChessMove(position,tempPos, ChessPiece.PieceType.KNIGHT));
+                    legalMoves.add(new ChessMove(position,tempPos, ChessPiece.PieceType.BISHOP));
+                    legalMoves.add(new ChessMove(position,tempPos, ChessPiece.PieceType.ROOK));
+                }
+            }
+        }
+        if (startPos.getColumn() > 1){
+            int tempR = startPos.getRow() + 1;
+            int tempC = startPos.getColumn() - 1;
+            ChessPosition tempPos = new ChessPosition(tempR, tempC);
+            if (board.getPiece(tempPos) != null && !board.getPiece(tempPos).getTeamColor().equals(board.getPiece(position).getTeamColor())) {
+                if (tempPos.getRow() != 8) {
+                    legalMoves.add(new ChessMove(position, tempPos, null));
+                }
+                else {
+                    legalMoves.add(new ChessMove(position,tempPos, ChessPiece.PieceType.QUEEN));
+                    legalMoves.add(new ChessMove(position,tempPos, ChessPiece.PieceType.KNIGHT));
+                    legalMoves.add(new ChessMove(position,tempPos, ChessPiece.PieceType.BISHOP));
+                    legalMoves.add(new ChessMove(position,tempPos, ChessPiece.PieceType.ROOK));
+                }
+            }
         }
     }
-    public void pawnMove1(String mv) {
-        if (board.getPiece(position).getTeamColor().equals(ChessGame.TeamColor.BLACK)) {
-            int tempR = position.getRow() - 1;
-            int tempC = position.getColumn();
-            ChessPosition endPos = new ChessPosition(tempR, tempC);
-            if (board.getPiece(endPos) == null) {
-                if (endPos.getRow() == 1) {
-                    pawnPromotion(endPos);
+
+    public void blackAttack(ChessPosition startPos) {
+        if (startPos.getColumn() < 8) {
+            int tempR = startPos.getRow() - 1;
+            int tempC = startPos.getColumn() + 1;
+            ChessPosition tempPos = new ChessPosition(tempR, tempC);
+            if (board.getPiece(tempPos) != null && !board.getPiece(tempPos).getTeamColor().equals(board.getPiece(position).getTeamColor())) {
+                if (tempPos.getRow() != 1) {
+                    legalMoves.add(new ChessMove(position, tempPos, null));
                 } else {
-                    legalMoves.add(new ChessMove(position, endPos, null));
+                    legalMoves.add(new ChessMove(position, tempPos, ChessPiece.PieceType.QUEEN));
+                    legalMoves.add(new ChessMove(position, tempPos, ChessPiece.PieceType.KNIGHT));
+                    legalMoves.add(new ChessMove(position, tempPos, ChessPiece.PieceType.BISHOP));
+                    legalMoves.add(new ChessMove(position, tempPos, ChessPiece.PieceType.ROOK));
                 }
-                if (position.getRow() == 7) {
-                    int tempR2 = position.getRow() - 2;
-                    int tempC2 = position.getColumn();
-                    ChessPosition endPos2 = new ChessPosition(tempR2, tempC2);
-                    if (board.getPiece(endPos2) == null) {
-                        legalMoves.add(new ChessMove(position, endPos2, null));
+            }
+        }
+        if (startPos.getColumn() > 1) {
+            int tempR = startPos.getRow() - 1;
+            int tempC = startPos.getColumn() - 1;
+            ChessPosition tempPos = new ChessPosition(tempR, tempC);
+            if (board.getPiece(tempPos) != null && !board.getPiece(tempPos).getTeamColor().equals(board.getPiece(position).getTeamColor())) {
+                if (tempPos.getRow() != 1) {
+                    legalMoves.add(new ChessMove(position, tempPos, null));
+                } else {
+                    legalMoves.add(new ChessMove(position, tempPos, ChessPiece.PieceType.QUEEN));
+                    legalMoves.add(new ChessMove(position, tempPos, ChessPiece.PieceType.KNIGHT));
+                    legalMoves.add(new ChessMove(position, tempPos, ChessPiece.PieceType.BISHOP));
+                    legalMoves.add(new ChessMove(position, tempPos, ChessPiece.PieceType.ROOK));
+                }
+            }
+        }
+    }
+
+    public void moveBackward(ChessPosition startPos) {
+        if (startPos.getRow() > 1) {
+            int tempR = startPos.getRow() - 1;
+            int tempC = startPos.getColumn();
+            ChessPosition tempPos = new ChessPosition(tempR, tempC);
+            if (board.getPiece(tempPos) == null) {
+                if (tempPos.getRow() == 1) {
+                    legalMoves.add(new ChessMove(position, tempPos, ChessPiece.PieceType.QUEEN));
+                    legalMoves.add(new ChessMove(position, tempPos, ChessPiece.PieceType.KNIGHT));
+                    legalMoves.add(new ChessMove(position, tempPos, ChessPiece.PieceType.BISHOP));
+                    legalMoves.add(new ChessMove(position, tempPos, ChessPiece.PieceType.ROOK));
+                }
+                else{
+                    legalMoves.add(new ChessMove(position, tempPos, null));
+                }
+                if (startPos.getRow() == 7) {
+                    int tempR2 = startPos.getRow() - 2;
+                    int tempC2 = startPos.getColumn();
+                    ChessPosition tempPos2 = new ChessPosition(tempR2, tempC2);
+                    if (board.getPiece(tempPos2) == null) {
+                        legalMoves.add(new ChessMove(position, tempPos2, null));
                     }
                 }
             }
-        } else {
-            int tempR = position.getRow() + 1;
-            int tempC = position.getColumn();
-            ChessPosition endPos = new ChessPosition(tempR, tempC);
-            if (board.getPiece(endPos) == null) {
-                if (endPos.getRow() == 8) {
-                    pawnPromotion(endPos);
+        }
+    }
+
+    public void moveForward(ChessPosition startPos) {
+        if (startPos.getRow() < 8) {
+            int tempR = startPos.getRow() + 1;
+            int tempC = startPos.getColumn();
+            ChessPosition tempPos = new ChessPosition(tempR, tempC);
+            if (board.getPiece(tempPos) == null) {
+                if (tempPos.getRow() == 8) {
+                    legalMoves.add(new ChessMove(position, tempPos, ChessPiece.PieceType.QUEEN));
+                    legalMoves.add(new ChessMove(position, tempPos, ChessPiece.PieceType.KNIGHT));
+                    legalMoves.add(new ChessMove(position, tempPos, ChessPiece.PieceType.BISHOP));
+                    legalMoves.add(new ChessMove(position, tempPos, ChessPiece.PieceType.ROOK));
                 } else {
-                    legalMoves.add(new ChessMove(position, endPos, null));
+                    legalMoves.add(new ChessMove(position, tempPos, null));
                 }
-                if (position.getRow() == 2) {
-                    int tempR2 = position.getRow() + 2;
-                    int tempC2 = position.getColumn();
-                    ChessPosition endPos2 = new ChessPosition(tempR2, tempC2);
-                    if (board.getPiece(endPos2) == null) {
-                        legalMoves.add(new ChessMove(position, endPos2, null));
+                if (startPos.getRow() == 2) {
+                    int tempR2 = startPos.getRow() + 2;
+                    int tempC2 = startPos.getColumn();
+                    ChessPosition tempPos2 = new ChessPosition(tempR2, tempC2);
+                    if (board.getPiece(tempPos2) == null) {
+                        legalMoves.add(new ChessMove(position, tempPos2, null));
                     }
                 }
             }
         }
     }
-
-    public void pawnAttackLeft(String mv) {
-        if (board.getPiece(position).getTeamColor().equals(ChessGame.TeamColor.BLACK) && position.getColumn() < 8) {
-            int tempR = position.getRow() - 1;
-            int tempC = position.getColumn() + 1;
-            ChessPosition endPos = new ChessPosition(tempR, tempC);
-            if (board.getPiece(endPos) != null && board.getPiece(endPos).getTeamColor() != board.getPiece(position).getTeamColor()) {
-                if (endPos.getRow() == 1) {
-                    pawnPromotion(endPos);
-                }
-                else {
-                    legalMoves.add(new ChessMove(position, endPos, null));
-                }
-            }
-        } else if (position.getColumn() > 1) { //White atckl
-            int tempR = position.getRow() + 1;
-            int tempC = position.getColumn() - 1;
-            ChessPosition endPos = new ChessPosition(tempR, tempC);
-            if (board.getPiece(endPos) != null && board.getPiece(endPos).getTeamColor() != board.getPiece(position).getTeamColor()) {
-                if (endPos.getRow() == 8) {
-                    pawnPromotion(endPos);
-                }
-                else {
-                    legalMoves.add(new ChessMove(position, endPos, null));
-                }
-            }
-        }
-    }
-
-    public void pawnAttackRight(String mv){
-        if (board.getPiece(position).getTeamColor().equals(ChessGame.TeamColor.BLACK) && position.getColumn() > 1) {//Black atckr
-            int tempR = position.getRow() - 1;
-            int tempC = position.getColumn() - 1;
-            ChessPosition endPos = new ChessPosition(tempR, tempC);
-            if (board.getPiece(endPos) != null && board.getPiece(endPos).getTeamColor() != board.getPiece(position).getTeamColor()) {
-                if (endPos.getRow() == 1) {
-                    pawnPromotion(endPos);
-                }
-                else {
-                    legalMoves.add(new ChessMove(position, endPos, null));
-                }
-            }
-        } else if (position.getColumn() < 8) {
-            int tempR = position.getRow() + 1;
-            int tempC = position.getColumn() + 1;
-            ChessPosition endPos = new ChessPosition(tempR, tempC);
-            if (board.getPiece(endPos) != null && board.getPiece(endPos).getTeamColor() != board.getPiece(position).getTeamColor()) {
-                if (endPos.getRow() == 8) {
-                    pawnPromotion(endPos);
-                }
-                else {
-                    legalMoves.add(new ChessMove(position, endPos, null));
-                }
-            }
-        }
-    }
-
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        PawnsMoveCalculator that = (PawnsMoveCalculator) o;
-        return Objects.equals(board, that.board) && Objects.equals(position, that.position) && Objects.deepEquals(pawnMoves, that.pawnMoves) && Objects.deepEquals(pawnPromote, that.pawnPromote) && Objects.equals(legalMoves, that.legalMoves);
+        PawnsMoveCalculator pawnCalc = (PawnsMoveCalculator) o;
+        return Objects.equals(board, pawnCalc.board) && Objects.equals(position, pawnCalc.position) && Objects.equals(legalMoves, pawnCalc.legalMoves);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(board, position, Arrays.hashCode(pawnMoves), Arrays.hashCode(pawnPromote), legalMoves);
+        return Objects.hash(board, position, legalMoves);
     }
 }
+
