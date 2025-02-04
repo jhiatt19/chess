@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -11,8 +12,8 @@ import java.util.Collection;
 public class ChessGame {
     private ChessGame.TeamColor color;
     private ChessBoard board;
-    private boolean whiteInCheck = false;
-    private boolean blackInCehck = false;
+    private static boolean whiteInCheck = false;
+    private static boolean blackInCheck = false;
     public ChessGame() {
         color = TeamColor.WHITE;
     }
@@ -62,7 +63,7 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> allMoves = new InCheckChecker(color,board).find(color);
     }
 
     /**
@@ -72,23 +73,26 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        if (teamColor.equals(TeamColor.WHITE)){
-            if (whiteInCheck){
+        if (teamColor.equals(TeamColor.WHITE)) {
+            if (whiteInCheck) {
                 return true;
             }
-            else {
+        }
+        else if (teamColor.equals(TeamColor.BLACK)){
+            if (blackInCheck){
+                return true;
+            }
 
             }
-        }
-        return true;
+        return false;
     }
 
-    public boolean putInCheck(TeamColor teamColor){
+    public static boolean putInCheck(TeamColor teamColor){
         if (teamColor.equals(TeamColor.WHITE)){
             return whiteInCheck = true;
         }
         else {
-            return blackInCehck = true;
+            return blackInCheck = true;
         }
     }
 
@@ -100,7 +104,7 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         if(isInCheck(teamColor)) {
-            Collection<ChessMove> kingMoves = validMoves(find());
+            Collection<ChessMove> kingMoves = validMoves(findKing());
             kingMoves.removeIf(move -> isInCheck(teamColor));
             return kingMoves.isEmpty();
         }
@@ -116,7 +120,7 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
         if (!isInCheck(teamColor)) {
-            Collection<ChessMove> kingMoves = validMoves(find());
+            Collection<ChessMove> kingMoves = validMoves(findKing());
             kingMoves.removeIf(move -> isInCheck(teamColor));
             return kingMoves.isEmpty();
         }
@@ -142,7 +146,8 @@ public class ChessGame {
         return board;
     }
 
-    public ChessPosition find(){
+    public ChessPosition findKing(){
         return board.findKing(getTeamTurn());
     }
+
 }
