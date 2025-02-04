@@ -14,8 +14,11 @@ import java.util.Objects;
 public class ChessGame {
     private ChessGame.TeamColor color;
     private ChessBoard board;
+    private ArrayList<ChessMove> empty = new ArrayList<>();
     public ChessGame() {
-        color = TeamColor.WHITE;
+        this.color = TeamColor.WHITE;
+        this.board = new ChessBoard();
+        board.resetBoard();
     }
 
     /**
@@ -51,18 +54,22 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        if (board.getPiece(startPosition) == null){
-            return null;
-        }
-        Collection<ChessMove> allMoves = new ArrayList<>();
-        allMoves.addAll(new ChessPiece(getTeamTurn(),board.getPiece(startPosition).getPieceType()).pieceMoves(board,startPosition));
+        System.out.println("Inside validMoves");
+        if (board.getPiece(startPosition) != null) {
+            System.out.println("There is a piece at this position");
+            Collection<ChessMove> allMoves = new ArrayList<>();
+            allMoves.addAll(new ChessPiece(getTeamTurn(), board.getPiece(startPosition).getPieceType()).pieceMoves(board, startPosition));
+            System.out.println(allMoves.size());
         /*List<ChessPosition> endpos = new ArrayList<>(allMoves.stream().map(ChessMove::getEndPosition).toList());
         var illegalMoves = potentialMoves();
         //System.out.println(illegalMoves);
         endpos.removeIf(illegalMoves::contains);
         Collection<ChessMove> filteredMoves = allMoves.stream().filter(move->!endpos.contains(move.getEndPosition())).toList();
         System.out.println(filteredMoves);*/
-        return allMoves;
+            return allMoves;
+        }
+        System.out.println("No piece at this position");
+        return empty;
     }
 
     /**
@@ -133,7 +140,7 @@ public class ChessGame {
      *
      * @return the chessboard
      */
-    public ChessBoard getBoard() {
+    public ChessBoard getBoard(){
         return board;
     }
 
