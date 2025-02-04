@@ -21,4 +21,5 @@ public class InCheckChecker {
         }
         return allMoves;
     }
+
 }

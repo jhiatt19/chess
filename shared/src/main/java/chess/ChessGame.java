@@ -51,8 +51,12 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        Collection<ChessMove> allMoves = new ChessPiece(getTeamTurn(),board.getPiece(startPosition).getPieceType()).pieceMoves(board,startPosition);
-        allMoves.removeIf(move -> isInCheck(getTeamTurn()));
+        if (startPosition == null){
+            return null;
+        }
+        Collection<ChessMove> allMoves = new ArrayList<>(new ChessPiece(getTeamTurn(),board.getPiece(startPosition).getPieceType()).pieceMoves(board,startPosition));
+        var illegalMoves = potentialMoves();
+        allMoves.removeIf(illegalMoves::contains);
         return allMoves;
     }
 
@@ -73,17 +77,10 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        if (teamColor.equals(TeamColor.WHITE)) {
-            if (whiteInCheck) {
-                return true;
-            }
+        var inCheck = potentialMoves();
+        if (inCheck.contains(findKing())){
+            return true;
         }
-        else if (teamColor.equals(TeamColor.BLACK)){
-            if (blackInCheck){
-                return true;
-            }
-
-            }
         return false;
     }
 
@@ -96,7 +93,6 @@ public class ChessGame {
     public boolean isInCheckmate(TeamColor teamColor) {
         if(isInCheck(teamColor)) {
             Collection<ChessMove> kingMoves = validMoves(findKing());
-            kingMoves.removeIf(move -> isInCheck(teamColor));
             return kingMoves.isEmpty();
         }
         return false;
@@ -112,7 +108,6 @@ public class ChessGame {
     public boolean isInStalemate(TeamColor teamColor) {
         if (!isInCheck(teamColor)) {
             Collection<ChessMove> kingMoves = validMoves(findKing());
-            kingMoves.removeIf(move -> isInCheck(teamColor));
             return kingMoves.isEmpty();
         }
         return false;
@@ -141,7 +136,7 @@ public class ChessGame {
         return board.findKing(getTeamTurn());
     }
 
-    public InCheckChecker potentialMoves(){
-        return new InCheckChecker(board,board.find(color),getTeamTurn());
+    public ArrayList<Collection<ChessMove>> potentialMoves(){
+        return new InCheckChecker(board,board.find(color),getTeamTurn()).find();
     }
 }
