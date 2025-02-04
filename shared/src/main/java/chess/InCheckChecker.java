@@ -15,9 +15,11 @@ public class InCheckChecker {
     }
 
     public List<ChessPosition> find() {
+        System.out.println("Number of opponent pieces: " +opponentPieces.size());
         for (ChessPosition pos : opponentPieces){
             allMoves.addAll(new ChessPiece(color, board.getPiece(pos).getPieceType()).pieceMoves(board,pos));
         }
+        System.out.println("Opponent moves: "+ allMoves);
         List<ChessPosition> endPositions = allMoves.stream().map(ChessMove::getEndPosition).toList();
         return endPositions;
     }

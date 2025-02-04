@@ -14,7 +14,7 @@ import java.util.Objects;
 public class ChessGame {
     private ChessGame.TeamColor color;
     private ChessBoard board;
-    //private ArrayList<ChessMove> empty = new ArrayList<>();
+    private ArrayList<ChessMove> empty = new ArrayList<>();
     public ChessGame() {
         this.color = TeamColor.WHITE;
         this.board = new ChessBoard();
@@ -54,22 +54,35 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+        ChessBoard tempBoard = new ChessBoard(board);
+        ArrayList<ChessMove> goodMoves = new ArrayList<>();
         System.out.println("Inside validMoves");
         if (board.getPiece(startPosition) != null) {
             System.out.println(board.getPiece(startPosition).toString());
             Collection<ChessMove> allMoves = new ArrayList<>();
             allMoves.addAll(new ChessPiece(getTeamTurn(), board.getPiece(startPosition).getPieceType()).pieceMoves(board, startPosition));
-            //System.out.println(allMoves.size());
-            List<ChessPosition> endpos = new ArrayList<>(allMoves.stream().map(ChessMove::getEndPosition).toList());
-            var illegalMoves = potentialMoves();
-        //System.out.println(illegalMoves);
-            endpos.removeIf(illegalMoves::contains);
-            Collection<ChessMove> filteredMoves = allMoves.stream().filter(move->!endpos.contains(move.getEndPosition())).toList();
-            System.out.println(filteredMoves);
-            return filteredMoves;
+            System.out.println(allMoves.size());
+            for (ChessMove move : allMoves) {
+                testMove(move);
+                if (!isInCheck(getTeamTurn())) {
+                    goodMoves.add(move);
+                }
+                setBoard(tempBoard);
+
+                //System.out.println(allMoves.size());
+//                List<ChessPosition> endpos = new ArrayList<>(allMoves.stream().map(ChessMove::getEndPosition).toList());
+//                System.out.println("Endpos list:" + endpos);
+//                var illegalMoves = potentialMoves();
+//                //System.out.println(illegalMoves);
+//                List<ChessPosition> removedBadMoves = endpos.stream().filter(move -> !illegalMoves.contains(move)).toList();
+//                System.out.println("filtered 1 list: " + removedBadMoves);
+            }
+            //Collection<ChessMove> filteredMoves = allMoves.stream().filter(move->!endpos.contains(move.getEndPosition())).toList();
+            System.out.println(goodMoves.size());
+            return goodMoves;
         }
         System.out.println("No piece at this position");
-        return null;
+        return empty;
     }
 
     /**
@@ -79,9 +92,17 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        //Collection<ChessMove> allMoves = new InCheckChecker(board).find(color);
-    }
 
+    }
+    public void testMove(ChessMove move){
+        var start = move.getStartPosition();
+        var end = move.getEndPosition();
+        if (board.getPiece(end) != null){
+            board.removePiece(end);
+        }
+        board.movePiece(board.getPiece(start),end);
+        board.removePiece(start);
+    }
     /**
      * Determines if the given team is in check
      *
@@ -90,10 +111,7 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         var inCheck = potentialMoves();
-        if (inCheck.contains(findKing())){
-            return true;
-        }
-        return false;
+        return inCheck.contains(board.findKing(teamColor));
     }
 
     /**

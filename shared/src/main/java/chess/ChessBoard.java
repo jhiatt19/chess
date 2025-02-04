@@ -16,7 +16,9 @@ public class ChessBoard {
     public ChessBoard() {
         
     }
-
+    public ChessBoard(ChessBoard board){
+        this.squares = board.squares;
+    }
     /**
      * Adds a chess piece to the chessboard
      *
@@ -36,6 +38,14 @@ public class ChessBoard {
      */
     public ChessPiece getPiece(ChessPosition position) {
         return squares[position.getRow()][position.getColumn()];
+    }
+
+    public void removePiece(ChessPosition position){
+        squares[position.getRow()][position.getColumn()] = null;
+    }
+
+    public void movePiece(ChessPiece piece, ChessPosition end){
+        squares[end.getRow()][end.getColumn()] = piece;
     }
 
     /**
@@ -84,9 +94,11 @@ public class ChessBoard {
     public ChessPosition findKing(ChessGame.TeamColor color) {
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; ++j) {
-                if (squares[i][j].getTeamColor().equals(color)) {
-                    if (squares[i][j].getPieceType().equals(ChessPiece.PieceType.KING)) {
-                        return new ChessPosition(i, j);
+                if (squares[i][j] != null) {
+                    if (squares[i][j].getTeamColor().equals(color)) {
+                        if (squares[i][j].getPieceType().equals(ChessPiece.PieceType.KING)) {
+                            return new ChessPosition(i, j);
+                        }
                     }
                 }
             }
