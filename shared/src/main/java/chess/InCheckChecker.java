@@ -1,9 +1,6 @@
 package chess;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class InCheckChecker {
@@ -25,4 +22,17 @@ public class InCheckChecker {
         return endPositions;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        InCheckChecker that = (InCheckChecker) o;
+        return Objects.equals(board, that.board) && Objects.equals(opponentPieces, that.opponentPieces) && Objects.equals(allMoves, that.allMoves) && color == that.color;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(board, opponentPieces, allMoves, color);
+    }
 }

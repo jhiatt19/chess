@@ -56,13 +56,13 @@ public class ChessGame {
         }
         Collection<ChessMove> allMoves = new ArrayList<>();
         allMoves.addAll(new ChessPiece(getTeamTurn(),board.getPiece(startPosition).getPieceType()).pieceMoves(board,startPosition));
-        List<ChessPosition> endpos = new ArrayList<>(allMoves.stream().map(ChessMove::getEndPosition).toList());
+        /*List<ChessPosition> endpos = new ArrayList<>(allMoves.stream().map(ChessMove::getEndPosition).toList());
         var illegalMoves = potentialMoves();
         //System.out.println(illegalMoves);
         endpos.removeIf(illegalMoves::contains);
         Collection<ChessMove> filteredMoves = allMoves.stream().filter(move->!endpos.contains(move.getEndPosition())).toList();
-        System.out.println(filteredMoves);
-        return filteredMoves;
+        System.out.println(filteredMoves);*/
+        return allMoves;
     }
 
     /**
