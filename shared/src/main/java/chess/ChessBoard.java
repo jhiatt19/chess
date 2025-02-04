@@ -94,6 +94,20 @@ public class ChessBoard {
         return null;
     }
 
+    public ArrayList<ChessPosition> find(ChessGame.TeamColor color) {
+        var allPieceMoves = new ArrayList<ChessPosition>();
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; ++j) {
+                if (squares[i][j].getTeamColor().equals(color)) {
+                    var type = new ChessPosition(i, j);
+                    allPieceMoves.add(type);
+                }
+
+            }
+        }
+        return allPieceMoves;
+    }
+
 
     @Override
     public boolean equals(Object o) {

@@ -63,7 +63,7 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        Collection<ChessMove> allMoves = new InCheckChecker(color,board).find(color);
+        //Collection<ChessMove> allMoves = new InCheckChecker(board).find(color);
     }
 
     /**
@@ -85,15 +85,6 @@ public class ChessGame {
 
             }
         return false;
-    }
-
-    public static boolean putInCheck(TeamColor teamColor){
-        if (teamColor.equals(TeamColor.WHITE)){
-            return whiteInCheck = true;
-        }
-        else {
-            return blackInCheck = true;
-        }
     }
 
     /**
@@ -150,4 +141,7 @@ public class ChessGame {
         return board.findKing(getTeamTurn());
     }
 
+    public InCheckChecker potentialMoves(){
+        return new InCheckChecker(board,board.find(color),getTeamTurn());
+    }
 }
