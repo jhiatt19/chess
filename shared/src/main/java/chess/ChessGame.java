@@ -2,6 +2,8 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -12,8 +14,6 @@ import java.util.Collection;
 public class ChessGame {
     private ChessGame.TeamColor color;
     private ChessBoard board;
-    private static boolean whiteInCheck = false;
-    private static boolean blackInCheck = false;
     public ChessGame() {
         color = TeamColor.WHITE;
     }
@@ -51,13 +51,18 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        if (startPosition == null){
+        if (board.getPiece(startPosition) == null){
             return null;
         }
-        Collection<ChessMove> allMoves = new ArrayList<>(new ChessPiece(getTeamTurn(),board.getPiece(startPosition).getPieceType()).pieceMoves(board,startPosition));
+        Collection<ChessMove> allMoves = new ArrayList<>();
+        allMoves.addAll(new ChessPiece(getTeamTurn(),board.getPiece(startPosition).getPieceType()).pieceMoves(board,startPosition));
+        List<ChessPosition> endpos = new ArrayList<>(allMoves.stream().map(ChessMove::getEndPosition).toList());
         var illegalMoves = potentialMoves();
-        allMoves.removeIf(illegalMoves::contains);
-        return allMoves;
+        //System.out.println(illegalMoves);
+        endpos.removeIf(illegalMoves::contains);
+        Collection<ChessMove> filteredMoves = allMoves.stream().filter(move->!endpos.contains(move.getEndPosition())).toList();
+        System.out.println(filteredMoves);
+        return filteredMoves;
     }
 
     /**
@@ -92,8 +97,8 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         if(isInCheck(teamColor)) {
-            Collection<ChessMove> kingMoves = validMoves(findKing());
-            return kingMoves.isEmpty();
+            //Collection<ChessMove> kingMoves = validMoves(findKing());
+            //return kingMoves.isEmpty();
         }
         return false;
     }
@@ -107,8 +112,8 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
         if (!isInCheck(teamColor)) {
-            Collection<ChessMove> kingMoves = validMoves(findKing());
-            return kingMoves.isEmpty();
+            //Collection<ChessMove> kingMoves = validMoves(findKing());
+            //return kingMoves.isEmpty();
         }
         return false;
     }
@@ -136,7 +141,22 @@ public class ChessGame {
         return board.findKing(getTeamTurn());
     }
 
-    public ArrayList<Collection<ChessMove>> potentialMoves(){
+    public List<ChessPosition> potentialMoves(){
         return new InCheckChecker(board,board.find(color),getTeamTurn()).find();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessGame chessGame = (ChessGame) o;
+        return color == chessGame.color && Objects.equals(board, chessGame.board);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(color, board);
+    }
+
 }

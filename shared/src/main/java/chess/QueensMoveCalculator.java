@@ -28,7 +28,7 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
 
     public ChessPosition verticalUp(ChessPosition startPos){
         if (startPos.getRow() >= 8){
-            System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
+//            System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
             return startPos;
         }
         int tempR = startPos.getRow() + 1;
@@ -36,13 +36,13 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
         ChessPosition newPos = new ChessPosition(tempR,tempC);
         if (board.getPiece(newPos) == null){
             legalMoves.add(new ChessMove(position,newPos,null));
-            System.out.println(newPos.getRow() + " " + newPos.getColumn());
+   //         System.out.println(newPos.getRow() + " " + newPos.getColumn());
             return  verticalUp(newPos);
         }
         else if (board.getPiece(newPos) != null){
             if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
                 legalMoves.add(new ChessMove(position, newPos, null));
-                System.out.println("DURx " + newPos.getRow() + " " + newPos.getColumn());
+                //System.out.println("DURx " + newPos.getRow() + " " + newPos.getColumn());
             }
         }
         return newPos;
@@ -50,7 +50,7 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
 
     public ChessPosition verticalDown(ChessPosition startPos){
         if (startPos.getRow() <= 1){
-            System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
+            //System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
             return startPos;
         }
         int tempR = startPos.getRow() - 1;
@@ -58,13 +58,13 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
         ChessPosition newPos = new ChessPosition(tempR,tempC);
         if (board.getPiece(newPos) == null){
             legalMoves.add(new ChessMove(position,newPos,null));
-            System.out.println(newPos.getRow() + " " + newPos.getColumn());
+           // System.out.println(newPos.getRow() + " " + newPos.getColumn());
             return verticalDown(newPos);
         }
         else if (board.getPiece(newPos) != null){
             if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
                 legalMoves.add(new ChessMove(position, newPos, null));
-                System.out.println("DURx " + newPos.getRow() + " " + newPos.getColumn());
+             //   System.out.println("DURx " + newPos.getRow() + " " + newPos.getColumn());
             }
         }
         return newPos;
@@ -72,7 +72,7 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
 
     public ChessPosition horizontalRight(ChessPosition startPos){
         if (startPos.getColumn() >= 8){
-            System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
+          //  System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
             return startPos;
         }
         int tempR = startPos.getRow();
@@ -80,13 +80,13 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
         ChessPosition newPos = new ChessPosition(tempR,tempC);
         if (board.getPiece(newPos) == null){
             legalMoves.add(new ChessMove(position,newPos,null));
-            System.out.println(newPos.getRow() + " " + newPos.getColumn());
+          //  System.out.println(newPos.getRow() + " " + newPos.getColumn());
             return horizontalRight(newPos);
         }
         else if (board.getPiece(newPos) != null){
             if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
                 legalMoves.add(new ChessMove(position, newPos, null));
-                System.out.println("DURx " + newPos.getRow() + " " + newPos.getColumn());
+           //     System.out.println("DURx " + newPos.getRow() + " " + newPos.getColumn());
             }
         }
         return newPos;
@@ -94,7 +94,7 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
 
     public ChessPosition horizontalLeft(ChessPosition startPos){
         if (startPos.getColumn() <= 1){
-            System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
+           // System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
             return startPos;
         }
         int tempR = startPos.getRow();
@@ -102,13 +102,13 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
         ChessPosition newPos = new ChessPosition(tempR,tempC);
         if (board.getPiece(newPos) == null){
             legalMoves.add(new ChessMove(position,newPos,null));
-            System.out.println(newPos.getRow() + " " + newPos.getColumn());
+           // System.out.println(newPos.getRow() + " " + newPos.getColumn());
             return horizontalLeft(newPos);
         }
         else if (board.getPiece(newPos) != null){
             if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
                 legalMoves.add(new ChessMove(position, newPos, null));
-                System.out.println("DURx " + newPos.getRow() + " " + newPos.getColumn());
+             //   System.out.println("DURx " + newPos.getRow() + " " + newPos.getColumn());
             }
         }
         return newPos;
@@ -116,7 +116,7 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
 
     public ChessPosition diagonalUpRight(ChessPosition startPos){
         if (startPos.getRow() >= 8 || startPos.getColumn() >= 8){
-            System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
+           // System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
             return startPos;
         }
         int tempR = startPos.getRow() + 1;
@@ -124,20 +124,20 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
         ChessPosition newPos = new ChessPosition(tempR,tempC);
         if (board.getPiece(newPos) == null){
             legalMoves.add(new ChessMove(position,newPos,null));
-            System.out.println(newPos.getRow() + " " + newPos.getColumn());
+           // System.out.println(newPos.getRow() + " " + newPos.getColumn());
             return diagonalUpRight(newPos);
         }
         else if (board.getPiece(newPos) != null){
             if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
                 legalMoves.add(new ChessMove(position, newPos, null));
-                System.out.println("DURx " + newPos.getRow() + " " + newPos.getColumn());
+            //    System.out.println("DURx " + newPos.getRow() + " " + newPos.getColumn());
             }
         }
         return newPos;
     }
     public ChessPosition diagonalUpLeft(ChessPosition startPos){
         if (startPos.getRow() >= 8 || startPos.getColumn() <= 1){
-            System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
+           // System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
             return startPos;
         }
         int tempR = startPos.getRow() + 1;
@@ -145,13 +145,13 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
         ChessPosition newPos = new ChessPosition(tempR,tempC);
         if (board.getPiece(newPos) == null){
             legalMoves.add(new ChessMove(position,newPos,null));
-            System.out.println(newPos.getRow() + " " + newPos.getColumn());
+           // System.out.println(newPos.getRow() + " " + newPos.getColumn());
             return diagonalUpLeft(newPos);
         }
         else if (board.getPiece(newPos) != null){
             if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
                 legalMoves.add(new ChessMove(position, newPos, null));
-                System.out.println("DULx " + newPos.getRow() + " " + newPos.getColumn());
+             //   System.out.println("DULx " + newPos.getRow() + " " + newPos.getColumn());
             }
         }
         return newPos;
@@ -159,7 +159,7 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
 
     public ChessPosition diagonalDownRight(ChessPosition startPos){
         if (startPos.getRow() <= 1 || startPos.getColumn() >= 8){
-            System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
+          //  System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
             return startPos;
         }
         int tempR = startPos.getRow() - 1;
@@ -167,13 +167,13 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
         ChessPosition newPos = new ChessPosition(tempR,tempC);
         if (board.getPiece(newPos) == null){
             legalMoves.add(new ChessMove(position,newPos,null));
-            System.out.println(newPos.getRow() + " " + newPos.getColumn());
+          //  System.out.println(newPos.getRow() + " " + newPos.getColumn());
             return diagonalDownRight(newPos);
         }
         else if (board.getPiece(newPos) != null){
             if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
                 legalMoves.add(new ChessMove(position, newPos, null));
-                System.out.println("DDRx " + newPos.getRow() + " " + newPos.getColumn());
+             //   System.out.println("DDRx " + newPos.getRow() + " " + newPos.getColumn());
             }
         }
         return newPos;
@@ -181,7 +181,7 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
 
     public ChessPosition diagonalDownLeft(ChessPosition startPos){
         if (startPos.getRow() <= 1 || startPos.getColumn() <= 1){
-            System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
+           // System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
             return startPos;
         }
         int tempR = startPos.getRow() - 1;
@@ -189,13 +189,13 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
         ChessPosition newPos = new ChessPosition(tempR,tempC);
         if (board.getPiece(newPos) == null){
             legalMoves.add(new ChessMove(position,newPos,null));
-            System.out.println(newPos.getRow() + " " + newPos.getColumn());
+           // System.out.println(newPos.getRow() + " " + newPos.getColumn());
             return diagonalDownLeft(newPos);
         }
         else if (board.getPiece(newPos) != null){
             if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
                 legalMoves.add(new ChessMove(position, newPos, null));
-                System.out.println("DDLx " + newPos.getRow() + " " + newPos.getColumn());
+              //  System.out.println("DDLx " + newPos.getRow() + " " + newPos.getColumn());
             }
         }
         return newPos;
