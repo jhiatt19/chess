@@ -14,7 +14,7 @@ import java.util.Objects;
 public class ChessGame {
     private ChessGame.TeamColor color;
     private ChessBoard board;
-    private ArrayList<ChessMove> empty = new ArrayList<>();
+    //private ArrayList<ChessMove> empty = new ArrayList<>();
     public ChessGame() {
         this.color = TeamColor.WHITE;
         this.board = new ChessBoard();
@@ -56,20 +56,20 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         System.out.println("Inside validMoves");
         if (board.getPiece(startPosition) != null) {
-            System.out.println("There is a piece at this position");
+            System.out.println(board.getPiece(startPosition).toString());
             Collection<ChessMove> allMoves = new ArrayList<>();
             allMoves.addAll(new ChessPiece(getTeamTurn(), board.getPiece(startPosition).getPieceType()).pieceMoves(board, startPosition));
-            System.out.println(allMoves.size());
-        /*List<ChessPosition> endpos = new ArrayList<>(allMoves.stream().map(ChessMove::getEndPosition).toList());
-        var illegalMoves = potentialMoves();
+            //System.out.println(allMoves.size());
+            List<ChessPosition> endpos = new ArrayList<>(allMoves.stream().map(ChessMove::getEndPosition).toList());
+            var illegalMoves = potentialMoves();
         //System.out.println(illegalMoves);
-        endpos.removeIf(illegalMoves::contains);
-        Collection<ChessMove> filteredMoves = allMoves.stream().filter(move->!endpos.contains(move.getEndPosition())).toList();
-        System.out.println(filteredMoves);*/
-            return allMoves;
+            endpos.removeIf(illegalMoves::contains);
+            Collection<ChessMove> filteredMoves = allMoves.stream().filter(move->!endpos.contains(move.getEndPosition())).toList();
+            System.out.println(filteredMoves);
+            return filteredMoves;
         }
         System.out.println("No piece at this position");
-        return empty;
+        return null;
     }
 
     /**
@@ -131,7 +131,6 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        board.resetBoard();
         this.board = board;
     }
 
