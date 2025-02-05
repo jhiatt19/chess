@@ -164,7 +164,16 @@ public class ChessGame {
             var allPieceMoves = findAll(teamColor);
             for (ChessPosition move : allPieceMoves){
                 moveHolder.addAll(validMoves(move));
-            }
+                }
+            moveHolder.removeIf(makeMoove -> {
+                try {
+                    makeMove(makeMoove);
+                    return false;
+                }
+                catch (InvalidMoveException err) {
+                    return true;
+                }
+            });
             return moveHolder.isEmpty();
         }
         return false;
