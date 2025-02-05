@@ -2,7 +2,6 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -12,13 +11,26 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    private ChessPiece[][] squares = new ChessPiece[9][9];
+    private ChessPiece[][] squares;
     public ChessBoard() {
+        squares = new ChessPiece[9][9];
         
     }
     public ChessBoard(ChessBoard board){
-        this.squares = board.squares;
+        squares = new ChessPiece[9][9];
+        for (int i = 1; i <= 8; i++){
+            for (int j = 1; j <= 8; j++){
+                ChessPosition pos = new ChessPosition(i,j);
+                if (board.getPiece(pos) != null) {
+                    squares[i][j] = copyPiece(new ChessPiece(board.getPiece(pos).getTeamColor(),board.getPiece(pos).getPieceType()));
+                }
+                else {
+                    squares[i][j] = null;
+                }
+            }
+        }
     }
+
     /**
      * Adds a chess piece to the chessboard
      *
@@ -29,6 +41,9 @@ public class ChessBoard {
         squares[position.getRow()][position.getColumn()] = piece;
     }
 
+    public ChessPiece copyPiece(ChessPiece piece){
+        return piece;
+    }
     /**
      * Gets a chess piece on the chessboard
      *
@@ -111,7 +126,7 @@ public class ChessBoard {
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; ++j) {
                 if (squares[i][j] != null) {
-                    if (!squares[i][j].getTeamColor().equals(color)) {
+                    if (squares[i][j].getTeamColor().equals(color)) {
                         var type = new ChessPosition(i, j);
                         allPieceMoves.add(type);
                     }

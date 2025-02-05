@@ -54,17 +54,18 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        ChessBoard tempBoard = new ChessBoard(board);
         ArrayList<ChessMove> goodMoves = new ArrayList<>();
         System.out.println("Inside validMoves");
-        if (board.getPiece(startPosition) != null) {
+         var teamColor = board.getPiece(startPosition).getTeamColor();
+        if (teamColor != null) {
             System.out.println(board.getPiece(startPosition).toString());
             Collection<ChessMove> allMoves = new ArrayList<>();
-            allMoves.addAll(new ChessPiece(getTeamTurn(), board.getPiece(startPosition).getPieceType()).pieceMoves(board, startPosition));
+            allMoves.addAll(new ChessPiece(teamColor, board.getPiece(startPosition).getPieceType()).pieceMoves(board, startPosition));
             System.out.println(allMoves.size());
             for (ChessMove move : allMoves) {
+                ChessBoard tempBoard = new ChessBoard(board);
                 testMove(move);
-                if (!isInCheck(getTeamTurn())) {
+                if (!isInCheck(teamColor)) {
                     goodMoves.add(move);
                 }
                 setBoard(tempBoard);
@@ -78,11 +79,11 @@ public class ChessGame {
 //                System.out.println("filtered 1 list: " + removedBadMoves);
             }
             //Collection<ChessMove> filteredMoves = allMoves.stream().filter(move->!endpos.contains(move.getEndPosition())).toList();
-            System.out.println(goodMoves.size());
+            System.out.println("Number of moves: " + goodMoves.size());
             return goodMoves;
         }
         System.out.println("No piece at this position");
-        return empty;
+        return goodMoves;
     }
 
     /**
@@ -110,8 +111,14 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        var inCheck = potentialMoves();
-        return inCheck.contains(board.findKing(teamColor));
+        if (teamColor.equals(TeamColor.BLACK)){
+            var inCheck = potentialMoves(TeamColor.WHITE);
+            return inCheck.contains(board.findKing(teamColor));
+        }
+        else {
+            var inCheck = potentialMoves(TeamColor.BLACK);
+            return inCheck.contains(board.findKing(teamColor));
+        }
     }
 
     /**
@@ -161,12 +168,12 @@ public class ChessGame {
         return board;
     }
 
-    public ChessPosition findKing(){
-        return board.findKing(getTeamTurn());
+    public ChessPosition findKing(TeamColor teamColor){
+        return board.findKing(teamColor);
     }
 
-    public List<ChessPosition> potentialMoves(){
-        return new InCheckChecker(board,board.find(color),getTeamTurn()).find();
+    public List<ChessPosition> potentialMoves(TeamColor teamColor){
+        return new InCheckChecker(board,board.find(teamColor),teamColor).find();
     }
 
     @Override
