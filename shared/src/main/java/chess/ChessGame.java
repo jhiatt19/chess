@@ -161,8 +161,11 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         if(isInCheck(teamColor)) {
-            var kingMoves = validMoves(findKing(teamColor));
-            return kingMoves.isEmpty();
+            var allPieceMoves = findAll(teamColor);
+            for (ChessPosition move : allPieceMoves){
+                moveHolder = validMoves(move);
+            }
+            return moveHolder.isEmpty();
         }
         return false;
     }
@@ -176,8 +179,11 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
         if (!isInCheck(teamColor)) {
-            var kingMoves = validMoves(findKing(teamColor));
-            return kingMoves.isEmpty();
+            var allPieceMoves = findAll(teamColor);
+            for (ChessPosition move : allPieceMoves) {
+                moveHolder = validMoves(move);
+            }
+            return moveHolder.isEmpty();
         }
         return false;
     }
@@ -202,6 +208,10 @@ public class ChessGame {
 
     public ChessPosition findKing(TeamColor teamColor){
         return board.findKing(teamColor);
+    }
+
+    public ArrayList<ChessPosition> findAll(TeamColor teamColor){
+        return board.find(teamColor);
     }
 
     public List<ChessPosition> potentialMoves(TeamColor teamColor){

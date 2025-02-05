@@ -15,12 +15,12 @@ public class InCheckChecker {
     }
 
     public List<ChessPosition> find() {
-        System.out.println("Number of opponent pieces: " +opponentPieces.size());
+        //System.out.println("Number of opponent pieces: " +opponentPieces.size());
         for (ChessPosition pos : opponentPieces){
-            System.out.println(board.getPiece(pos).getTeamColor()+ " " + board.getPiece(pos).getPieceType());
+            //System.out.println(board.getPiece(pos).getTeamColor()+ " " + board.getPiece(pos).getPieceType());
             allMoves.addAll(new ChessPiece(board.getPiece(pos).getTeamColor(), board.getPiece(pos).getPieceType()).pieceMoves(board,pos));
         }
-        System.out.println("Opponent moves: "+ allMoves);
+        //System.out.println("Opponent moves: "+ allMoves);
         List<ChessPosition> endPositions = allMoves.stream().map(ChessMove::getEndPosition).toList();
         return endPositions;
     }
