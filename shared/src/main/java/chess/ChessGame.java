@@ -163,7 +163,7 @@ public class ChessGame {
         if(isInCheck(teamColor)) {
             var allPieceMoves = findAll(teamColor);
             for (ChessPosition move : allPieceMoves){
-                moveHolder = validMoves(move);
+                moveHolder.addAll(validMoves(move));
             }
             return moveHolder.isEmpty();
         }
@@ -181,8 +181,9 @@ public class ChessGame {
         if (!isInCheck(teamColor)) {
             var allPieceMoves = findAll(teamColor);
             for (ChessPosition move : allPieceMoves) {
-                moveHolder = validMoves(move);
+                moveHolder.addAll(validMoves(move));
             }
+            System.out.println(moveHolder.size());
             return moveHolder.isEmpty();
         }
         return false;
