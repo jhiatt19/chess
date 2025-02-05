@@ -15,10 +15,7 @@ public class ChessGame {
     private ChessGame.TeamColor color;
     private ChessBoard board;
     private Collection<ChessMove> moveHolder = new ArrayList<>();
-    private boolean whiteKingSideCastle = true;
-    private boolean whiteQueenSideCastle = true;
-    private boolean blackKingSideCastle = true;
-    private boolean blackQueenSideCastle = true;
+
     public ChessGame() {
         this.color = TeamColor.WHITE;
         this.board = new ChessBoard();
@@ -72,36 +69,7 @@ public class ChessGame {
                 setBoard(tempBoard);
             }
         }
-        if (teamColor.equals(TeamColor.WHITE)) {
-            if (whiteKingSideCastle) {
-                ChessPosition kingSideBishop = new ChessPosition(1, 6);
-                ChessPosition kingSideKnight = new ChessPosition(1, 7);
-                ChessPosition Queen = new ChessPosition(1, 4);
-                ChessPosition QueenSideBishop = new ChessPosition(1, 3);
-                ChessPosition QueenSideKnight = new ChessPosition(1, 2);
-                if (board.getPiece())
 
-            }
-        }
-        else {
-            if (blackKingSideCastle) {
-                ChessPosition kingSideBishop = new ChessPosition(8, 6);
-                ChessPosition kingSideKnight = new ChessPosition(8, 7);
-                if (board.getPiece(kingSideBishop) == null &&
-                        board.getPiece(kingSideKnight) == null) {
-
-                }
-            }
-            else if (blackQueenSideCastle){
-                ChessPosition Queen = new ChessPosition(8, 4);
-                ChessPosition QueenSideBishop = new ChessPosition(8, 3);
-                ChessPosition QueenSideKnight = new ChessPosition(8, 2);
-                if (board.getPiece(Queen) == null &&
-                        board.getPiece(QueenSideBishop) == null &&
-                        board.getPiece(QueenSideBishop) == null) {
-            }
-        }
-        }
         return goodMoves;
     }
 
@@ -153,13 +121,6 @@ public class ChessGame {
         else {
             board.movePiece(board.getPiece(start), end);
             board.removePiece(start);
-            if (board.getPiece(end).getPieceType().equals(ChessPiece.PieceType.ROOK)) {
-                if (calor == TeamColor.WHITE) {
-                    whiteCastle = false;
-                } else {
-                    blackCastle = false;
-                }
-            }
         }
         if(getTeamTurn().equals(TeamColor.WHITE)) {
             setTeamTurn(TeamColor.BLACK);
