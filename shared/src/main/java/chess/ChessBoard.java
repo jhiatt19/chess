@@ -59,10 +59,6 @@ public class ChessBoard {
         squares[position.getRow()][position.getColumn()] = null;
     }
 
-    public void movePiece(ChessPiece piece, ChessPosition end){
-        squares[end.getRow()][end.getColumn()] = piece;
-    }
-
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)

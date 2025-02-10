@@ -119,7 +119,7 @@ public class ChessGame {
 
         }
         else {
-            board.movePiece(board.getPiece(start), end);
+            board.addPiece(end,board.getPiece(start));
             board.removePiece(start);
         }
         if(getTeamTurn().equals(TeamColor.WHITE)) {
@@ -135,7 +135,7 @@ public class ChessGame {
         if (board.getPiece(end) != null){
             board.removePiece(end);
         }
-        board.movePiece(board.getPiece(start),end);
+        board.addPiece(end,board.getPiece(start));
         board.removePiece(start);
     }
     /**
