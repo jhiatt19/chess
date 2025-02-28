@@ -3,7 +3,6 @@ package passoff.server;
 import chess.ChessGame;
 import org.junit.jupiter.api.*;
 import passoff.model.*;
-import server.Server;
 
 import java.net.HttpURLConnection;
 import java.util.Arrays;
@@ -20,7 +19,7 @@ public class StandardAPITests {
     private static TestCreateRequest createRequest;
 
     private static TestServerFacade serverFacade;
-    private static Server server;
+    private static server.Server server;
 
     private String existingAuth;
 
@@ -31,7 +30,7 @@ public class StandardAPITests {
 
     @BeforeAll
     public static void init() {
-        server = new Server();
+        server = new server.Server();
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
 
@@ -59,9 +58,9 @@ public class StandardAPITests {
     public void staticFiles() {
         String htmlFromServer = serverFacade.file("/").replaceAll("\r", "");
         Assertions.assertEquals(HttpURLConnection.HTTP_OK, serverFacade.getStatusCode(),
-                "Server response code was not 200 OK");
-        Assertions.assertNotNull(htmlFromServer, "Server returned an empty file");
-        Assertions.assertTrue(htmlFromServer.contains("CS 240 Chess Server Web API"),
+                "server.Server response code was not 200 OK");
+        Assertions.assertNotNull(htmlFromServer, "server.Server returned an empty file");
+        Assertions.assertTrue(htmlFromServer.contains("CS 240 Chess server.Server Web API"),
                 "file returned did not contain an exact match of text from provided index.html");
     }
 
@@ -448,7 +447,7 @@ public class StandardAPITests {
 
     private void assertHttpOk(TestResult result) {
         Assertions.assertEquals(HttpURLConnection.HTTP_OK, serverFacade.getStatusCode(),
-                "Server response code was not 200 OK (message: %s)".formatted(result.getMessage()));
+                "server.Server response code was not 200 OK (message: %s)".formatted(result.getMessage()));
         Assertions.assertFalse(result.getMessage() != null &&
                         result.getMessage().toLowerCase(Locale.ROOT).contains("error"),
                 "Result returned an error message");
@@ -468,7 +467,7 @@ public class StandardAPITests {
 
     private void assertHttpError(TestResult result, int statusCode, String message) {
         Assertions.assertEquals(statusCode, serverFacade.getStatusCode(),
-                "Server response code was not %d %s (message: %s)".formatted(statusCode, message, result.getMessage()));
+                "server.Server response code was not %d %s (message: %s)".formatted(statusCode, message, result.getMessage()));
         Assertions.assertNotNull(result.getMessage(), "Invalid Request didn't return an error message");
         Assertions.assertTrue(result.getMessage().toLowerCase(Locale.ROOT).contains("error"),
                 "Error message didn't contain the word \"Error\"");
