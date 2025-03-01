@@ -3,9 +3,13 @@ package dataaccess;
 import model.AuthData;
 
 public class AuthMemoryAccess implements AuthDAO{
-    public AuthData createAuth(){};
+    public AuthData createAuth(){
+        return null;
+    };
 
-    public AuthData getAuth(){};
+    public AuthData getAuth(){
+        return null;
+    };
 
     public void deleteAuth(){};
 

@@ -12,7 +12,6 @@ public class Main {
 
         try {
             var port = 8080;
-
             UserDAO userAccess = new UserMemoryAccess();
             var userService = new UserService(userAccess);
 
@@ -22,7 +21,7 @@ public class Main {
             AuthDAO authAccess = new AuthMemoryAccess();
             var authService = new AuthService(authAccess);
 
-            Server server = new Server(authService, gameService, userService).run(port);
+            Server server = new Server(authService, gameService, userService);
             System.out.printf("Server started on port %d with Memory Access Data%n", port);
         }
         catch (Throwable ex) {
