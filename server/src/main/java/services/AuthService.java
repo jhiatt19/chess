@@ -2,9 +2,12 @@ package services;
 
 import dataaccess.AuthDAO;
 import dataaccess.UserDAO;
+import exception.ResponseException;
 import model.AuthData;
+import model.UserData;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.UUID;
 
 public class AuthService {
@@ -14,18 +17,18 @@ public class AuthService {
     public AuthService() {
         this.authData = new AuthDAO() {
             @Override
-            public AuthData createAuth() {
+            public AuthData setAuth(AuthData authdata) {
                 return null;
             }
 
             @Override
-            public AuthData getAuth() {
-                return null;
+            public boolean checkAuth(AuthData adsfa) {
+                return false;
             }
 
             @Override
-            public void deleteAuth() {
-
+            public boolean deleteAuth(String auth) {
+                return false;
             }
 
             @Override
@@ -41,5 +44,33 @@ public class AuthService {
 
     public static String generateToken() {
         return UUID.randomUUID().toString();
+    }
+
+    public AuthData setAuth(AuthData authdata) throws ResponseException {
+        if (authdata.authToken() == null){
+            throw new ResponseException(500,"Error: No data saved");
+        }
+        else {
+            return authData.setAuth(authdata);
+        }
+    }
+
+    public AuthData deleteAuth(String token) throws ResponseException {
+        if (token == null) {
+            throw new ResponseException(401, "Error: unauthorized");
+        }
+        if (authData.deleteAuth(token)) {
+            throw new ResponseException(200, "");
+        } else {
+            throw new ResponseException(500, "Error: Failed to delete Auth token");
+        }
+    }
+
+    public void clear(){
+        authData.clear();
+    }
+
+    public boolean checkAuth(AuthData authdata) throws ResponseException {
+        return authData.checkAuth(authdata);
     }
 }

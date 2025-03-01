@@ -9,8 +9,8 @@ public class UserMemoryAccess implements UserDAO {
     final private HashSet<UserData> userDB = new HashSet<>();
 
     public UserData createUser(UserData user){
-        user = new UserData(user.username(), user.password(), user.email());
-        userDB.add(user);
+        var madeUser = new UserData(user.username(), user.password(), user.email());
+        userDB.add(madeUser);
         return user;
     };
 
@@ -27,9 +27,14 @@ public class UserMemoryAccess implements UserDAO {
         return null;
     };
 
-    public void deleteUser(){};
+    public boolean deleteUser(UserData user){
+        userDB.remove(user);
+        return userDB.contains(user);
+    };
 
-    public void clear(){};
+    public void clear(){
+        userDB.clear();
+    };
 
     @Override
     public boolean equals(Object o) {

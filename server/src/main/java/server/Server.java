@@ -37,7 +37,7 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::createUser);
-        Spark.post("/session", this::getAuth);
+        Spark.post("/session", this::login);
         Spark.delete("/session",this::deleteAuth);
         Spark.get("/game",this::listGame);
         Spark.post("/game",this::createGame);
@@ -58,24 +58,26 @@ public class Server {
     private Object createUser(Request req, Response res) throws ResponseException {
         var user = new Gson().fromJson(req.body(), UserData.class);
         var responseMap = userService.createUser(user);
+        authService.setAuth((AuthData) responseMap.get("authData"));
         return new Gson().toJson(responseMap);
     }
 
-    private Object getAuth(Request req, Response res) throws ResponseException {
+    private Object login(Request req, Response res) throws ResponseException {
         var user = new Gson().fromJson(req.body(),UserData.class);
         var responseMap = userService.getAuth(user);
+        authService.setAuth((AuthData) responseMap.get("authData"));
         return new Gson().toJson(responseMap);
     }
 
     private Object deleteAuth(Request req, Response res) throws ResponseException{
-        var auth = new Gson().fromJson(req.body(), AuthData.class);
-        var responseMap = authService.deleteAuth(auth);
+        var token = req.headers("authorization");
+        var responseMap = authService.deleteAuth(token);
         return new Gson().toJson(responseMap);
     }
 
     private Object listGame(Request req, Response res) throws ResponseException {
-        var game = new Gson().fromJson(req.body(), GameData.class);
-        var responseMap = gameService.listGame(game);
+        var token = req.headers("authorization");
+        var responseMap = gameService.listGame(token);
         return new Gson().toJson(responseMap);
     }
 
@@ -92,8 +94,8 @@ public class Server {
     }
 
     private Object clear(Request req, Response res) throws ResponseException {
-        var user = userService.clear();
-        var game = gameService.clear();
-        var auth = authService.clear();
+        userService.clear();
+        gameService.clear();
+        authService.clear();
     }
 }

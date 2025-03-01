@@ -2,17 +2,20 @@ package services;
 
 import dataaccess.UserDAO;
 import exception.ResponseException;
+import model.AuthData;
 import model.UserData;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.UUID;
 
+import static model.DataTransformation.transform;
+
 public class UserService {
-    HashMap<String,String> returnVal = new HashMap<>();
+    Map<String,Object> returnVal;
     private final UserDAO userData;
     String authVal = generateToken();
-    String stringUser = "Username";
-    String stringAuthVal = "authToken";
 
     public UserService() {
         this.userData = new UserDAO() {
@@ -32,8 +35,8 @@ public class UserService {
             }
 
             @Override
-            public void deleteUser() {
-
+            public boolean deleteUser(UserData user) {
+                return false;
             }
 
             @Override
@@ -50,30 +53,34 @@ public class UserService {
         return UUID.randomUUID().toString();
     }
 
-    public HashMap<String, String> createHashMap(String name, String token){
+    public Map<String, Object> createMap(UserData user, String token){
         returnVal.clear();
-        returnVal.put(stringUser,name);
-        returnVal.put(stringAuthVal,token);
+        HashMap<String, String> response = new HashMap<>();
+        AuthData authData = transform(user,token);
+        response.put("username", user.username());
+        response.put("authToken",token);
+        returnVal.put("response",response);
+        returnVal.put("authData",authData);
         return returnVal;
     }
 
-    public HashMap<String, String> createUser(UserData user) throws ResponseException {
+    public Map<String, Object> createUser(UserData user) throws ResponseException {
         var userMade = userData.createUser(user);
         if (userData.getUser(user) != null){
             throw new ResponseException(403, "Error: already taken");
         }
         else {
-            return createHashMap(userMade.getUsername(), authVal);
+            return createMap(userMade, authVal);
         }
     }
 
-    public HashMap<String, String> getAuth(UserData user) throws ResponseException {
+    public Map<String, Object> getAuth(UserData user) throws ResponseException {
         var foundUser = userData.getUser(user);
         if (foundUser == null){
             throw new ResponseException(401,"Error: unauthorized");
         }
         else {
-            return createHashMap(user.username(),authVal);
+            return createMap(user,authVal);
         }
     }
 

@@ -2,7 +2,10 @@ package dataaccess;
 
 import model.GameData;
 
+import java.util.HashSet;
+
 public class GameMemoryAccess implements GameDAO {
+    HashSet<GameData> gameDB = new HashSet<>();
     public GameData createGame() {
         return null;
     };
@@ -19,5 +22,7 @@ public class GameMemoryAccess implements GameDAO {
         return null;
     };
 
-    public void clear(){};
+    public void clear(){
+        gameDB.clear();
+    };
 }

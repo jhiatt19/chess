@@ -9,7 +9,7 @@ public interface UserDAO {
 
     void clear();
 
-    void deleteUser();
+    boolean deleteUser(UserData user);
 
     UserData updateUser();
 }
