@@ -1,4 +1,7 @@
 package dataaccess;
 
-public class GameDAO {
+import model.GameData;
+
+public interface GameDAO {
+    GameData
 }
