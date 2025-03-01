@@ -1,20 +1,21 @@
 package server;
 
-import org.eclipse.jetty.server.Authentication;
+import com.google.gson.Gson;
+import model.UserData;
 import services.AuthService;
 import services.GameService;
 import services.UserService;
 import spark.*;
 
 public class Server {
-    private final AuthService auth;
-    private final GameService game;
-    private final UserService user;
+    private final AuthService authService;
+    private final GameService gameService;
+    private final UserService userService;
 
     public Server(AuthService auth, GameService game, UserService user){
-        this.auth = auth;
-        this.game = game;
-        this.user = user;
+        this.authService = auth;
+        this.gameService = game;
+        this.userService = user;
     }
 
     public int run(int desiredPort) {
@@ -23,8 +24,8 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-
-        //This line initializes the server and can be removed once you have a functioning endpoint 
+        Spark.post("/userService", this::createUser);
+        //This line initializes the server and can be removed once you have a functioning endpoint
         Spark.init();
 
         Spark.awaitInitialization();
@@ -34,5 +35,11 @@ public class Server {
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
+    }
+
+    private Object createUser(Request req, Response res) {
+        var user = new Gson().fromJSON(req.body(), UserData.class);
+        user = userService.createUser(user);
+        return new Gson().toJSon(user);
     }
 }
