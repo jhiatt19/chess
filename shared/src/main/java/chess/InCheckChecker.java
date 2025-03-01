@@ -1,7 +1,7 @@
 package chess;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 public class InCheckChecker {
     private ChessBoard board;
