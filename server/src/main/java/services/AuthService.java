@@ -22,8 +22,8 @@ public class AuthService {
             }
 
             @Override
-            public boolean checkAuth(AuthData adsfa) {
-                return false;
+            public AuthData checkAuth(String adsfa) {
+                return null;
             }
 
             @Override
@@ -70,7 +70,7 @@ public class AuthService {
         authData.clear();
     }
 
-    public boolean checkAuth(AuthData authdata) throws ResponseException {
-        return authData.checkAuth(authdata);
+    public AuthData checkAuth(String token) throws ResponseException {
+        return authData.checkAuth(token);
     }
 }

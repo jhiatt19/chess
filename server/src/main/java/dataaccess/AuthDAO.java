@@ -5,7 +5,7 @@ import model.UserData;
 
 public interface AuthDAO {
     AuthData setAuth(AuthData authdata); //implement throw
-    boolean checkAuth(AuthData authdata);
+    AuthData checkAuth(String token);
     boolean deleteAuth(String token);
     void clear();
 }

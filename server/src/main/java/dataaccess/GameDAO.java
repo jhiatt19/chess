@@ -1,17 +1,24 @@
 package dataaccess;
 
-//import exception.ResponseException;
+import exception.ResponseException;
+import model.AuthData;
 import model.GameData;
+import model.JoinGameData;
+
+import java.util.HashSet;
 
 public interface GameDAO {
-    GameData createGame(); //implement throw
+    int createGame(AuthData authUser, String name); //implement throw
 
-    GameData setGame();
+    //GameData setGame();
 
-    GameData listGame();
+    HashSet<GameData> listGame();
 
-    GameData updateGame();
+    void joinGame(JoinGameData color, String user);
 
     void clear();
 
+    void addPlayer(JoinGameData color, String user, GameData game, String otherPlayer);
+
+    GameData findGame(int gameID);
 }

@@ -3,24 +3,35 @@ package dataaccess;
 import model.AuthData;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Objects;
 
 public class AuthMemoryAccess implements AuthDAO{
-   final private HashMap<String,String> authDB = new HashMap<>();
+   final private HashSet<AuthData> authDB = new HashSet<>();
 
     public AuthData setAuth(AuthData authdata){
         var setAuthToken = new AuthData(authdata.authToken(),authdata.username());
-        authDB.put(setAuthToken.authToken(), setAuthToken.username());
+        authDB.add(setAuthToken);
         return setAuthToken;
     };
 
-    public boolean checkAuth(AuthData authdata){
-        return authDB.containsKey(authdata.authToken());
+    public AuthData checkAuth(String token){
+        for (var data : authDB){
+            if (data.authToken().equals(token)){
+                return data;
+            }
+        }
+        return null;
     };
 
     public boolean deleteAuth(String token){
-        authDB.remove(token);
-        return authDB.containsKey(token);
+        for (AuthData data : authDB){
+            if (data.authToken().equals(token)){
+                authDB.remove(data);
+                return true;
+            }
+        }
+       return false;
     };
 
     public void clear(){
