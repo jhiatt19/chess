@@ -14,30 +14,6 @@ public class AuthService {
     HashMap<String,String> returnVal = new HashMap<>();
     private final AuthDAO authData;
 
-    public AuthService() {
-        this.authData = new AuthDAO() {
-            @Override
-            public AuthData setAuth(AuthData authdata) {
-                return null;
-            }
-
-            @Override
-            public AuthData checkAuth(String adsfa) {
-                return null;
-            }
-
-            @Override
-            public boolean deleteAuth(String auth) {
-                return false;
-            }
-
-            @Override
-            public void clear() {
-
-            }
-        };
-    }
-
     public AuthService(AuthDAO authData){
         this.authData = authData;
     }
@@ -56,13 +32,12 @@ public class AuthService {
     }
 
     public AuthData deleteAuth(String token) throws ResponseException {
-        if (token == null) {
+        var logOut = authData.deleteAuth(token);
+        if (logOut == null) {
             throw new ResponseException(401, "Error: unauthorized");
         }
-        if (authData.deleteAuth(token)) {
-            throw new ResponseException(200, "");
-        } else {
-            throw new ResponseException(500, "Error: Failed to delete Auth token");
+        else {
+            return logOut;
         }
     }
 

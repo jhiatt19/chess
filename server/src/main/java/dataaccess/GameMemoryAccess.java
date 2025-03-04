@@ -24,19 +24,22 @@ public class GameMemoryAccess implements GameDAO {
         return gameDB;
     };
 
-    public void joinGame(JoinGameData playerColor, String username) {
+    public GameData joinGame(JoinGameData playerColor, String username) {
         for (GameData game : gameDB){
-            if (game.gameID() == playerColor.gameID()){
+            if (game.gameID() == playerColor.gameID() && playerColor.playerColor() != null){
                 if (playerColor.playerColor().equals("WHITE")){
                     var otherPlayer = game.blackUsername();
                     addPlayer(playerColor,username,game,otherPlayer);
+                    return game;
                 }
                 else {
                     var otherPlayer = game.getWhiteUsername();
                     addPlayer(playerColor,username,game,otherPlayer);
+                    return game;
                 }
             }
         }
+        return null;
     };
 
     public void addPlayer(JoinGameData playerColor,String username,GameData game, String otherPlayer){

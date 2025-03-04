@@ -67,22 +67,21 @@ public class Server {
     }
     private Object createUser(Request req, Response res) throws ResponseException {
         var user = new Gson().fromJson(req.body(), UserData.class);
-        System.out.println(user);
         var madeUser = userService.createUser(user);
-        System.out.println(madeUser);
         var authUser = DataTransformation.transform(madeUser,generateToken());
         authService.setAuth(authUser);
         res.status(200);
         res.type("application/json");
-        System.out.print(authUser);
         return new Gson().toJson(authUser);
     }
 
     private Object login(Request req, Response res) throws ResponseException {
         var user = new Gson().fromJson(req.body(),UserData.class);
-        user = userService.checkUser(user);
-        var authUser = DataTransformation.transform(user,generateToken());
+        var loginUser = userService.checkUser(user);
+        var authUser = DataTransformation.transform(loginUser,generateToken());
         authService.setAuth(authUser);
+        res.status(200);
+        res.type("application/json");
         return new Gson().toJson(authUser);
     }
 
@@ -124,8 +123,9 @@ public class Server {
         var checkedAuth = authService.checkAuth(auth);
         if (auth != null) {
             var game = new Gson().fromJson(req.body(), JoinGameData.class); //player color and gameID
-            gameService.joinGame(game,checkedAuth.username());
-            throw new ResponseException(200,null);
+            var gameJoined = gameService.joinGame(game,checkedAuth.username());
+            res.status(200);
+            return new Gson().toJson(gameJoined);
         }
         else {
             throw new ResponseException(401,"Error: unauthorized");

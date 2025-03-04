@@ -24,14 +24,14 @@ public class AuthMemoryAccess implements AuthDAO{
         return null;
     };
 
-    public boolean deleteAuth(String token){
+    public AuthData deleteAuth(String token){
         for (AuthData data : authDB){
             if (data.authToken().equals(token)){
                 authDB.remove(data);
-                return true;
+                return data;
             }
         }
-       return false;
+       return null;
     };
 
     public void clear(){
