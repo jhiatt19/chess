@@ -1,11 +1,9 @@
 package server;
 
 import com.google.gson.Gson;
+import dataaccess.*;
 import exception.ResponseException;
-import model.AuthData;
-import model.GameData;
-import model.JoinGameData;
-import model.UserData;
+import model.*;
 import services.AuthService;
 import services.GameService;
 import services.UserService;
@@ -18,20 +16,22 @@ public class Server {
     private final AuthService authService;
     private final GameService gameService;
     private final UserService userService;
+    private final GameDAO gameDAO;
+    private final UserDAO userDAO;
+    private final AuthDAO authDAO;
 
     public Server(){
-        this.authService = new AuthService();
-        this.gameService = new GameService();
-        this.userService = new UserService();
+        this.gameDAO = new GameMemoryAccess();
+        this.userDAO = new UserMemoryAccess();
+        this.authDAO = new AuthMemoryAccess();
+        this.authService = new AuthService(authDAO);
+        this.gameService = new GameService(gameDAO);
+        this.userService = new UserService(userDAO);
+
 
     }
-    public Server(AuthService auth, GameService game, UserService user){
-        this.authService = auth;
-        this.gameService = game;
-        this.userService = user;
-    }
 
-    public int run(int desiredPort) {
+    public int run(int desiredPort){
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
@@ -44,6 +44,7 @@ public class Server {
         Spark.post("/game",this::createGame);
         Spark.put("/game",this::joinGame);
         Spark.delete("/db",this::clear);
+        Spark.exception(ResponseException.class,this::exceptionHandler);
         //This line initializes the server and can be removed once you have a functioning endpoint
         Spark.init();
 
@@ -56,18 +57,33 @@ public class Server {
         Spark.awaitStop();
     }
 
+    public static String generateToken() {
+        return UUID.randomUUID().toString();
+    }
+
+    private void exceptionHandler(ResponseException ex, Request req, Response res){
+        res.status(ex.StatusCode());
+        res.body(ex.toJson());
+    }
     private Object createUser(Request req, Response res) throws ResponseException {
         var user = new Gson().fromJson(req.body(), UserData.class);
-        var responseMap = userService.createUser(user);
-        authService.setAuth((AuthData) responseMap.get("authData"));
-        return new Gson().toJson(responseMap);
+        System.out.println(user);
+        var madeUser = userService.createUser(user);
+        System.out.println(madeUser);
+        var authUser = DataTransformation.transform(madeUser,generateToken());
+        authService.setAuth(authUser);
+        res.status(200);
+        res.type("application/json");
+        System.out.print(authUser);
+        return new Gson().toJson(authUser);
     }
 
     private Object login(Request req, Response res) throws ResponseException {
         var user = new Gson().fromJson(req.body(),UserData.class);
-        var responseMap = userService.getAuth(user);
-        authService.setAuth((AuthData) responseMap.get("authData"));
-        return new Gson().toJson(responseMap);
+        user = userService.checkUser(user);
+        var authUser = DataTransformation.transform(user,generateToken());
+        authService.setAuth(authUser);
+        return new Gson().toJson(authUser);
     }
 
     private Object deleteAuth(Request req, Response res) throws ResponseException{
@@ -116,10 +132,10 @@ public class Server {
         }
     }
 
-    private Object clear(Request req, Response res) throws ResponseException {
+    private Object clear(Request req, Response res) {
         userService.clear();
         gameService.clear();
         authService.clear();
-        return true;
+        return "{}";
     }
 }

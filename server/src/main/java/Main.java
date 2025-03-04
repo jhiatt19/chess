@@ -1,5 +1,6 @@
 import chess.*;
 import dataaccess.*;
+import exception.ResponseException;
 import server.Server;
 import services.AuthService;
 import services.GameService;
@@ -11,18 +12,9 @@ public class Main {
         System.out.println("♕ 240 Chess server.Server: " + piece);
 
         try {
-            var port = 8080;
-            UserDAO userAccess = new UserMemoryAccess();
-            var userService = new UserService(userAccess);
-
-            GameDAO gameAccess = new GameMemoryAccess();
-            var gameService = new GameService(gameAccess);
-
-            AuthDAO authAccess = new AuthMemoryAccess();
-            var authService = new AuthService(authAccess);
-
-            Server server = new Server(authService, gameService, userService);
-            System.out.printf("Server started on port %d with Memory Access Data%n", port);
+            Server server = new Server();
+            server.run(8080);
+            System.out.printf("Server started on port %d with Memory Access Data%n");
         }
         catch (Throwable ex) {
             System.out.printf("Unable to start server: %s$%n",ex.getMessage());
