@@ -27,11 +27,8 @@ public class GameService {
         return gameData.listGame();
     }
 
-    public HashMap<String,Integer> createGame(AuthData authUser, String game){
-        int gameID = gameData.createGame(authUser,game);
-        HashMap<String,Integer> response = new HashMap<>();
-        response.put("gameID", gameID);
-        return response;
+    public int createGame(AuthData authUser, String game){
+        return gameData.createGame(authUser,game);
     }
 
     public void clear(){
@@ -40,12 +37,12 @@ public class GameService {
 
     public GameData joinGame(JoinGameData game, String username)throws ResponseException {
         var specificGameID = gameData.findGame(game.gameID());
-        var unsuccessfulAdd = gameData.joinGame(game,username);
-        if (specificGameID == null || unsuccessfulAdd == null){
+        var added = gameData.joinGame(game,username);
+        if (specificGameID == null || added == null){
             throw new ResponseException(400,"Error: bad request");
         }
         else {
-            return unsuccessfulAdd;
+            return added;
         }
     }
 }

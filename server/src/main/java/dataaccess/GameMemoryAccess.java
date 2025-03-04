@@ -1,6 +1,7 @@
 package dataaccess;
 
 import chess.ChessGame;
+import exception.ResponseException;
 import model.AuthData;
 import model.GameData;
 import model.JoinGameData;
@@ -24,19 +25,29 @@ public class GameMemoryAccess implements GameDAO {
         return gameDB;
     };
 
-    public GameData joinGame(JoinGameData playerColor, String username) {
+    public GameData joinGame(JoinGameData playerColor, String username) throws ResponseException {
         for (GameData game : gameDB){
-            if (game.gameID() == playerColor.gameID() && playerColor.playerColor() != null){
-                if (playerColor.playerColor().equals("WHITE")){
-                    var otherPlayer = game.blackUsername();
-                    addPlayer(playerColor,username,game,otherPlayer);
-                    return game;
+            if (game.gameID() == playerColor.gameID()){
+//                if (playerColor.playerColor().equals("WHITE")){
+//                    if (game.whiteUsername() != null) {
+//                        throw new ResponseException(403, "Error: Already taken");
+//                    }
+//                    else {
+                        var otherPlayer = game.blackUsername();
+                        addPlayer(playerColor, username, game, otherPlayer);
+                        return game;
+//                    }
                 }
                 else {
-                    var otherPlayer = game.getWhiteUsername();
-                    addPlayer(playerColor,username,game,otherPlayer);
-                    return game;
-                }
+//                    if (game.blackUsername() != null) {
+//                        throw new ResponseException(403, "Error: Already taken");
+//                    }
+//                    else {
+                        var otherPlayer = game.getWhiteUsername();
+                        addPlayer(playerColor, username, game, otherPlayer);
+                        return game;
+//                    }
+//                }
             }
         }
         return null;

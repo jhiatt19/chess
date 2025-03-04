@@ -10,6 +10,7 @@ import services.UserService;
 import spark.*;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class Server {
@@ -46,7 +47,6 @@ public class Server {
         Spark.delete("/db",this::clear);
         Spark.exception(ResponseException.class,this::exceptionHandler);
         //This line initializes the server and can be removed once you have a functioning endpoint
-        Spark.init();
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -95,7 +95,7 @@ public class Server {
         var token = req.headers("authorization");
         if (authService.checkAuth(token) != null){
             var responseMap = gameService.listGame();
-            return new Gson().toJson(responseMap);
+            return new Gson().toJson(Map.of("games",responseMap));
         }
         else {
             throw new ResponseException(401,"Error: unauthorized");
@@ -111,7 +111,7 @@ public class Server {
                 throw new ResponseException(400, "Error: bad request");
             }
             var responseMap = gameService.createGame(authorized, game);
-            return new Gson().toJson(responseMap);
+            return new Gson().toJson(Map.of("gameID", responseMap));
         }
         else {
             throw new ResponseException(401,"Error: unauthorized");
@@ -121,11 +121,15 @@ public class Server {
     private Object joinGame(Request req, Response res) throws ResponseException {
         var auth = req.headers("authorization");
         var checkedAuth = authService.checkAuth(auth);
-        if (auth != null) {
+        if (checkedAuth != null) {
             var game = new Gson().fromJson(req.body(), JoinGameData.class); //player color and gameID
-            var gameJoined = gameService.joinGame(game,checkedAuth.username());
-            res.status(200);
-            return new Gson().toJson(gameJoined);
+            if (game.playerColor() != null && (game.playerColor().equals("BLACK") || game.playerColor().equals("WHITE"))) {
+                gameService.joinGame(game, checkedAuth.username());
+                res.status(200);
+                return new Gson().toJson(Map.of());
+            } else {
+                throw new ResponseException(400, "Error: bad request");
+            }
         }
         else {
             throw new ResponseException(401,"Error: unauthorized");

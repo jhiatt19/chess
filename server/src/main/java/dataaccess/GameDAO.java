@@ -14,7 +14,7 @@ public interface GameDAO {
 
     HashSet<GameData> listGame();
 
-    GameData joinGame(JoinGameData color, String user);
+    GameData joinGame(JoinGameData color, String user) throws ResponseException;
 
     void clear();
 
