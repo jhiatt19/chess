@@ -45,4 +45,8 @@ public class GameService {
             return added;
         }
     }
+
+    public GameData getGame(int gameID){
+        return gameData.findGame(gameID);
+    }
 }

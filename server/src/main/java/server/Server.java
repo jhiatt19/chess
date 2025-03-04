@@ -95,6 +95,9 @@ public class Server {
         var token = req.headers("authorization");
         if (authService.checkAuth(token) != null){
             var responseMap = gameService.listGame();
+            for (GameData game : responseMap){
+                System.out.println(game);
+            }
             return new Gson().toJson(Map.of("games",responseMap));
         }
         else {
@@ -106,11 +109,13 @@ public class Server {
         var token = req.headers("authorization");
         var authorized = authService.checkAuth(token);
         if (authorized != null) {
-            var game = req.body();
+            var game = new Gson().fromJson(req.body(),GameData.class);
+            System.out.println(game);
             if (game == null){
                 throw new ResponseException(400, "Error: bad request");
             }
-            var responseMap = gameService.createGame(authorized, game);
+            var responseMap = gameService.createGame(authorized, game.gameName());
+            System.out.println(gameService.getGame(responseMap));
             return new Gson().toJson(Map.of("gameID", responseMap));
         }
         else {

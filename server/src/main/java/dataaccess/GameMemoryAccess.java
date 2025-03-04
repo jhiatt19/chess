@@ -10,9 +10,11 @@ import java.util.HashSet;
 
 public class GameMemoryAccess implements GameDAO {
     HashSet<GameData> gameDB = new HashSet<>();
+    int gameID = 0;
+
     public int createGame(AuthData authUser, String name) {
-        int gameID = gameDB.size()+1;
-        var madeGame = new GameData(gameID,authUser.username(),null,name,new ChessGame());
+        setGameID(gameID+1);
+        var madeGame = new GameData(gameID,null,null,name,new ChessGame());
         gameDB.add(madeGame);
         return gameID;
     };
@@ -21,6 +23,10 @@ public class GameMemoryAccess implements GameDAO {
 //        return null;
 //    };
 
+    public void setGameID(int gameID) {
+        this.gameID = gameID;
+    }
+
     public HashSet<GameData> listGame(){
         return gameDB;
     };
@@ -28,35 +34,35 @@ public class GameMemoryAccess implements GameDAO {
     public GameData joinGame(JoinGameData playerColor, String username) throws ResponseException {
         for (GameData game : gameDB){
             if (game.gameID() == playerColor.gameID()){
-//                if (playerColor.playerColor().equals("WHITE")){
-//                    if (game.whiteUsername() != null) {
-//                        throw new ResponseException(403, "Error: Already taken");
-//                    }
-//                    else {
+                if (playerColor.playerColor().equals("WHITE")){
+                    if (game.whiteUsername() != null) {
+                        throw new ResponseException(403, "Error: Already taken");
+                    }
+                    else {
                         var otherPlayer = game.blackUsername();
                         addPlayer(playerColor, username, game, otherPlayer);
                         return game;
-//                    }
+                    }
                 }
                 else {
-//                    if (game.blackUsername() != null) {
-//                        throw new ResponseException(403, "Error: Already taken");
-//                    }
-//                    else {
-                        var otherPlayer = game.getWhiteUsername();
-                        addPlayer(playerColor, username, game, otherPlayer);
-                        return game;
-//                    }
-//                }
+                    if (game.blackUsername() != null) {
+                        throw new ResponseException(403, "Error: Already taken");
+                    }
+                    else {
+                    var otherPlayer = game.getWhiteUsername();
+                    addPlayer(playerColor, otherPlayer, game, username);
+                    return game;
+                    }
+               }
             }
         }
         return null;
     };
 
-    public void addPlayer(JoinGameData playerColor,String username,GameData game, String otherPlayer){
+    public void addPlayer(JoinGameData playerColor,String whitePlayer,GameData game, String blackPlayer){
         var chessgame = game.game();
         var gameName = game.gameName();
-        var madeGame = new GameData(playerColor.gameID(), username, otherPlayer, gameName,chessgame);
+        var madeGame = new GameData(playerColor.gameID(), whitePlayer, blackPlayer, gameName,chessgame);
         gameDB.remove(game);
         gameDB.add(madeGame);
     }
