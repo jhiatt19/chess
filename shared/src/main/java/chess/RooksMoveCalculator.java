@@ -21,7 +21,7 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
 
         return legalMoves;
     }
-    public ChessPosition move(int tempR, int tempC){
+    public ChessPosition rookMove(int tempR, int tempC){
         ChessPosition newPos = new ChessPosition(tempR,tempC);
         if (board.getPiece(newPos) == null){
             legalMoves.add(new ChessMove(position,newPos,null));
@@ -40,7 +40,7 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
         if (startPos != null && startPos.getRow() < 8){
             int tempR = startPos.getRow() + 1;
             int tempC = startPos.getColumn();
-            ChessPosition newPos = move(tempR,tempC);
+            ChessPosition newPos = rookMove(tempR,tempC);
             return verticalUp(newPos);
         }
         return null;
@@ -50,7 +50,7 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
         if (startPos != null && startPos.getRow() > 1){
             int tempR = startPos.getRow() - 1;
             int tempC = startPos.getColumn();
-            ChessPosition newPos = move(tempR,tempC);
+            ChessPosition newPos = rookMove(tempR,tempC);
             return verticalDown(newPos);
         }
         return null;
@@ -60,7 +60,7 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
         if (startPos != null && startPos.getColumn() < 8){
             int tempR = startPos.getRow();
             int tempC = startPos.getColumn() + 1;
-            ChessPosition newPos = move(tempR,tempC);
+            ChessPosition newPos = rookMove(tempR,tempC);
             return horizontalRight(newPos);
         }
         return null;
@@ -70,7 +70,7 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
         if (startPos != null && startPos.getColumn() > 1){
             int tempR = startPos.getRow();
             int tempC = startPos.getColumn() - 1;
-            ChessPosition newPos = move(tempR,tempC);
+            ChessPosition newPos = rookMove(tempR,tempC);
             return horizontalLeft(newPos);
         }
         return null;

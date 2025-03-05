@@ -21,7 +21,7 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
         return legalMoves;
     }
 
-    public ChessPosition move(int tempR, int tempC){
+    public ChessPosition bishopMove(int tempR, int tempC){
         ChessPosition newPos = new ChessPosition(tempR,tempC);
         if (board.getPiece(newPos) == null){
             legalMoves.add(new ChessMove(position,newPos,null));
@@ -39,7 +39,7 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
         if (startPos != null && (startPos.getRow() < 8 && startPos.getColumn() < 8)){
             int tempR = startPos.getRow() + 1;
             int tempC = startPos.getColumn() + 1;
-            startPos = move(tempR,tempC);
+            startPos = bishopMove(tempR,tempC);
             return diagonalUpRight(startPos);
         }
         return null;
@@ -48,7 +48,7 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
         if (startPos != null && startPos.getRow() < 8 && startPos.getColumn() > 1){
             int tempR = startPos.getRow() + 1;
             int tempC = startPos.getColumn() - 1;
-            startPos = move(tempR,tempC);
+            startPos = bishopMove(tempR,tempC);
             return diagonalUpLeft(startPos);
         }
         return null;
@@ -58,7 +58,7 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
         if (startPos != null && startPos.getRow() > 1 && startPos.getColumn() < 8){
             int tempR = startPos.getRow() - 1;
             int tempC = startPos.getColumn() + 1;
-            startPos = move(tempR,tempC);
+            startPos = bishopMove(tempR,tempC);
             return diagonalDownRight(startPos);
         }
         return null;
@@ -68,7 +68,7 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
         if (startPos != null && startPos.getRow() > 1 && startPos.getColumn() > 1){
             int tempR = startPos.getRow() - 1;
             int tempC = startPos.getColumn() - 1;
-            startPos = move(tempR,tempC);
+            startPos = bishopMove(tempR,tempC);
             return diagonalDownLeft(startPos);
         }
         return null;

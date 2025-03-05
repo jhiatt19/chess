@@ -14,19 +14,19 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
         this.position = position;
     }
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
-        diagonalUpRight(position);
-        diagonalDownRight(position);
-        diagonalDownLeft(position);
-        diagonalUpLeft(position);
-        verticalUp(position);
-        verticalDown(position);
-        horizontalLeft(position);
-        horizontalRight(position);
+        queenDiagonalUpRight(position);
+        queenDiagonalDownRight(position);
+        queenDiagonalDownLeft(position);
+        queenDiagonalUpLeft(position);
+        queenVerticalUp(position);
+        queenVerticalDown(position);
+        queenHorizontalLeft(position);
+        queenHorizontalRight(position);
 
         return legalMoves;
     }
 
-    public ChessPosition move(int tempR, int tempC) {
+    public ChessPosition queenMove(int tempR, int tempC) {
         ChessPosition newPos = new ChessPosition(tempR, tempC);
         if (board.getPiece(newPos) == null) {
             legalMoves.add(new ChessMove(position, newPos, null));
@@ -40,82 +40,82 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
         }
     }
 
-    public ChessPosition verticalUp(ChessPosition startPos) {
+    public ChessPosition queenVerticalUp(ChessPosition startPos) {
         if (startPos != null && startPos.getRow() < 8) {
             int tempR = startPos.getRow() + 1;
             int tempC = startPos.getColumn();
-            ChessPosition newPos = move(tempR, tempC);
-            return verticalUp(newPos);
+            ChessPosition newPos = queenMove(tempR, tempC);
+            return queenVerticalUp(newPos);
         }
         return null;
     }
 
-    public ChessPosition verticalDown(ChessPosition startPos) {
+    public ChessPosition queenVerticalDown(ChessPosition startPos) {
         if (startPos != null && startPos.getRow() > 1) {
             int tempR = startPos.getRow() - 1;
             int tempC = startPos.getColumn();
-            ChessPosition newPos = move(tempR, tempC);
-            return verticalDown(newPos);
+            ChessPosition newPos = queenMove(tempR, tempC);
+            return queenVerticalDown(newPos);
         }
         return null;
     }
 
-    public ChessPosition horizontalRight(ChessPosition startPos){
+    public ChessPosition queenHorizontalRight(ChessPosition startPos){
         if (startPos != null && startPos.getColumn() < 8){
             int tempR = startPos.getRow();
             int tempC = startPos.getColumn() + 1;
-            ChessPosition newPos = move(tempR, tempC);
-            return horizontalRight(newPos);
+            ChessPosition newPos = queenMove(tempR, tempC);
+            return queenHorizontalRight(newPos);
         }
         return null;
     }
 
-    public ChessPosition horizontalLeft(ChessPosition startPos){
+    public ChessPosition queenHorizontalLeft(ChessPosition startPos){
         if (startPos != null && startPos.getColumn() > 1){
             int tempR = startPos.getRow();
             int tempC = startPos.getColumn() - 1;
-            ChessPosition newPos = move(tempR, tempC);
-            return horizontalLeft(newPos);
+            ChessPosition newPos = queenMove(tempR, tempC);
+            return queenHorizontalLeft(newPos);
         }
         return null;
 
     }
 
-    public ChessPosition diagonalUpRight(ChessPosition startPos){
+    public ChessPosition queenDiagonalUpRight(ChessPosition startPos){
         if (startPos != null && (startPos.getRow() < 8 && startPos.getColumn() < 8)){
             int tempR = startPos.getRow() + 1;
             int tempC = startPos.getColumn() + 1;
-            startPos = move(tempR,tempC);
-            return diagonalUpRight(startPos);
+            startPos = queenMove(tempR,tempC);
+            return queenDiagonalUpRight(startPos);
         }
         return null;
     }
-    public ChessPosition diagonalUpLeft(ChessPosition startPos){
+    public ChessPosition queenDiagonalUpLeft(ChessPosition startPos){
         if (startPos != null && startPos.getRow() < 8 && startPos.getColumn() > 1){
             int tempR = startPos.getRow() + 1;
             int tempC = startPos.getColumn() - 1;
-            startPos = move(tempR,tempC);
-            return diagonalUpLeft(startPos);
+            startPos = queenMove(tempR,tempC);
+            return queenDiagonalUpLeft(startPos);
         }
         return null;
     }
 
-    public ChessPosition diagonalDownRight(ChessPosition startPos){
+    public ChessPosition queenDiagonalDownRight(ChessPosition startPos){
         if (startPos != null && startPos.getRow() > 1 && startPos.getColumn() < 8){
             int tempR = startPos.getRow() - 1;
             int tempC = startPos.getColumn() + 1;
-            startPos = move(tempR,tempC);
-            return diagonalDownRight(startPos);
+            startPos = queenMove(tempR,tempC);
+            return queenDiagonalDownRight(startPos);
         }
         return null;
     }
 
-    public ChessPosition diagonalDownLeft(ChessPosition startPos){
+    public ChessPosition queenDiagonalDownLeft(ChessPosition startPos){
         if (startPos != null && startPos.getRow() > 1 && startPos.getColumn() > 1){
             int tempR = startPos.getRow() - 1;
             int tempC = startPos.getColumn() - 1;
-            startPos = move(tempR,tempC);
-            return diagonalDownLeft(startPos);
+            startPos = queenMove(tempR,tempC);
+            return queenDiagonalDownLeft(startPos);
         }
         return null;
     }
