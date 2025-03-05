@@ -128,10 +128,12 @@ public class Server {
         var checkedAuth = authService.checkAuth(auth);
         if (checkedAuth != null) {
             var game = new Gson().fromJson(req.body(), JoinGameData.class); //player color and gameID
-            if (game.playerColor() != null && (game.playerColor().equals("BLACK") || game.playerColor().equals("WHITE") || game.playerColor().equals("WHITE/BLACK"))) {
-                gameService.joinGame(game, checkedAuth.username());
-                res.status(200);
-                return new Gson().toJson(Map.of());
+            if (game.playerColor() != null){
+                if (game.playerColor().equals("BLACK") || game.playerColor().equals("WHITE") || game.playerColor().equals("WHITE/BLACK")){
+                    gameService.joinGame(game, checkedAuth.username());
+                    res.status(200);
+                    return new Gson().toJson(Map.of());
+                }
             } else {
                 throw new ResponseException(400, "Error: bad request");
             }
