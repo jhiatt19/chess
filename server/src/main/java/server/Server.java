@@ -132,8 +132,9 @@ public class Server {
                 if (game.playerColor().equals("BLACK") || game.playerColor().equals("WHITE") || game.playerColor().equals("WHITE/BLACK")){
                     gameService.joinGame(game, checkedAuth.username());
                     res.status(200);
+                    return new Gson().toJson(Map.of());
                 }
-                return new Gson().toJson(Map.of());
+                throw new ResponseException(400,"Error: bad request");
             } else {
                 throw new ResponseException(400, "Error: bad request");
             }
