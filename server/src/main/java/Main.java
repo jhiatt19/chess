@@ -14,7 +14,7 @@ public class Main {
         try {
             Server server = new Server();
             server.run(8080);
-            System.out.printf("Server started on port %d with Memory Access Data%n");
+            //System.out.printf("Server started on port %d with Memory Access Data%n");
         }
         catch (Throwable ex) {
             System.out.printf("Unable to start server: %s$%n",ex.getMessage());

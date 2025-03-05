@@ -30,7 +30,7 @@ public class GameMemoryAccess implements GameDAO {
     public GameData joinGame(JoinGameData playerColor, String username) throws ResponseException {
         for (GameData game : gameDB){
             if (game.gameID() == playerColor.gameID()){
-                if (playerColor.playerColor().equals("WHITE")){
+                if (playerColor.playerColor().equals("WHITE") || playerColor.playerColor().equals("WHITE/BLACK")){
                     if (game.whiteUsername() != null) {
                         throw new ResponseException(403, "Error: Already taken");
                     }
