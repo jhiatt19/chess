@@ -11,87 +11,67 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
         this.board = board;
         this.position = position;
     }
+
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
         diagonalUpRight(position);
         diagonalDownRight(position);
         diagonalDownLeft(position);
         diagonalUpLeft(position);
+        //System.out.println(legalMoves.size());
         return legalMoves;
     }
 
-    public ChessPosition diagonalUpRight(ChessPosition startPos){
-        if (startPos.getRow() >= 8 || startPos.getColumn() >= 8){
-            return startPos;
-        }
-        int tempR = startPos.getRow() + 1;
-        int tempC = startPos.getColumn() + 1;
+    public ChessPosition move(int tempR, int tempC){
         ChessPosition newPos = new ChessPosition(tempR,tempC);
         if (board.getPiece(newPos) == null){
             legalMoves.add(new ChessMove(position,newPos,null));
-            return diagonalUpRight(newPos);
+            return newPos;
         }
-        else if (board.getPiece(newPos) != null){
+        else {
             if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
                 legalMoves.add(new ChessMove(position, newPos, null));
             }
+            return null;
         }
-        return newPos;
+    }
+
+    public ChessPosition diagonalUpRight(ChessPosition startPos){
+        if (startPos != null && (startPos.getRow() < 8 && startPos.getColumn() < 8)){
+            int tempR = startPos.getRow() + 1;
+            int tempC = startPos.getColumn() + 1;
+            startPos = move(tempR,tempC);
+            return diagonalUpRight(startPos);
+        }
+        return null;
     }
     public ChessPosition diagonalUpLeft(ChessPosition startPos){
-        if (startPos.getRow() >= 8 || startPos.getColumn() <= 1){
-            return startPos;
+        if (startPos != null && startPos.getRow() < 8 && startPos.getColumn() > 1){
+            int tempR = startPos.getRow() + 1;
+            int tempC = startPos.getColumn() - 1;
+            startPos = move(tempR,tempC);
+            return diagonalUpLeft(startPos);
         }
-        int tempR = startPos.getRow() + 1;
-        int tempC = startPos.getColumn() - 1;
-        ChessPosition newPos = new ChessPosition(tempR,tempC);
-        if (board.getPiece(newPos) == null){
-            legalMoves.add(new ChessMove(position,newPos,null));
-            return diagonalUpLeft(newPos);
-        }
-        else if (board.getPiece(newPos) != null){
-            if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
-                legalMoves.add(new ChessMove(position, newPos, null));
-            }
-        }
-        return newPos;
+        return null;
     }
 
     public ChessPosition diagonalDownRight(ChessPosition startPos){
-        if (startPos.getRow() <= 1 || startPos.getColumn() >= 8){
-            return startPos;
+        if (startPos != null && startPos.getRow() > 1 && startPos.getColumn() < 8){
+            int tempR = startPos.getRow() - 1;
+            int tempC = startPos.getColumn() + 1;
+            startPos = move(tempR,tempC);
+            return diagonalDownRight(startPos);
         }
-        int tempR = startPos.getRow() - 1;
-        int tempC = startPos.getColumn() + 1;
-        ChessPosition newPos = new ChessPosition(tempR,tempC);
-        if (board.getPiece(newPos) == null){
-            legalMoves.add(new ChessMove(position,newPos,null));
-            return diagonalDownRight(newPos);
-        }
-        else if (board.getPiece(newPos) != null){
-            if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
-                legalMoves.add(new ChessMove(position, newPos, null));
-            }
-        }
-        return newPos;
+        return null;
     }
 
     public ChessPosition diagonalDownLeft(ChessPosition startPos){
-        if (startPos.getRow() <= 1 || startPos.getColumn() <= 1){
-            return startPos;
+        if (startPos != null && startPos.getRow() > 1 && startPos.getColumn() > 1){
+            int tempR = startPos.getRow() - 1;
+            int tempC = startPos.getColumn() - 1;
+            startPos = move(tempR,tempC);
+            return diagonalDownLeft(startPos);
         }
-        int tempR = startPos.getRow() - 1;
-        int tempC = startPos.getColumn() - 1;
-        ChessPosition newPos = new ChessPosition(tempR,tempC);
-        if (board.getPiece(newPos) == null){
-            legalMoves.add(new ChessMove(position,newPos,null));
-            return diagonalDownLeft(newPos);
-        }
-        else if (board.getPiece(newPos) != null){
-            if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
-                legalMoves.add(new ChessMove(position, newPos, null));
-            }
-        }
-        return newPos;
+        return null;
     }
 
     @Override
@@ -105,10 +85,6 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
 
     @Override
     public int hashCode() {
-        int hash = Objects.hash(board);
-        hash = hash ^ Objects.hash(position);
-        hash = hash * Objects.hash(legalMoves);
-        hash = hash ^ 7;
-        return hash;
+        return Objects.hash(board, position, legalMoves);
     }
 }
