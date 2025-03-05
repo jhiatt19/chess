@@ -13,10 +13,10 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
     }
 
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
-        diagonalUpRight(position);
-        diagonalDownRight(position);
-        diagonalDownLeft(position);
-        diagonalUpLeft(position);
+        bishopDiagonalUpRight(position);
+        bishopDiagonalDownRight(position);
+        bishopDiagonalDownLeft(position);
+        bishopDiagonalUpLeft(position);
         //System.out.println(legalMoves.size());
         return legalMoves;
     }
@@ -35,41 +35,41 @@ public class BishopsMoveCalculator implements ChessMovesCalculator{
         }
     }
 
-    public ChessPosition diagonalUpRight(ChessPosition startPos){
+    public ChessPosition bishopDiagonalUpRight(ChessPosition startPos){
         if (startPos != null && (startPos.getRow() < 8 && startPos.getColumn() < 8)){
             int tempR = startPos.getRow() + 1;
             int tempC = startPos.getColumn() + 1;
             startPos = bishopMove(tempR,tempC);
-            return diagonalUpRight(startPos);
+            return bishopDiagonalUpRight(startPos);
         }
         return null;
     }
-    public ChessPosition diagonalUpLeft(ChessPosition startPos){
+    public ChessPosition bishopDiagonalUpLeft(ChessPosition startPos){
         if (startPos != null && startPos.getRow() < 8 && startPos.getColumn() > 1){
             int tempR = startPos.getRow() + 1;
             int tempC = startPos.getColumn() - 1;
             startPos = bishopMove(tempR,tempC);
-            return diagonalUpLeft(startPos);
+            return bishopDiagonalUpLeft(startPos);
         }
         return null;
     }
 
-    public ChessPosition diagonalDownRight(ChessPosition startPos){
+    public ChessPosition bishopDiagonalDownRight(ChessPosition startPos){
         if (startPos != null && startPos.getRow() > 1 && startPos.getColumn() < 8){
             int tempR = startPos.getRow() - 1;
             int tempC = startPos.getColumn() + 1;
             startPos = bishopMove(tempR,tempC);
-            return diagonalDownRight(startPos);
+            return bishopDiagonalDownRight(startPos);
         }
         return null;
     }
 
-    public ChessPosition diagonalDownLeft(ChessPosition startPos){
+    public ChessPosition bishopDiagonalDownLeft(ChessPosition startPos){
         if (startPos != null && startPos.getRow() > 1 && startPos.getColumn() > 1){
             int tempR = startPos.getRow() - 1;
             int tempC = startPos.getColumn() - 1;
             startPos = bishopMove(tempR,tempC);
-            return diagonalDownLeft(startPos);
+            return bishopDiagonalDownLeft(startPos);
         }
         return null;
     }

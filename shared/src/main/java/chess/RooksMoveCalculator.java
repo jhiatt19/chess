@@ -14,10 +14,10 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
         this.position = position;
     }
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
-        verticalUp(position);
-        verticalDown(position);
-        horizontalLeft(position);
-        horizontalRight(position);
+        rookVerticalUp(position);
+        rookVerticalDown(position);
+        rookHorizontalLeft(position);
+        rookHorizontalRight(position);
 
         return legalMoves;
     }
@@ -36,42 +36,42 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
             return null;
         }
     }
-    public ChessPosition verticalUp(ChessPosition startPos){
+    public ChessPosition rookVerticalUp(ChessPosition startPos){
         if (startPos != null && startPos.getRow() < 8){
             int tempR = startPos.getRow() + 1;
             int tempC = startPos.getColumn();
             ChessPosition newPos = rookMove(tempR,tempC);
-            return verticalUp(newPos);
+            return rookVerticalUp(newPos);
         }
         return null;
     }
 
-    public ChessPosition verticalDown(ChessPosition startPos){
+    public ChessPosition rookVerticalDown(ChessPosition startPos){
         if (startPos != null && startPos.getRow() > 1){
             int tempR = startPos.getRow() - 1;
             int tempC = startPos.getColumn();
             ChessPosition newPos = rookMove(tempR,tempC);
-            return verticalDown(newPos);
+            return rookVerticalDown(newPos);
         }
         return null;
     }
 
-    public ChessPosition horizontalRight(ChessPosition startPos){
+    public ChessPosition rookHorizontalRight(ChessPosition startPos){
         if (startPos != null && startPos.getColumn() < 8){
             int tempR = startPos.getRow();
             int tempC = startPos.getColumn() + 1;
             ChessPosition newPos = rookMove(tempR,tempC);
-            return horizontalRight(newPos);
+            return rookHorizontalRight(newPos);
         }
         return null;
     }
 
-    public ChessPosition horizontalLeft(ChessPosition startPos){
+    public ChessPosition rookHorizontalLeft(ChessPosition startPos){
         if (startPos != null && startPos.getColumn() > 1){
             int tempR = startPos.getRow();
             int tempC = startPos.getColumn() - 1;
             ChessPosition newPos = rookMove(tempR,tempC);
-            return horizontalLeft(newPos);
+            return rookHorizontalLeft(newPos);
         }
         return null;
     }
