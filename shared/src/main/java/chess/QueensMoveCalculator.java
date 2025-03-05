@@ -26,179 +26,98 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
         return legalMoves;
     }
 
-    public ChessPosition verticalUp(ChessPosition startPos){
-        if (startPos.getRow() >= 8){
-//            System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
-            return startPos;
+    public ChessPosition move(int tempR, int tempC) {
+        ChessPosition newPos = new ChessPosition(tempR, tempC);
+        if (board.getPiece(newPos) == null) {
+            legalMoves.add(new ChessMove(position, newPos, null));
+            return newPos;
         }
-        int tempR = startPos.getRow() + 1;
-        int tempC = startPos.getColumn();
-        ChessPosition newPos = new ChessPosition(tempR,tempC);
-        if (board.getPiece(newPos) == null){
-            legalMoves.add(new ChessMove(position,newPos,null));
-   //         System.out.println(newPos.getRow() + " " + newPos.getColumn());
-            return  verticalUp(newPos);
-        }
-        else if (board.getPiece(newPos) != null){
-            if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
+        else {
+            if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())) {
                 legalMoves.add(new ChessMove(position, newPos, null));
-                //System.out.println("DURx " + newPos.getRow() + " " + newPos.getColumn());
             }
+            return null;
         }
-        return newPos;
     }
 
-    public ChessPosition verticalDown(ChessPosition startPos){
-        if (startPos.getRow() <= 1){
-            //System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
-            return startPos;
+    public ChessPosition verticalUp(ChessPosition startPos) {
+        if (startPos != null && startPos.getRow() < 8) {
+            int tempR = startPos.getRow() + 1;
+            int tempC = startPos.getColumn();
+            ChessPosition newPos = move(tempR, tempC);
+            return verticalUp(newPos);
         }
-        int tempR = startPos.getRow() - 1;
-        int tempC = startPos.getColumn();
-        ChessPosition newPos = new ChessPosition(tempR,tempC);
-        if (board.getPiece(newPos) == null){
-            legalMoves.add(new ChessMove(position,newPos,null));
-           // System.out.println(newPos.getRow() + " " + newPos.getColumn());
+        return null;
+    }
+
+    public ChessPosition verticalDown(ChessPosition startPos) {
+        if (startPos != null && startPos.getRow() > 1) {
+            int tempR = startPos.getRow() - 1;
+            int tempC = startPos.getColumn();
+            ChessPosition newPos = move(tempR, tempC);
             return verticalDown(newPos);
         }
-        else if (board.getPiece(newPos) != null){
-            if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
-                legalMoves.add(new ChessMove(position, newPos, null));
-             //   System.out.println("DURx " + newPos.getRow() + " " + newPos.getColumn());
-            }
-        }
-        return newPos;
+        return null;
     }
 
     public ChessPosition horizontalRight(ChessPosition startPos){
-        if (startPos.getColumn() >= 8){
-          //  System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
-            return startPos;
-        }
-        int tempR = startPos.getRow();
-        int tempC = startPos.getColumn() + 1;
-        ChessPosition newPos = new ChessPosition(tempR,tempC);
-        if (board.getPiece(newPos) == null){
-            legalMoves.add(new ChessMove(position,newPos,null));
-          //  System.out.println(newPos.getRow() + " " + newPos.getColumn());
+        if (startPos != null && startPos.getColumn() < 8){
+            int tempR = startPos.getRow();
+            int tempC = startPos.getColumn() + 1;
+            ChessPosition newPos = move(tempR, tempC);
             return horizontalRight(newPos);
         }
-        else if (board.getPiece(newPos) != null){
-            if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
-                legalMoves.add(new ChessMove(position, newPos, null));
-           //     System.out.println("DURx " + newPos.getRow() + " " + newPos.getColumn());
-            }
-        }
-        return newPos;
+        return null;
     }
 
     public ChessPosition horizontalLeft(ChessPosition startPos){
-        if (startPos.getColumn() <= 1){
-           // System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
-            return startPos;
-        }
-        int tempR = startPos.getRow();
-        int tempC = startPos.getColumn() - 1;
-        ChessPosition newPos = new ChessPosition(tempR,tempC);
-        if (board.getPiece(newPos) == null){
-            legalMoves.add(new ChessMove(position,newPos,null));
-           // System.out.println(newPos.getRow() + " " + newPos.getColumn());
+        if (startPos != null && startPos.getColumn() > 1){
+            int tempR = startPos.getRow();
+            int tempC = startPos.getColumn() - 1;
+            ChessPosition newPos = move(tempR, tempC);
             return horizontalLeft(newPos);
         }
-        else if (board.getPiece(newPos) != null){
-            if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
-                legalMoves.add(new ChessMove(position, newPos, null));
-             //   System.out.println("DURx " + newPos.getRow() + " " + newPos.getColumn());
-            }
-        }
-        return newPos;
+        return null;
+
     }
 
     public ChessPosition diagonalUpRight(ChessPosition startPos){
-        if (startPos.getRow() >= 8 || startPos.getColumn() >= 8){
-           // System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
-            return startPos;
+        if (startPos != null && (startPos.getRow() < 8 && startPos.getColumn() < 8)){
+            int tempR = startPos.getRow() + 1;
+            int tempC = startPos.getColumn() + 1;
+            startPos = move(tempR,tempC);
+            return diagonalUpRight(startPos);
         }
-        int tempR = startPos.getRow() + 1;
-        int tempC = startPos.getColumn() + 1;
-        ChessPosition newPos = new ChessPosition(tempR,tempC);
-        if (board.getPiece(newPos) == null){
-            legalMoves.add(new ChessMove(position,newPos,null));
-           // System.out.println(newPos.getRow() + " " + newPos.getColumn());
-            return diagonalUpRight(newPos);
-        }
-        else if (board.getPiece(newPos) != null){
-            if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
-                legalMoves.add(new ChessMove(position, newPos, null));
-            //    System.out.println("DURx " + newPos.getRow() + " " + newPos.getColumn());
-            }
-        }
-        return newPos;
+        return null;
     }
     public ChessPosition diagonalUpLeft(ChessPosition startPos){
-        if (startPos.getRow() >= 8 || startPos.getColumn() <= 1){
-           // System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
-            return startPos;
+        if (startPos != null && startPos.getRow() < 8 && startPos.getColumn() > 1){
+            int tempR = startPos.getRow() + 1;
+            int tempC = startPos.getColumn() - 1;
+            startPos = move(tempR,tempC);
+            return diagonalUpLeft(startPos);
         }
-        int tempR = startPos.getRow() + 1;
-        int tempC = startPos.getColumn() - 1;
-        ChessPosition newPos = new ChessPosition(tempR,tempC);
-        if (board.getPiece(newPos) == null){
-            legalMoves.add(new ChessMove(position,newPos,null));
-           // System.out.println(newPos.getRow() + " " + newPos.getColumn());
-            return diagonalUpLeft(newPos);
-        }
-        else if (board.getPiece(newPos) != null){
-            if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
-                legalMoves.add(new ChessMove(position, newPos, null));
-             //   System.out.println("DULx " + newPos.getRow() + " " + newPos.getColumn());
-            }
-        }
-        return newPos;
+        return null;
     }
 
     public ChessPosition diagonalDownRight(ChessPosition startPos){
-        if (startPos.getRow() <= 1 || startPos.getColumn() >= 8){
-          //  System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
-            return startPos;
+        if (startPos != null && startPos.getRow() > 1 && startPos.getColumn() < 8){
+            int tempR = startPos.getRow() - 1;
+            int tempC = startPos.getColumn() + 1;
+            startPos = move(tempR,tempC);
+            return diagonalDownRight(startPos);
         }
-        int tempR = startPos.getRow() - 1;
-        int tempC = startPos.getColumn() + 1;
-        ChessPosition newPos = new ChessPosition(tempR,tempC);
-        if (board.getPiece(newPos) == null){
-            legalMoves.add(new ChessMove(position,newPos,null));
-          //  System.out.println(newPos.getRow() + " " + newPos.getColumn());
-            return diagonalDownRight(newPos);
-        }
-        else if (board.getPiece(newPos) != null){
-            if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
-                legalMoves.add(new ChessMove(position, newPos, null));
-             //   System.out.println("DDRx " + newPos.getRow() + " " + newPos.getColumn());
-            }
-        }
-        return newPos;
+        return null;
     }
 
     public ChessPosition diagonalDownLeft(ChessPosition startPos){
-        if (startPos.getRow() <= 1 || startPos.getColumn() <= 1){
-           // System.out.println("Hit Edge: " + startPos.getRow() + " " + startPos.getColumn());
-            return startPos;
+        if (startPos != null && startPos.getRow() > 1 && startPos.getColumn() > 1){
+            int tempR = startPos.getRow() - 1;
+            int tempC = startPos.getColumn() - 1;
+            startPos = move(tempR,tempC);
+            return diagonalDownLeft(startPos);
         }
-        int tempR = startPos.getRow() - 1;
-        int tempC = startPos.getColumn() - 1;
-        ChessPosition newPos = new ChessPosition(tempR,tempC);
-        if (board.getPiece(newPos) == null){
-            legalMoves.add(new ChessMove(position,newPos,null));
-           // System.out.println(newPos.getRow() + " " + newPos.getColumn());
-            return diagonalDownLeft(newPos);
-        }
-        else if (board.getPiece(newPos) != null){
-            if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
-                legalMoves.add(new ChessMove(position, newPos, null));
-              //  System.out.println("DDLx " + newPos.getRow() + " " + newPos.getColumn());
-            }
-        }
-        return newPos;
+        return null;
     }
 
     @Override
