@@ -10,7 +10,6 @@ import model.JoinGameData;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.UUID;
 
 public class GameService {
     HashMap<String,String> returnVal = new HashMap<>();
@@ -19,16 +18,19 @@ public class GameService {
     public GameService(GameDAO gameData){
         this.gameData = gameData;
     }
-    public static String generateToken() {
-        return UUID.randomUUID().toString();
-    }
 
-    public HashSet<GameData> listGame() {
+    public HashSet<GameData> listGame() throws ResponseException{
+        if (gameData.size() == 0) {
+            throw new ResponseException(400,"Error: bad request");
+        }
         return gameData.listGame();
     }
 
-    public int createGame(AuthData authUser, String game){
-        return gameData.createGame(authUser,game);
+    public int createGame(String game) throws ResponseException{
+        if (game == null){
+            throw new ResponseException(400,"Error: bad request");
+        }
+        return gameData.createGame(game);
     }
 
     public void clear(){
@@ -46,7 +48,16 @@ public class GameService {
         }
     }
 
-    public GameData getGame(int gameID){
-        return gameData.findGame(gameID);
+    public GameData getGame(int gameID) throws ResponseException{
+        var game = gameData.findGame(gameID);
+        if (game == null){
+            throw new ResponseException(400,"Error: bad request");
+        }
+        return game;
     }
+
+    public int size(){
+        return gameData.size();
+    }
+
 }

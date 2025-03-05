@@ -12,16 +12,12 @@ public class GameMemoryAccess implements GameDAO {
     HashSet<GameData> gameDB = new HashSet<>();
     int gameID = 0;
 
-    public int createGame(AuthData authUser, String name) {
+    public int createGame(String name) {
         setGameID(gameID+1);
         var madeGame = new GameData(gameID,null,null,name,new ChessGame());
         gameDB.add(madeGame);
         return gameID;
     };
-
-//    public GameData setGame() {
-//        return null;
-//    };
 
     public void setGameID(int gameID) {
         this.gameID = gameID;
@@ -69,6 +65,7 @@ public class GameMemoryAccess implements GameDAO {
 
     public void clear(){
         gameDB.clear();
+        setGameID(0);
     };
 
     public GameData findGame(int idGame){
@@ -78,6 +75,10 @@ public class GameMemoryAccess implements GameDAO {
             }
         }
         return null;
+    }
+
+    public int size() {
+        return gameDB.size();
     }
 
 }

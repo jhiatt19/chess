@@ -110,12 +110,12 @@ public class Server {
         var authorized = authService.checkAuth(token);
         if (authorized != null) {
             var game = new Gson().fromJson(req.body(),GameData.class);
-            System.out.println(game);
+            //System.out.println(game);
             if (game == null){
                 throw new ResponseException(400, "Error: bad request");
             }
-            var responseMap = gameService.createGame(authorized, game.gameName());
-            System.out.println(gameService.getGame(responseMap));
+            var responseMap = gameService.createGame(game.gameName());
+            //System.out.println(gameService.getGame(responseMap));
             return new Gson().toJson(Map.of("gameID", responseMap));
         }
         else {

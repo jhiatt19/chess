@@ -8,9 +8,7 @@ import model.JoinGameData;
 import java.util.HashSet;
 
 public interface GameDAO {
-    int createGame(AuthData authUser, String name); //implement throw
-
-    //GameData setGame();
+    int createGame(String name); //implement throw
 
     HashSet<GameData> listGame();
 
@@ -21,4 +19,6 @@ public interface GameDAO {
     void addPlayer(JoinGameData color, String user, GameData game, String otherPlayer);
 
     GameData findGame(int gameID);
+
+    int size();
 }

@@ -14,6 +14,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserServiceTest {
     static final UserService userService = new UserService(new UserMemoryAccess());
     ArrayList<UserData> userList = new ArrayList<>();
+    UserData user = new UserData("Tester","asdf","u@yahoo.com");
+    UserData nextUser = new UserData("Swiper","noswiping","dora@explorer.com");
+    UserData tweedleDee = new UserData("TweedleDee","tweedleDum","deadPoetsSocieity@taylor.com");
 
     @BeforeEach
     void clear() throws ResponseException {
@@ -62,17 +65,9 @@ public class UserServiceTest {
 
     @Test
     void checkUser() throws ResponseException{
-        var user = new UserData("Tester","asdf","u@yahoo.com");
-        var nextUser = new UserData("Swiper","noswiping","dora@explorer.com");
-        var tweedleDee = new UserData("TweedleDee","tweedleDum","deadPoetsSocieity@taylor.com");
-
         user = userService.createUser(user);
         nextUser = userService.createUser(nextUser);
         tweedleDee = userService.createUser(tweedleDee);
-
-        userList.add(user);
-        userList.add(nextUser);
-        userList.add(tweedleDee);
 
         assertEquals(userService.checkUser(user),user);
         assertEquals(userService.checkUser(nextUser),nextUser);
@@ -82,18 +77,30 @@ public class UserServiceTest {
 
     @Test
     void noUser() throws ResponseException {
+        userService.createUser(user);
+        userService.createUser(nextUser);
+        userService.createUser(tweedleDee);
+
         var notAdded = new UserData("TweedleDum", "hehehe", "imnothere@gmail.com");
 
         assertThrows(ResponseException.class, ()-> userService.checkUser(notAdded));
     }
 
     @Test
-    void size() {
-        assertEquals(userList.size(),userService.size());
+    void size() throws ResponseException {
+        user = userService.createUser(user);
+        nextUser = userService.createUser(nextUser);
+        tweedleDee = userService.createUser(tweedleDee);
+
+        assertEquals(3,userService.size());
     }
 
     @Test
     void clearUserData() throws ResponseException {
+        user = userService.createUser(user);
+        nextUser = userService.createUser(nextUser);
+        tweedleDee = userService.createUser(tweedleDee);
+
         userService.clear();
 
         assertEquals(0,userService.size());

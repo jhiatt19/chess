@@ -9,14 +9,13 @@ import services.AuthService;
 
 
 import java.util.UUID;
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
 public class AuthServiceTest {
     static final AuthService authService = new AuthService(new AuthMemoryAccess());
-    public static String generateToken(){
+    private static String generateToken(){
         return UUID.randomUUID().toString();
     }
 
