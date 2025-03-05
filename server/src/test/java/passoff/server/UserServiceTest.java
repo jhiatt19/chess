@@ -31,7 +31,6 @@ public class UserServiceTest {
 
         assertEquals(1, userList.size());
         assertTrue(userList.contains(user));
-        assertEquals(userService.checkUser(user), user);
     }
 
     @Test
@@ -43,7 +42,6 @@ public class UserServiceTest {
 
         assertEquals(1, userList.size());
         assertTrue(userList.contains(sameUser));
-        assertEquals(userService.checkUser(sameUser), sameUser);
 
     }
 
@@ -59,8 +57,46 @@ public class UserServiceTest {
 
         assertEquals(2, userList.size());
         assertTrue(userList.contains(samePassword));
-        assertEquals(userService.checkUser(samePassword), samePassword);
 
+    }
+
+    @Test
+    void checkUser() throws ResponseException{
+        var user = new UserData("Tester","asdf","u@yahoo.com");
+        var nextUser = new UserData("Swiper","noswiping","dora@explorer.com");
+        var tweedleDee = new UserData("TweedleDee","tweedleDum","deadPoetsSocieity@taylor.com");
+
+        user = userService.createUser(user);
+        nextUser = userService.createUser(nextUser);
+        tweedleDee = userService.createUser(tweedleDee);
+
+        userList.add(user);
+        userList.add(nextUser);
+        userList.add(tweedleDee);
+
+        assertEquals(userService.checkUser(user),user);
+        assertEquals(userService.checkUser(nextUser),nextUser);
+        assertEquals(userService.checkUser(tweedleDee),tweedleDee);
+
+    }
+
+    @Test
+    void noUser() throws ResponseException {
+        var notAdded = new UserData("TweedleDum", "hehehe", "imnothere@gmail.com");
+
+        assertThrows(ResponseException.class, ()-> userService.checkUser(notAdded));
+    }
+
+    @Test
+    void size() {
+        assertEquals(userList.size(),userService.size());
+    }
+
+    @Test
+    void clearUserData() throws ResponseException {
+        userService.clear();
+
+        assertEquals(0,userService.size());
     }
 }
 

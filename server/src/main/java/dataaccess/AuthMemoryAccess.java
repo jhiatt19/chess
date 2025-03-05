@@ -38,6 +38,10 @@ public class AuthMemoryAccess implements AuthDAO{
         authDB.clear();
     };
 
+    public int size(){
+        return authDB.size();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {

@@ -12,4 +12,6 @@ public interface UserDAO {
     boolean deleteUser(UserData user);
 
     UserData updateUser();
+
+    int size();
 }

@@ -49,6 +49,10 @@ public class UserService {
         userData.clear();
     }
 
+    public int size() {
+        return userData.size();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {

@@ -8,4 +8,5 @@ public interface AuthDAO {
     AuthData checkAuth(String token);
     AuthData deleteAuth(String token);
     void clear();
+    int size();
 }

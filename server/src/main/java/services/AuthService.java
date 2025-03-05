@@ -23,8 +23,8 @@ public class AuthService {
     }
 
     public AuthData setAuth(AuthData authdata) throws ResponseException {
-        if (authdata.authToken() == null){
-            throw new ResponseException(500,"Error: No data saved");
+        if (authdata.authToken() == null || authdata.username() == null){
+            throw new ResponseException(400,"Error: bad request");
         }
         else {
             return authData.setAuth(authdata);
@@ -47,5 +47,9 @@ public class AuthService {
 
     public AuthData checkAuth(String token) throws ResponseException {
         return authData.checkAuth(token);
+    }
+
+    public int size() {
+        return authData.size();
     }
 }

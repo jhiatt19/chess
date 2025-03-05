@@ -9,7 +9,6 @@ public class UserMemoryAccess implements UserDAO {
     final private HashSet<UserData> userDB = new HashSet<>();
 
     public UserData createUser(UserData user){
-        System.out.println("Inside the DB: " + user);
         var madeUser = new UserData(user.username(), user.password(), user.email());
         userDB.add(madeUser);
         return madeUser;
@@ -36,6 +35,10 @@ public class UserMemoryAccess implements UserDAO {
     public void clear(){
         userDB.clear();
     };
+
+    public int size() {
+        return userDB.size();
+    }
 
     @Override
     public boolean equals(Object o) {
