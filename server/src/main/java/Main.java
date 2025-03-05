@@ -1,10 +1,6 @@
 import chess.*;
-import dataaccess.*;
-import exception.ResponseException;
 import server.Server;
-import services.AuthService;
-import services.GameService;
-import services.UserService;
+
 
 public class Main {
     public static void main(String[] args) {
