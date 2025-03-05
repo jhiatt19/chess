@@ -21,17 +21,7 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
 
         return legalMoves;
     }
-    public ChessPosition rookMove(int tempR, int tempC){
-        ChessPosition newPos = new ChessPosition(tempR,tempC);
-        if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
-            legalMoves.add(new ChessMove(position, newPos, null));
-            return null;
-        }
-        else {
-            legalMoves.add(new ChessMove(position,newPos,null));
-            return  newPos;
-        }
-    }
+
     public ChessPosition rookVerticalUp(ChessPosition startPos){
         if (startPos != null && startPos.getRow() < 8){
             int tempR = startPos.getRow() + 1;
@@ -50,6 +40,20 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
             return rookVerticalDown(newPos);
         }
         return null;
+    }
+
+    public ChessPosition rookMove(int tempR, int tempC){
+        ChessPosition newPos = new ChessPosition(tempR,tempC);
+        if (board.getPiece(newPos) == null){
+            legalMoves.add(new ChessMove(position,newPos,null));
+            return  newPos;
+        }
+        else {
+            if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
+                legalMoves.add(new ChessMove(position, newPos, null));
+            }
+            return null;
+        }
     }
 
     public ChessPosition rookHorizontalRight(ChessPosition startPos){
