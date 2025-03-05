@@ -146,9 +146,4 @@ public class GameServiceTest {
         assertEquals(0,gameService.size());
     }
 
-    @Test
-    void noGames() throws ResponseException {
-        assertThrows(ResponseException.class, () -> gameService.listGame());
-    }
-
 }

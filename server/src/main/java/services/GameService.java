@@ -20,9 +20,6 @@ public class GameService {
     }
 
     public HashSet<GameData> listGame() throws ResponseException{
-        if (gameData.size() == 0) {
-            throw new ResponseException(400,"Error: bad request");
-        }
         return gameData.listGame();
     }
 
