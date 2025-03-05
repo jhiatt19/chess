@@ -8,10 +8,12 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
     private final ChessBoard board;
     private final ChessPosition position;
     private final ArrayList<ChessMove> legalMoves = new ArrayList<>();
+    private final RecursiveCalls recursiveCalls;
 
     public RooksMoveCalculator(ChessBoard board, ChessPosition position){
         this.board = board;
         this.position = position;
+        this.recursiveCalls = new RecursiveCalls(board,position);
     }
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
         rookVerticalUp(position);
@@ -26,7 +28,7 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
         if (startPos != null && startPos.getRow() < 8){
             int tempR = startPos.getRow() + 1;
             int tempC = startPos.getColumn();
-            ChessPosition newPos = rookMove(tempR,tempC);
+            ChessPosition newPos = recursiveCalls.move(tempR, tempC, legalMoves);
             return rookVerticalUp(newPos);
         }
         return null;
@@ -36,31 +38,17 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
         if (startPos != null && startPos.getRow() > 1){
             int tempR = startPos.getRow() - 1;
             int tempC = startPos.getColumn();
-            ChessPosition newPos = rookMove(tempR,tempC);
+            ChessPosition newPos = recursiveCalls.move(tempR, tempC, legalMoves);;
             return rookVerticalDown(newPos);
         }
         return null;
-    }
-
-    public ChessPosition rookMove(int tempR, int tempC){
-        ChessPosition newPos = new ChessPosition(tempR,tempC);
-        if (board.getPiece(newPos) == null){
-            legalMoves.add(new ChessMove(position,newPos,null));
-            return  newPos;
-        }
-        else {
-            if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())){
-                legalMoves.add(new ChessMove(position, newPos, null));
-            }
-            return null;
-        }
     }
 
     public ChessPosition rookHorizontalRight(ChessPosition startPos){
         if (startPos != null && startPos.getColumn() < 8){
             int tempR = startPos.getRow();
             int tempC = startPos.getColumn() + 1;
-            ChessPosition newPos = rookMove(tempR,tempC);
+            ChessPosition newPos = recursiveCalls.move(tempR, tempC, legalMoves);;
             return rookHorizontalRight(newPos);
         }
         return null;
@@ -70,7 +58,7 @@ public class RooksMoveCalculator implements ChessMovesCalculator{
         if (startPos != null && startPos.getColumn() > 1){
             int tempR = startPos.getRow();
             int tempC = startPos.getColumn() - 1;
-            ChessPosition newPos = rookMove(tempR,tempC);
+            ChessPosition newPos = recursiveCalls.move(tempR, tempC, legalMoves);;
             return rookHorizontalLeft(newPos);
         }
         return null;

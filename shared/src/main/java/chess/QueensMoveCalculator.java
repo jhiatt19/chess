@@ -8,10 +8,12 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
     private final ChessBoard board;
     private final ChessPosition position;
     private final ArrayList<ChessMove> legalMoves = new ArrayList<>();
+    private final RecursiveCalls recursiveCalls;
 
     public QueensMoveCalculator(ChessBoard board, ChessPosition position){
         this.board = board;
         this.position = position;
+        this.recursiveCalls = new RecursiveCalls(board,position);
     }
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
         queenDiagonalUpRight(position);
@@ -30,7 +32,7 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
         if (startPos != null && startPos.getRow() < 8) {
             int tempR = startPos.getRow() + 1;
             int tempC = startPos.getColumn();
-            ChessPosition newPos = queenMove(tempR, tempC);
+            ChessPosition newPos = recursiveCalls.move(tempR, tempC, legalMoves);;
             return queenVerticalUp(newPos);
         }
         return null;
@@ -40,7 +42,7 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
         if (startPos != null && startPos.getRow() > 1) {
             int tempR = startPos.getRow() - 1;
             int tempC = startPos.getColumn();
-            ChessPosition newPos = queenMove(tempR, tempC);
+            ChessPosition newPos = recursiveCalls.move(tempR, tempC, legalMoves);;
             return queenVerticalDown(newPos);
         }
         return null;
@@ -50,7 +52,7 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
         if (startPos != null && startPos.getColumn() < 8){
             int tempR = startPos.getRow();
             int tempC = startPos.getColumn() + 1;
-            ChessPosition newPos = queenMove(tempR, tempC);
+            ChessPosition newPos = recursiveCalls.move(tempR, tempC, legalMoves);;
             return queenHorizontalRight(newPos);
         }
         return null;
@@ -60,7 +62,7 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
         if (startPos != null && startPos.getColumn() > 1){
             int tempR = startPos.getRow();
             int tempC = startPos.getColumn() - 1;
-            ChessPosition newPos = queenMove(tempR, tempC);
+            ChessPosition newPos = recursiveCalls.move(tempR, tempC, legalMoves);;
             return queenHorizontalLeft(newPos);
         }
         return null;
@@ -71,7 +73,7 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
         if (startPos != null && (startPos.getRow() < 8 && startPos.getColumn() < 8)){
             int tempR = startPos.getRow() + 1;
             int tempC = startPos.getColumn() + 1;
-            startPos = queenMove(tempR,tempC);
+            startPos = recursiveCalls.move(tempR, tempC, legalMoves);;
             return queenDiagonalUpRight(startPos);
         }
         return null;
@@ -80,7 +82,7 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
         if (startPos != null && startPos.getRow() < 8 && startPos.getColumn() > 1){
             int tempR = startPos.getRow() + 1;
             int tempC = startPos.getColumn() - 1;
-            startPos = queenMove(tempR,tempC);
+            startPos = recursiveCalls.move(tempR, tempC, legalMoves);;
             return queenDiagonalUpLeft(startPos);
         }
         return null;
@@ -90,7 +92,7 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
         if (startPos != null && startPos.getRow() > 1 && startPos.getColumn() < 8){
             int tempR = startPos.getRow() - 1;
             int tempC = startPos.getColumn() + 1;
-            startPos = queenMove(tempR,tempC);
+            startPos = recursiveCalls.move(tempR, tempC, legalMoves);;
             return queenDiagonalDownRight(startPos);
         }
         return null;
@@ -100,24 +102,10 @@ public class QueensMoveCalculator implements ChessMovesCalculator{
         if (startPos != null && startPos.getRow() > 1 && startPos.getColumn() > 1){
             int tempR = startPos.getRow() - 1;
             int tempC = startPos.getColumn() - 1;
-            startPos = queenMove(tempR,tempC);
+            startPos = recursiveCalls.move(tempR, tempC, legalMoves);;
             return queenDiagonalDownLeft(startPos);
         }
         return null;
-    }
-
-    public ChessPosition queenMove(int tempR, int tempC) {
-        ChessPosition newPos = new ChessPosition(tempR, tempC);
-        if (board.getPiece(newPos) == null) {
-            legalMoves.add(new ChessMove(position, newPos, null));
-            return newPos;
-        }
-        else {
-            if (!board.getPiece(newPos).getTeamColor().equals(board.getPiece(position).getTeamColor())) {
-                legalMoves.add(new ChessMove(position, newPos, null));
-            }
-            return null;
-        }
     }
 
     @Override
