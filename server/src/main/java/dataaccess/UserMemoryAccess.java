@@ -23,14 +23,14 @@ public class UserMemoryAccess implements UserDAO {
         return null;
     };
 
-    public UserData updateUser(){
-        return null;
-    };
+//    public UserData updateUser(){
+//        return null;
+//    };
 
-    public boolean deleteUser(UserData user){
-        userDB.remove(user);
-        return userDB.contains(user);
-    };
+//    public boolean deleteUser(UserData user){
+//        userDB.remove(user);
+//        return userDB.contains(user);
+//    };
 
     public void clear(){
         userDB.clear();

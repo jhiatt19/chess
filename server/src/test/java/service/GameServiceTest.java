@@ -14,82 +14,82 @@ import java.util.HashSet;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameServiceTest {
-    static final GameService gameService = new GameService(new GameMemoryAccess());
+    static final GameService GAMESERVICE = new GameService(new GameMemoryAccess());
     HashSet<GameData> gamesList = new HashSet<>();
 
     @BeforeEach
     void clear() throws ResponseException {
-        gameService.clear();
+        GAMESERVICE.clear();
     }
 
     @Test
     void getGame() throws ResponseException {
-        gameService.clear();
-        var gameID2 = gameService.createGame("doubleTrouble");
+        GAMESERVICE.clear();
+        var gameID2 = GAMESERVICE.createGame("doubleTrouble");
         System.out.println(gameID2);
-        var game2 = gameService.getGame(gameID2);
+        var game2 = GAMESERVICE.getGame(gameID2);
 
         gamesList.add(new GameData(gameID2,null,null,game2.gameName(),game2.game()));
 
         for (GameData game : gamesList){
-            assertEquals(game,gameService.getGame(1));
-            assertEquals(1,gameService.size());
+            assertEquals(game,GAMESERVICE.getGame(1));
+            assertEquals(1,GAMESERVICE.size());
         }
     }
 
     @Test
     void createGame() throws ResponseException {
         var name = "reallyCoolGameName";
-        var gameID = gameService.createGame(name);
-        var chessGame = gameService.getGame(gameID);
+        var gameID = GAMESERVICE.createGame(name);
+        var chessGame = GAMESERVICE.getGame(gameID);
 
         var expectGame = new GameData(gameID,null,null,name,chessGame.getGame());
         gamesList.add(expectGame);
 
         assertEquals(expectGame,chessGame);
-        assertEquals(1,gameService.size());
+        assertEquals(1,GAMESERVICE.size());
     }
 
 
     @Test
     void notValidGameID() throws ResponseException{
-        gameService.createGame("soloist");
-        gameService.createGame("doubleTrouble");
-        gameService.createGame("TripleThreat");
+        GAMESERVICE.createGame("soloist");
+        GAMESERVICE.createGame("doubleTrouble");
+        GAMESERVICE.createGame("TripleThreat");
 
-        assertThrows(ResponseException.class, () -> gameService.getGame(9));
+        assertThrows(ResponseException.class, () -> GAMESERVICE.getGame(9));
     }
 
     @Test
     void noName() throws ResponseException {
-        assertThrows(ResponseException.class, () -> gameService.createGame(null));
+        assertThrows(ResponseException.class, () -> GAMESERVICE.createGame(null));
     }
 
     @Test
     void listGames() throws ResponseException {
-        var gameID2 = gameService.createGame("doubleTrouble");
-        var gameID3 = gameService.createGame("TripleThreat");
+        var gameID2 = GAMESERVICE.createGame("doubleTrouble");
+        var gameID3 = GAMESERVICE.createGame("TripleThreat");
 
-        var game2 = gameService.getGame(gameID2);
-        var game3 = gameService.getGame(gameID3);
+        var game2 = GAMESERVICE.getGame(gameID2);
+        var game3 = GAMESERVICE.getGame(gameID3);
 
         gamesList.add(new GameData(gameID2,null,null,game2.gameName(),game2.game()));
         gamesList.add(new GameData(gameID3,null,null,game3.gameName(),game3.game()));
 
 
-        assertEquals(gamesList,gameService.listGame());
+        assertEquals(gamesList,GAMESERVICE.listGame());
     }
 
     @Test
     void joinGame() throws ResponseException {
-        gameService.createGame("soloist");
-        gameService.createGame("doubleTrouble");
-        gameService.createGame("TripleThreat");
+        GAMESERVICE.createGame("soloist");
+        GAMESERVICE.createGame("doubleTrouble");
+        GAMESERVICE.createGame("TripleThreat");
 
-        assertEquals(3,gameService.size());
+        assertEquals(3,GAMESERVICE.size());
 
         var joinGame = new JoinGameData(1,"WHITE");
-        var gameData = gameService.joinGame(joinGame,"HelloPoppet");
+        var gameData = GAMESERVICE.joinGame(joinGame,"HelloPoppet");
         var updatedGame = new GameData(0,null,null,"test",new ChessGame());
         for (GameData game : gamesList){
             if (game.gameID() == 1){
@@ -103,47 +103,47 @@ public class GameServiceTest {
 
     @Test
     void badGameID() throws ResponseException {
-        gameService.createGame("soloist");
-        gameService.createGame("doubleTrouble");
-        gameService.createGame("TripleThreat");
+        GAMESERVICE.createGame("soloist");
+        GAMESERVICE.createGame("doubleTrouble");
+        GAMESERVICE.createGame("TripleThreat");
 
-        assertEquals(3,gameService.size());
+        assertEquals(3,GAMESERVICE.size());
 
         var joinGame = new JoinGameData(4,"WHITE");
 
-        assertThrows(ResponseException.class, () -> gameService.joinGame(joinGame,"HelloPoppet"));
+        assertThrows(ResponseException.class, () -> GAMESERVICE.joinGame(joinGame,"HelloPoppet"));
     }
 
     @Test
     void stealColor() throws ResponseException {
-        gameService.createGame("soloist");
-        gameService.createGame("doubleTrouble");
-        gameService.createGame("TripleThreat");
+        GAMESERVICE.createGame("soloist");
+        GAMESERVICE.createGame("doubleTrouble");
+        GAMESERVICE.createGame("TripleThreat");
 
-        assertEquals(3,gameService.size());
+        assertEquals(3,GAMESERVICE.size());
 
         var joinGame = new JoinGameData(1,"WHITE");
-        gameService.joinGame(joinGame,"ImhereFirst");
+        GAMESERVICE.joinGame(joinGame,"ImhereFirst");
 
-        assertThrows(ResponseException.class, () -> gameService.joinGame(joinGame,"HelloPoppet"));
+        assertThrows(ResponseException.class, () -> GAMESERVICE.joinGame(joinGame,"HelloPoppet"));
     }
 
     @Test
     void size() throws ResponseException{
-        gameService.createGame("soloist");
-        gameService.createGame("doubleTrouble");
-        gameService.createGame("TripleThreat");
+        GAMESERVICE.createGame("soloist");
+        GAMESERVICE.createGame("doubleTrouble");
+        GAMESERVICE.createGame("TripleThreat");
 
-        assertEquals(3,gameService.size());
+        assertEquals(3,GAMESERVICE.size());
     }
     @Test
     void clearAll() throws ResponseException{
-        gameService.createGame("soloist");
-        gameService.createGame("doubleTrouble");
-        gameService.createGame("TripleThreat");
-        gameService.clear();
+        GAMESERVICE.createGame("soloist");
+        GAMESERVICE.createGame("doubleTrouble");
+        GAMESERVICE.createGame("TripleThreat");
+        GAMESERVICE.clear();
 
-        assertEquals(0,gameService.size());
+        assertEquals(0,GAMESERVICE.size());
     }
 
 }

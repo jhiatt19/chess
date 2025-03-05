@@ -9,9 +9,9 @@ public interface UserDAO {
 
     void clear();
 
-    boolean deleteUser(UserData user);
+    //boolean deleteUser(UserData user);
 
-    UserData updateUser();
+    //UserData updateUser();
 
     int size();
 }

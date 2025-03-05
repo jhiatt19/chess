@@ -9,15 +9,15 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessMove {
-    private ChessPosition startPosition;
-    private ChessPosition endPosition;
-    private ChessPiece.PieceType promotionPiece;
+    private ChessPosition startPos;
+    private ChessPosition endPos;
+    private ChessPiece.PieceType promPiece;
 
-    public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
-                     ChessPiece.PieceType promotionPiece) {
-        this.startPosition = startPosition;
-        this.endPosition = endPosition;
-        this.promotionPiece = promotionPiece;
+    public ChessMove(ChessPosition startPos, ChessPosition endPos,
+                     ChessPiece.PieceType promPiece) {
+        this.startPos = startPos;
+        this.endPos = endPos;
+        this.promPiece = promPiece;
 
     }
 
@@ -25,14 +25,14 @@ public class ChessMove {
      * @return ChessPosition of starting location
      */
     public ChessPosition getStartPosition() {
-        return startPosition;
+        return startPos;
     }
 
     /**
      * @return ChessPosition of ending location
      */
     public ChessPosition getEndPosition() {
-        return endPosition;
+        return endPos;
     }
 
     /**
@@ -42,7 +42,7 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-        return promotionPiece;
+        return promPiece;
     }
 
     @Override
@@ -51,16 +51,16 @@ public class ChessMove {
             return false;
         }
         ChessMove chessMove = (ChessMove) o;
-        return Objects.equals(startPosition, chessMove.startPosition) && Objects.equals(endPosition, chessMove.endPosition) && promotionPiece == chessMove.promotionPiece;
+        return Objects.equals(startPos, chessMove.startPos) && Objects.equals(endPos, chessMove.endPos) && promPiece == chessMove.promPiece;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(startPosition, endPosition, promotionPiece);
+        return Objects.hash(startPos, endPos, promPiece);
     }
 
     @Override
     public String toString() {
-        return "[start:" + startPosition + ", end:" + endPosition + "]";
+        return "[start:" + startPos + ", end:" + endPos + "]";
     }
 }

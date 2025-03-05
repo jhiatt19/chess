@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserServiceTest {
-    static final UserService userService = new UserService(new UserMemoryAccess());
+    static final UserService USERSERVICE = new UserService(new UserMemoryAccess());
     ArrayList<UserData> userList = new ArrayList<>();
     UserData user = new UserData("Tester","asdf","u@yahoo.com");
     UserData nextUser = new UserData("Swiper","noswiping","dora@explorer.com");
@@ -20,14 +20,14 @@ public class UserServiceTest {
 
     @BeforeEach
     void clear() throws ResponseException {
-        userService.clear();
+        USERSERVICE.clear();
     }
 
     @Test
         //Create User
     void createUser() throws ResponseException {
         var user = new UserData("TestUser", "asdf", "user@mail.com");
-        user = userService.createUser(user);
+        user = USERSERVICE.createUser(user);
 
         ArrayList<UserData> userList = new ArrayList<>();
         userList.add(user);
@@ -39,7 +39,7 @@ public class UserServiceTest {
     @Test
     void sameUsername() throws ResponseException {
         var sameUser = new UserData("TestUser", "asdfasdf", "user@mail.com");
-        sameUser = userService.createUser(sameUser);
+        sameUser = USERSERVICE.createUser(sameUser);
 
         userList.add(sameUser);
 
@@ -51,9 +51,9 @@ public class UserServiceTest {
     @Test
     void samePassword() throws ResponseException {
     var user = new UserData("TestUser", "asdf", "user@mail.com");
-        user = userService.createUser(user);
+        user = USERSERVICE.createUser(user);
         var samePassword = new UserData("TestUser1", "asdf", "user@mail.com");
-        samePassword = userService.createUser(samePassword);
+        samePassword = USERSERVICE.createUser(samePassword);
 
         userList.add(user);
         userList.add(samePassword);
@@ -65,45 +65,45 @@ public class UserServiceTest {
 
     @Test
     void checkUser() throws ResponseException{
-        user = userService.createUser(user);
-        nextUser = userService.createUser(nextUser);
-        tweedleDee = userService.createUser(tweedleDee);
+        user = USERSERVICE.createUser(user);
+        nextUser = USERSERVICE.createUser(nextUser);
+        tweedleDee = USERSERVICE.createUser(tweedleDee);
 
-        assertEquals(userService.checkUser(user),user);
-        assertEquals(userService.checkUser(nextUser),nextUser);
-        assertEquals(userService.checkUser(tweedleDee),tweedleDee);
+        assertEquals(USERSERVICE.checkUser(user),user);
+        assertEquals(USERSERVICE.checkUser(nextUser),nextUser);
+        assertEquals(USERSERVICE.checkUser(tweedleDee),tweedleDee);
 
     }
 
     @Test
     void noUser() throws ResponseException {
-        userService.createUser(user);
-        userService.createUser(nextUser);
-        userService.createUser(tweedleDee);
+        USERSERVICE.createUser(user);
+        USERSERVICE.createUser(nextUser);
+        USERSERVICE.createUser(tweedleDee);
 
         var notAdded = new UserData("TweedleDum", "hehehe", "imnothere@gmail.com");
 
-        assertThrows(ResponseException.class, ()-> userService.checkUser(notAdded));
+        assertThrows(ResponseException.class, ()-> USERSERVICE.checkUser(notAdded));
     }
 
     @Test
     void size() throws ResponseException {
-        user = userService.createUser(user);
-        nextUser = userService.createUser(nextUser);
-        tweedleDee = userService.createUser(tweedleDee);
+        user = USERSERVICE.createUser(user);
+        nextUser = USERSERVICE.createUser(nextUser);
+        tweedleDee = USERSERVICE.createUser(tweedleDee);
 
-        assertEquals(3,userService.size());
+        assertEquals(3,USERSERVICE.size());
     }
 
     @Test
     void clearUserData() throws ResponseException {
-        user = userService.createUser(user);
-        nextUser = userService.createUser(nextUser);
-        tweedleDee = userService.createUser(tweedleDee);
+        user = USERSERVICE.createUser(user);
+        nextUser = USERSERVICE.createUser(nextUser);
+        tweedleDee = USERSERVICE.createUser(tweedleDee);
 
-        userService.clear();
+        USERSERVICE.clear();
 
-        assertEquals(0,userService.size());
+        assertEquals(0,USERSERVICE.size());
     }
 }
 
