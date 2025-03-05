@@ -1,8 +1,12 @@
-package chess;
+package chess.movecalculators;
+
+import chess.ChessBoard;
+import chess.ChessMove;
+import chess.ChessPosition;
 
 import java.util.*;
 
-public class BishopsMoveCalculator implements ChessMovesCalculator{
+public class BishopsMoveCalculator implements ChessMovesCalculator {
     private final ChessBoard board;
     private final ChessPosition position;
     private final ArrayList<ChessMove> legalMoves = new ArrayList<>();

@@ -1,10 +1,14 @@
-package chess;
+package chess.movecalculators;
+
+import chess.ChessBoard;
+import chess.ChessMove;
+import chess.ChessPosition;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
-public class QueensMoveCalculator implements ChessMovesCalculator{
+public class QueensMoveCalculator implements ChessMovesCalculator {
     private final ChessBoard board;
     private final ChessPosition position;
     private final ArrayList<ChessMove> legalMoves = new ArrayList<>();

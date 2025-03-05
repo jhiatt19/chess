@@ -1,8 +1,12 @@
-package chess;
+package chess.movecalculators;
+
+import chess.ChessBoard;
+import chess.ChessMove;
+import chess.ChessPosition;
 
 import java.util.ArrayList;
 
-public class RecursiveCalls implements RecursiveCallsInterface{
+public class RecursiveCalls implements RecursiveCallsInterface {
     ChessBoard board;
     ChessPosition position;
 
