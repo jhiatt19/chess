@@ -23,7 +23,6 @@ public class UserMemoryAccess implements UserDAO {
         return null;
     };
 
-
     public void clear(){
         userDB.clear();
     };

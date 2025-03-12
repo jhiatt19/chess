@@ -9,6 +9,7 @@ import services.GameService;
 import services.UserService;
 import spark.*;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -21,14 +22,18 @@ public class Server {
     private final UserDAO userDAO;
     private final AuthDAO authDAO;
 
-    public Server(){
-        this.gameDAO = new GameMemoryAccess();
-        this.userDAO = new UserMemoryAccess();
-        this.authDAO = new AuthMemoryAccess();
-        this.authService = new AuthService(authDAO);
-        this.gameService = new GameService(gameDAO);
-        this.userService = new UserService(userDAO);
-
+    public Server() throws DataAccessException {
+        try {
+            this.gameDAO = new GameMemoryAccess();
+            this.authDAO = new AuthMemoryAccess();
+            this.userDAO = new UserSqlDataAccess();
+            this.authService = new AuthService(authDAO);
+            this.gameService = new GameService(gameDAO);
+            this.userService = new UserService(userDAO);
+        }
+        catch (DataAccessException ex) {
+            throw new DataAccessException(String.format("Problem creating server connection",ex.getMessage()));
+        }
 
     }
 
@@ -46,6 +51,7 @@ public class Server {
         Spark.put("/game",this::joinGame);
         Spark.delete("/db",this::clear);
         Spark.exception(ResponseException.class,this::exceptionHandler);
+        Spark.exception(DataAccessException.class,this::dataExceptionHandler);
         //This line initializes the server and can be removed once you have a functioning endpoint
 
         Spark.awaitInitialization();
@@ -61,11 +67,16 @@ public class Server {
         return UUID.randomUUID().toString();
     }
 
+    private void dataExceptionHandler(Exception ex,Request req, Response res){
+        res.status(500);
+        res.body(ex.getMessage());
+    }
+
     private void exceptionHandler(ResponseException ex, Request req, Response res){
         res.status(ex.statusCode());
         res.body(ex.toJson());
     }
-    private Object createUser(Request req, Response res) throws ResponseException {
+    private Object createUser(Request req, Response res) throws ResponseException, DataAccessException {
         var user = new Gson().fromJson(req.body(), UserData.class);
         var madeUser = userService.createUser(user);
         var authUser = DataTransformation.transform(madeUser,generateToken());

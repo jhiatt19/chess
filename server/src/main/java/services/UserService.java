@@ -1,5 +1,6 @@
 package services;
 
+import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import dataaccess.UserMemoryAccess;
 import exception.ResponseException;
@@ -18,7 +19,7 @@ public class UserService {
         this.userData = userData;
     }
 
-    public UserData createUser(UserData user) throws ResponseException {
+    public UserData createUser(UserData user) throws ResponseException, DataAccessException {
         //System.out.println(userData);
         if (userData.getUser(user) != null){
             throw new ResponseException(403, "Error: already taken");
@@ -27,7 +28,13 @@ public class UserService {
             throw new ResponseException(400,"Error: bad request");
         }
         else {
-            return userData.createUser(user);
+            try {
+                return userData.createUser(user);
+            }
+            catch (Exception ex){
+                throw new DataAccessException(String.format("Did not add user", ex.getMessage()));
+            }
+
         }
     }
 

@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DataAccessException;
 import dataaccess.UserMemoryAccess;
 import exception.ResponseException;
 import model.UserData;
@@ -25,7 +26,7 @@ public class UserServiceTest {
 
     @Test
         //Create User
-    void createUser() throws ResponseException {
+    void createUser() throws ResponseException, DataAccessException {
         var user = new UserData("TestUser", "asdf", "user@mail.com");
         user = USERSERVICE.createUser(user);
 
@@ -37,7 +38,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void sameUsername() throws ResponseException {
+    void sameUsername() throws ResponseException, DataAccessException {
         var sameUser = new UserData("TestUser", "asdfasdf", "user@mail.com");
         sameUser = USERSERVICE.createUser(sameUser);
 
@@ -49,7 +50,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void samePassword() throws ResponseException {
+    void samePassword() throws ResponseException, DataAccessException {
     var user = new UserData("TestUser", "asdf", "user@mail.com");
         user = USERSERVICE.createUser(user);
         var samePassword = new UserData("TestUser1", "asdf", "user@mail.com");
@@ -64,7 +65,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void checkUser() throws ResponseException{
+    void checkUser() throws ResponseException, DataAccessException {
         user = USERSERVICE.createUser(user);
         nextUser = USERSERVICE.createUser(nextUser);
         tweedleDee = USERSERVICE.createUser(tweedleDee);
@@ -76,7 +77,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void noUser() throws ResponseException {
+    void noUser() throws ResponseException, DataAccessException {
         USERSERVICE.createUser(user);
         USERSERVICE.createUser(nextUser);
         USERSERVICE.createUser(tweedleDee);
@@ -87,7 +88,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void size() throws ResponseException {
+    void size() throws ResponseException, DataAccessException {
         user = USERSERVICE.createUser(user);
         nextUser = USERSERVICE.createUser(nextUser);
         tweedleDee = USERSERVICE.createUser(tweedleDee);
@@ -96,7 +97,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void clearUserData() throws ResponseException {
+    void clearUserData() throws ResponseException, DataAccessException {
         user = USERSERVICE.createUser(user);
         nextUser = USERSERVICE.createUser(nextUser);
         tweedleDee = USERSERVICE.createUser(tweedleDee);
