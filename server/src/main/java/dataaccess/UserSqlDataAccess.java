@@ -8,6 +8,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.SQLDataException;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class UserSqlDataAccess implements UserDAO{
     UserData currUser;
@@ -33,7 +34,21 @@ public class UserSqlDataAccess implements UserDAO{
     }
 
     @Override
-    public UserData getUser(UserData user) {
+    public UserData getUser(UserData user) throws SQLException, DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var stmt = "SELECT json FROM users WHERE username=?";
+            try (var ps = conn.prepareStatement(stmt)) {
+                ps.setString(1,user.username());
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        var jsonString = rs.getString(1);
+                        return new Gson().fromJson(jsonString, UserData.class);
+                    }
+                } catch (SQLException e) {
+                    throw new DataAccessException(String.format("Unable to find user: %s", e.getMessage()));
+                }
+            }
+        }
         return null;
     }
 
@@ -54,12 +69,17 @@ public class UserSqlDataAccess implements UserDAO{
     @Override
     public int size() throws SQLException, DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var stmt = "COUNT(*) FROM users";
-            var ps = conn.prepareStatement(stmt);
-            try (var rs = ps.executeQuery()) {
+            var stmt = "SELECT COUNT(*) FROM users";
+            var ps = conn.prepareStatement(stmt, Statement.RETURN_GENERATED_KEYS);
+            var rs = ps.executeQuery();
+            if(rs.next()){
                 return rs.getInt(1);
-                }
             }
+        }
+        catch (SQLException e) {
+            throw new DataAccessException(String.format("Unable to get table size: %s", e.getMessage()));
+        }
+        return 0;
     }
 
     private void executeUpdate(String statement) throws DataAccessException {

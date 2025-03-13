@@ -30,7 +30,7 @@ public class UserService {
         }
     }
 
-    public UserData checkUser(UserData user) throws ResponseException {
+    public UserData checkUser(UserData user) throws ResponseException, SQLException, DataAccessException {
         var foundUser = userData.getUser(user);
         if (foundUser == null){
             throw new ResponseException(401,"Error: unauthorized");

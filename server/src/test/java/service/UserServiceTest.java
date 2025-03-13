@@ -66,7 +66,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void checkUser() throws ResponseException, DataAccessException {
+    void checkUser() throws ResponseException, DataAccessException, SQLException {
         user = USERSERVICE.createUser(user);
         nextUser = USERSERVICE.createUser(nextUser);
         tweedleDee = USERSERVICE.createUser(tweedleDee);
