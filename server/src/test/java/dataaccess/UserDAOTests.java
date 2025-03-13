@@ -50,6 +50,18 @@ public class UserDAOTests {
 
     @ParameterizedTest
     @ValueSource(classes = {UserSqlDataAccess.class, UserMemoryAccess.class})
+    void createNullUser(Class<? extends UserDAO> userDBclass) throws DataAccessException, ResponseException, SQLException {
+        UserDAO userAccess = getUserDAOAccess(userDBclass);
+
+        var user1 = new UserData("Jimmy", "Yang","jimmy@yang.com");
+        var user2 = new UserData(null, "Bang","jimmy@bang.com");
+
+        userAccess.createUser(user1);
+        assertThrows(Exception.class, ()-> userAccess.createUser(user2));
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {UserSqlDataAccess.class, UserMemoryAccess.class})
     void size(Class<? extends UserDAO> userClearAccess) throws DataAccessException, ResponseException, SQLException {
         UserDAO userAccess = getUserDAOAccess(userClearAccess);
 
@@ -77,8 +89,6 @@ public class UserDAOTests {
         userAccess.createUser(user1);
         userAccess.createUser(user2);
         userAccess.createUser(user3);
-
-        userAccess.clear();
 
         assertDoesNotThrow(userAccess::clear);
         assertDoesNotThrow(userAccess::size);

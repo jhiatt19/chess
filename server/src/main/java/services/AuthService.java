@@ -1,11 +1,13 @@
 package services;
 
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import exception.ResponseException;
 import model.AuthData;
 import model.UserData;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
@@ -22,34 +24,23 @@ public class AuthService {
         return UUID.randomUUID().toString();
     }
 
-    public AuthData setAuth(AuthData authdata) throws ResponseException {
-        if (authdata.authToken() == null || authdata.username() == null){
-            throw new ResponseException(400,"Error: bad request");
-        }
-        else {
-            return authData.setAuth(authdata);
-        }
+    public AuthData setAuth(AuthData authdata) throws ResponseException, DataAccessException {
+        return authData.setAuth(authdata);
     }
 
-    public AuthData deleteAuth(String token) throws ResponseException {
-        var logOut = authData.deleteAuth(token);
-        if (logOut == null) {
-            throw new ResponseException(401, "Error: unauthorized");
-        }
-        else {
-            return logOut;
-        }
+    public AuthData deleteAuth(String token) throws ResponseException, SQLException, DataAccessException {
+        return authData.deleteAuth(token);
     }
 
-    public void clear(){
+    public void clear() throws SQLException, DataAccessException {
         authData.clear();
     }
 
-    public AuthData checkAuth(String token) throws ResponseException {
+    public AuthData checkAuth(String token) throws ResponseException, DataAccessException {
         return authData.checkAuth(token);
     }
 
-    public int size() {
+    public int size() throws SQLException, DataAccessException {
         return authData.size();
     }
 }

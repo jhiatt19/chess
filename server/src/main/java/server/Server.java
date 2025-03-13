@@ -96,13 +96,13 @@ public class Server {
         return new Gson().toJson(authUser);
     }
 
-    private Object deleteAuth(Request req, Response res) throws ResponseException{
+    private Object deleteAuth(Request req, Response res) throws ResponseException, SQLException, DataAccessException {
         var token = req.headers("authorization");
         var responseMap = authService.deleteAuth(token);
         return new Gson().toJson(responseMap);
     }
 
-    private Object listGame(Request req, Response res) throws ResponseException {
+    private Object listGame(Request req, Response res) throws ResponseException, DataAccessException {
         var token = req.headers("authorization");
         if (authService.checkAuth(token) != null){
             var responseMap = gameService.listGame();
@@ -116,7 +116,7 @@ public class Server {
         }
     }
 
-    private Object createGame(Request req, Response res) throws ResponseException {
+    private Object createGame(Request req, Response res) throws ResponseException, DataAccessException {
         var token = req.headers("authorization");
         var authorized = authService.checkAuth(token);
         if (authorized != null) {
@@ -134,7 +134,7 @@ public class Server {
         }
     }
 
-    private Object joinGame(Request req, Response res) throws ResponseException {
+    private Object joinGame(Request req, Response res) throws ResponseException, DataAccessException {
         var auth = req.headers("authorization");
         var checkedAuth = authService.checkAuth(auth);
         if (checkedAuth != null) {

@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.AuthMemoryAccess;
+import dataaccess.DataAccessException;
 import exception.ResponseException;
 import model.AuthData;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import services.AuthService;
 
 
+import java.sql.SQLException;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,12 +22,12 @@ public class AuthServiceTest {
     }
 
     @BeforeEach
-    void clear() throws ResponseException {
+    void clear() throws ResponseException, SQLException, DataAccessException {
         AUTHSERVICE.clear();
     }
 
     @Test
-    void setAuth() throws ResponseException {
+    void setAuth() throws ResponseException, DataAccessException {
         var auth = new AuthData(generateToken(),"yoyoMa");
         auth = AUTHSERVICE.setAuth(auth);
 
@@ -47,7 +49,7 @@ public class AuthServiceTest {
     }
 
     @Test
-    void checkUser() throws ResponseException {
+    void checkUser() throws ResponseException, DataAccessException {
         var token = generateToken();
         var user2 = new AuthData(token,"Namaste");
         AUTHSERVICE.setAuth(user2);
@@ -55,12 +57,12 @@ public class AuthServiceTest {
     }
 
     @Test
-    void badAuth() throws ResponseException {
+    void badAuth() throws ResponseException, DataAccessException {
         assertNull(AUTHSERVICE.checkAuth(generateToken()));
     }
 
     @Test
-    void logOut() throws ResponseException {
+    void logOut() throws ResponseException, DataAccessException, SQLException {
         var log = new AuthData(generateToken(),"MyBoi");
         log = AUTHSERVICE.setAuth(log);
         var logout = AUTHSERVICE.deleteAuth(log.authToken());
@@ -75,7 +77,7 @@ public class AuthServiceTest {
     }
 
     @Test
-    void size() throws ResponseException{
+    void size() throws ResponseException, DataAccessException, SQLException {
         var token = generateToken();
         var user2 = new AuthData(token,"Namaste");
         var auth = new AuthData(generateToken(),"yoyoMa");
@@ -86,7 +88,7 @@ public class AuthServiceTest {
     }
 
     @Test
-    void clearAll() throws ResponseException {
+    void clearAll() throws ResponseException, SQLException, DataAccessException {
         AUTHSERVICE.clear();
 
         assertEquals(0,AUTHSERVICE.size());

@@ -1,5 +1,6 @@
 package dataaccess;
 
+import exception.ResponseException;
 import model.AuthData;
 
 import java.util.HashMap;
@@ -9,29 +10,34 @@ import java.util.Objects;
 public class AuthMemoryAccess implements AuthDAO{
    final private HashSet<AuthData> authDB = new HashSet<>();
 
-    public AuthData setAuth(AuthData authdata){
-        var setAuthToken = new AuthData(authdata.authToken(),authdata.username());
-        authDB.add(setAuthToken);
-        return setAuthToken;
+    public AuthData setAuth(AuthData authdata) throws ResponseException{
+        if (authdata.authToken() == null || authdata.username() == null){
+            throw new ResponseException(400,"Error: bad request");
+        }
+        else {
+            var setAuthToken = new AuthData(authdata.authToken(), authdata.username());
+            authDB.add(setAuthToken);
+            return setAuthToken;
+        }
     };
 
-    public AuthData checkAuth(String token){
+    public AuthData checkAuth(String token) throws ResponseException{
         for (var data : authDB){
             if (data.authToken().equals(token)){
                 return data;
             }
         }
-        return null;
+        throw new ResponseException(400, "Error: bad request");
     };
 
-    public AuthData deleteAuth(String token){
+    public AuthData deleteAuth(String token) throws ResponseException{
         for (AuthData data : authDB){
             if (data.authToken().equals(token)){
                 authDB.remove(data);
                 return data;
             }
         }
-       return null;
+       throw new ResponseException(401, "Error: unauthorized");
     };
 
     public void clear(){

@@ -62,7 +62,6 @@ public class UserSqlDataAccess implements UserDAO{
         catch (SQLException ex){
             throw new DataAccessException(String.format("Unable to clear table: %s", ex.getMessage()));
         }
-
     }
 
 
@@ -100,7 +99,7 @@ public class UserSqlDataAccess implements UserDAO{
             """
             CREATE TABLE IF NOT EXISTS users (
             `username` VARCHAR(50) NOT NULL,
-            `password` VARCHAR(500) NOT NULL,
+            `password` VARCHAR(60) NOT NULL,
             `email` VARCHAR(50),
             `json` TEXT NOT NULL,
             PRIMARY KEY (`username`)

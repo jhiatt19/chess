@@ -19,11 +19,10 @@ public class AuthDAOTests {
 
     private AuthDAO getAuthDAOAccess(Class<? extends AuthDAO> authData) throws DataAccessException, SQLException {
         AuthDAO authDB;
-        if(authData.equals(AuthSqlDataAccess.class)) {
+        if (authData.equals(AuthSqlDataAccess.class)) {
             authDB = new AuthSqlDataAccess();
-        }
-        else {
-            authDB = new UserMemoryAccess();
+        } else {
+            authDB = new AuthMemoryAccess();
         }
 
         authDB.clear();
@@ -35,8 +34,9 @@ public class AuthDAOTests {
     void setAuth(Class<? extends AuthDAO> authDBclass) throws DataAccessException, ResponseException, SQLException {
         AuthDAO authAccess = getAuthDAOAccess(authDBclass);
 
-        var auth = new AuthData(generateToken(),"Jimmy");
-        assertDoesNotThrow(()-> authAccess.setAuth(auth));
+        var auth = new AuthData(generateToken(), "Jimmy");
+
+        assertDoesNotThrow(() -> authAccess.setAuth(auth));
     }
 
     @ParameterizedTest
@@ -62,12 +62,77 @@ public class AuthDAOTests {
         authAccess.setAuth(auth);
 
         assertDoesNotThrow(() -> authAccess.checkAuth(token));
-        assertEquals(auth,authAccess.checkAuth(token));
+        assertEquals(auth, authAccess.checkAuth(token));
     }
 
     @ParameterizedTest
     @ValueSource(classes = {AuthSqlDataAccess.class, AuthMemoryAccess.class})
     void noValidAuth(Class<? extends AuthDAO> authDBclass) throws DataAccessException, ResponseException, SQLException {
+        AuthDAO authAccess = getAuthDAOAccess(authDBclass);
 
+        var auth = new AuthData(generateToken(), "Jimmy");
+        authAccess.setAuth(auth);
+
+        assertThrows(Exception.class, () -> authAccess.checkAuth(generateToken()));
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {AuthSqlDataAccess.class, AuthMemoryAccess.class})
+    void deleteAuth(Class<? extends AuthDAO> authDBclass) throws DataAccessException, ResponseException, SQLException {
+        AuthDAO authAccess = getAuthDAOAccess(authDBclass);
+
+        var token = generateToken();
+        var auth = new AuthData(token, "Jimmy");
+        authAccess.setAuth(auth);
+
+        assertDoesNotThrow(() -> authAccess.deleteAuth(token));
+        assertThrows(Exception.class, () -> authAccess.checkAuth(token));
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {AuthSqlDataAccess.class, AuthMemoryAccess.class})
+    void noAuthDelete(Class<? extends AuthDAO> authDBclass) throws DataAccessException,ResponseException,SQLException {
+        AuthDAO authAccess = getAuthDAOAccess(authDBclass);
+
+        var token = generateToken();
+        var auth = new AuthData(token, "Jimmy");
+        authAccess.setAuth(auth);
+
+        assertThrows(Exception.class, () -> authAccess.deleteAuth(generateToken()));
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {AuthSqlDataAccess.class, AuthMemoryAccess.class})
+    void size(Class<? extends AuthDAO> authSizeAccess) throws DataAccessException, ResponseException, SQLException {
+        AuthDAO authAccess = getAuthDAOAccess(authSizeAccess);
+
+        var auth1 = new AuthData(generateToken(), "Jimmy");
+        var auth2 = new AuthData(generateToken(), "Billy");
+        var auth3 = new AuthData(generateToken(), "Tom");
+
+        authAccess.setAuth(auth1);
+        authAccess.setAuth(auth2);
+        authAccess.setAuth(auth3);
+
+        assertDoesNotThrow(authAccess::size);
+        assertEquals(3, authAccess.size());
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {AuthSqlDataAccess.class, AuthMemoryAccess.class})
+    void clear(Class<? extends AuthDAO> authClearAccess) throws DataAccessException, ResponseException, SQLException {
+        AuthDAO authAccess = getAuthDAOAccess(authClearAccess);
+
+        var auth1 = new AuthData(generateToken(), "Jimmy");
+        var auth2 = new AuthData(generateToken(), "Billy");
+        var auth3 = new AuthData(generateToken(), "Tom");
+
+        authAccess.setAuth(auth1);
+        authAccess.setAuth(auth2);
+        authAccess.setAuth(auth3);
+
+        assertDoesNotThrow(authAccess::clear);
+        assertDoesNotThrow(authAccess::size);
+        assertEquals(0,authAccess.size());
     }
 }
