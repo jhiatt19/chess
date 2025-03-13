@@ -98,7 +98,10 @@ public class AuthDAOTests {
         var auth = new AuthData(token, "Jimmy");
         authAccess.setAuth(auth);
 
-        assertThrows(Exception.class, () -> authAccess.deleteAuth(generateToken()));
+        var nullToken = generateToken();
+        authAccess.deleteAuth(nullToken);
+        assertThrows(Exception.class, () -> authAccess.checkAuth(nullToken));
+        assertEquals(1,authAccess.size());
     }
 
     @ParameterizedTest

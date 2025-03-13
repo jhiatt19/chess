@@ -64,8 +64,8 @@ public class AuthServiceTest {
     @Test
     void logOut() throws ResponseException, DataAccessException, SQLException {
         var log = new AuthData(generateToken(),"MyBoi");
-        log = AUTHSERVICE.setAuth(log);
-        var logout = AUTHSERVICE.deleteAuth(log.authToken());
+        var logout = AUTHSERVICE.setAuth(log);
+        AUTHSERVICE.deleteAuth(log.authToken());
 
         assertThrows(ResponseException.class, ()-> AUTHSERVICE.checkAuth(logout.authToken()));
     }

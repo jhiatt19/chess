@@ -56,8 +56,16 @@ public class AuthSqlDataAccess implements AuthDAO{
     }
 
     @Override
-    public AuthData deleteAuth(String token) throws ResponseException, DataAccessException, SQLException {
-        return null;
+    public void deleteAuth(String token) throws ResponseException, DataAccessException, SQLException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var stmt = "DELETE FROM auth WHERE authToken=?";
+            var ps = conn.prepareStatement(stmt);
+            ps.setString(1,token);
+            ps.executeUpdate();
+        }
+        catch (SQLException ex){
+            throw new DataAccessException(String.format("Error occurred: %s", ex.getMessage()));
+        }
     }
 
     @Override

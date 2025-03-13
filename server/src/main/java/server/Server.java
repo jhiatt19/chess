@@ -98,8 +98,9 @@ public class Server {
 
     private Object deleteAuth(Request req, Response res) throws ResponseException, SQLException, DataAccessException {
         var token = req.headers("authorization");
-        var responseMap = authService.deleteAuth(token);
-        return new Gson().toJson(responseMap);
+        authService.deleteAuth(token);
+        String returnVal = "{}";
+        return new Gson().toJson(returnVal);
     }
 
     private Object listGame(Request req, Response res) throws ResponseException, DataAccessException {

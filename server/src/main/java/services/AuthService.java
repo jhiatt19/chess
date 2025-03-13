@@ -28,8 +28,8 @@ public class AuthService {
         return authData.setAuth(authdata);
     }
 
-    public AuthData deleteAuth(String token) throws ResponseException, SQLException, DataAccessException {
-        return authData.deleteAuth(token);
+    public void deleteAuth(String token) throws ResponseException, SQLException, DataAccessException {
+        authData.deleteAuth(token);
     }
 
     public void clear() throws SQLException, DataAccessException {

@@ -30,14 +30,12 @@ public class AuthMemoryAccess implements AuthDAO{
         throw new ResponseException(401, "Error: bad request");
     };
 
-    public AuthData deleteAuth(String token) throws ResponseException{
+    public void deleteAuth(String token) throws ResponseException{
         for (AuthData data : authDB){
             if (data.authToken().equals(token)){
                 authDB.remove(data);
-                return data;
             }
         }
-       throw new ResponseException(401, "Error: unauthorized");
     };
 
     public void clear(){
