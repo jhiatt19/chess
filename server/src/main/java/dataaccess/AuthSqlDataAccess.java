@@ -35,7 +35,24 @@ public class AuthSqlDataAccess implements AuthDAO{
 
     @Override
     public AuthData checkAuth(String token) throws ResponseException, DataAccessException {
-        return null;
+        try (var conn = DatabaseManager.getConnection()) {
+            var stmt = "SELECT json FROM auth WHERE authToken=?";
+            try (var ps = conn.prepareStatement(stmt)) {
+                ps.setString(1,token);
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        var jsonString = rs.getString(1);
+                        return new Gson().fromJson(jsonString, AuthData.class);
+                    }
+                    else {
+                        throw new DataAccessException(String.format("Authtoken provided not found: %s"));
+                    }
+                }
+            }
+        }
+        catch (SQLException e) {
+            throw new DataAccessException(String.format("Unable to find user: %s", e.getMessage()));
+        }
     }
 
     @Override

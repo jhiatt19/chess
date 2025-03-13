@@ -12,7 +12,7 @@ public class UserMemoryAccess implements UserDAO {
     public UserData createUser(UserData user) throws ResponseException {
         var foundUser = this.getUser(user);
         if (foundUser != null){
-            throw new ResponseException(401,"Error: Already taken");
+            throw new ResponseException(403,"Error: Already taken");
         }
         else if (user.username() == null || user.password() == null){
             throw new ResponseException(400,"Error: bad request");

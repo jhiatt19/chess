@@ -26,7 +26,7 @@ public class Server {
 //        try {
             this.gameDAO = new GameMemoryAccess();
             this.authDAO = new AuthMemoryAccess();
-            this.userDAO = new UserSqlDataAccess();
+            this.userDAO = new UserMemoryAccess();
             this.authService = new AuthService(authDAO);
             this.gameService = new GameService(gameDAO);
             this.userService = new UserService(userDAO);

@@ -27,7 +27,7 @@ public class AuthMemoryAccess implements AuthDAO{
                 return data;
             }
         }
-        throw new ResponseException(400, "Error: bad request");
+        throw new ResponseException(401, "Error: bad request");
     };
 
     public AuthData deleteAuth(String token) throws ResponseException{

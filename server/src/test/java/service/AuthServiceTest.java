@@ -58,7 +58,7 @@ public class AuthServiceTest {
 
     @Test
     void badAuth() throws ResponseException, DataAccessException {
-        assertNull(AUTHSERVICE.checkAuth(generateToken()));
+        assertThrows(ResponseException.class, () -> AUTHSERVICE.checkAuth(generateToken()));
     }
 
     @Test
@@ -67,7 +67,7 @@ public class AuthServiceTest {
         log = AUTHSERVICE.setAuth(log);
         var logout = AUTHSERVICE.deleteAuth(log.authToken());
 
-        assertNull(AUTHSERVICE.checkAuth(logout.authToken()));
+        assertThrows(ResponseException.class, ()-> AUTHSERVICE.checkAuth(logout.authToken()));
     }
 
     @Test

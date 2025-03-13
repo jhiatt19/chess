@@ -7,6 +7,7 @@ import exception.ResponseException;
 import model.AuthData;
 import model.UserData;
 
+import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -25,7 +26,7 @@ public class UserService {
         try {
             return userData.createUser(user);
         }
-        catch (Exception ex){
+        catch (DataAccessException ex){
             throw new DataAccessException(String.format("Did not add user", ex.getMessage()));
         }
     }
