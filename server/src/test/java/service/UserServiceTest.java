@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import services.UserService;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,7 +21,7 @@ public class UserServiceTest {
     UserData tweedleDee = new UserData("TweedleDee","tweedleDum","deadPoetsSocieity@taylor.com");
 
     @BeforeEach
-    void clear() throws ResponseException {
+    void clear() throws ResponseException, DataAccessException {
         USERSERVICE.clear();
     }
 
@@ -88,7 +89,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void size() throws ResponseException, DataAccessException {
+    void size() throws ResponseException, DataAccessException, SQLException {
         user = USERSERVICE.createUser(user);
         nextUser = USERSERVICE.createUser(nextUser);
         tweedleDee = USERSERVICE.createUser(tweedleDee);
@@ -97,7 +98,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void clearUserData() throws ResponseException, DataAccessException {
+    void clearUserData() throws ResponseException, DataAccessException, SQLException {
         user = USERSERVICE.createUser(user);
         nextUser = USERSERVICE.createUser(nextUser);
         tweedleDee = USERSERVICE.createUser(tweedleDee);

@@ -4,20 +4,31 @@ package dataaccess;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.SQLDataException;
 import java.sql.SQLException;
 
 public class UserSqlDataAccess implements UserDAO{
+    UserData currUser;
+    String currJson;
+    String hashedPassword;
 
-    public UserSqlDataAccess() throws DataAccessException{
-        configureDatabase();
+    public UserSqlDataAccess(){
+        try {
+            configureDatabase();
+        }
+        catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+        }
     }
     @Override
     public UserData createUser(UserData user) throws DataAccessException {
         var statement = "INSERT INTO user (username, password, email, json) VALUES (?, ?, ?, ?)";
-        var json = new Gson().toJson(user);
-        executeUpdate(statement, user, json);
+        this.currUser = user;
+        this.currJson = new Gson().toJson(user);
+        this.hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
+        executeUpdate(statement);
         return new UserData(user.username(), user.password(), user.email());
     }
 
@@ -27,22 +38,30 @@ public class UserSqlDataAccess implements UserDAO{
     }
 
     @Override
-    public void clear() {
-
+    public void clear() throws DataAccessException{
+        var stmt = "TRUNCATE users";
+        executeUpdate(stmt);
     }
+
 
     @Override
-    public int size() {
-        return 0;
+    public int size() throws SQLException, DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var stmt = "COUNT(*) FROM users";
+            var ps = conn.prepareStatement(stmt);
+            try (var rs = ps.executeQuery()) {
+                return rs.getInt(1);
+                }
+            }
     }
 
-    private void executeUpdate(String statement, UserData user, String json) throws DataAccessException {
+    private void executeUpdate(String statement) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement)) {
-                ps.setString(1, user.username());
-                ps.setString(2, user.password());
-                ps.setString(3, user.email());
-                ps.setString(4,json);
+                ps.setString(1, currUser.username());
+                ps.setString(2, hashedPassword);
+                ps.setString(3, currUser.email());
+                ps.setString(4,currJson);
                 ps.executeUpdate();
             }
         } catch (SQLException ex) {

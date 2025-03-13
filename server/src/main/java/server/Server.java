@@ -22,18 +22,18 @@ public class Server {
     private final UserDAO userDAO;
     private final AuthDAO authDAO;
 
-    public Server() throws DataAccessException {
-        try {
+    public Server()  {
+//        try {
             this.gameDAO = new GameMemoryAccess();
             this.authDAO = new AuthMemoryAccess();
             this.userDAO = new UserSqlDataAccess();
             this.authService = new AuthService(authDAO);
             this.gameService = new GameService(gameDAO);
             this.userService = new UserService(userDAO);
-        }
-        catch (DataAccessException ex) {
-            throw new DataAccessException(String.format("Problem creating server connection",ex.getMessage()));
-        }
+//        }
+//        catch (DataAccessException ex) {
+//            throw new DataAccessException(String.format("Problem creating server connection",ex.getMessage()));
+//        }
 
     }
 
@@ -67,7 +67,7 @@ public class Server {
         return UUID.randomUUID().toString();
     }
 
-    private void dataExceptionHandler(Exception ex,Request req, Response res){
+    private void dataExceptionHandler(DataAccessException ex,Request req, Response res){
         res.status(500);
         res.body(ex.getMessage());
     }
@@ -155,7 +155,7 @@ public class Server {
         }
     }
 
-    private Object clear(Request req, Response res) {
+    private Object clear(Request req, Response res) throws DataAccessException {
         userService.clear();
         gameService.clear();
         authService.clear();

@@ -7,6 +7,7 @@ import exception.ResponseException;
 import model.AuthData;
 import model.UserData;
 
+import java.sql.SQLException;
 import java.util.*;
 
 import static model.DataTransformation.transform;
@@ -52,11 +53,11 @@ public class UserService {
         }
     }
 
-    public void clear() {
+    public void clear() throws DataAccessException{
         userData.clear();
     }
 
-    public int size() {
+    public int size() throws DataAccessException, SQLException {
         return userData.size();
     }
 
