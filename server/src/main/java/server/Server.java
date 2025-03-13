@@ -86,7 +86,7 @@ public class Server {
         return new Gson().toJson(authUser);
     }
 
-    private Object login(Request req, Response res) throws ResponseException {
+    private Object login(Request req, Response res) throws ResponseException, DataAccessException {
         var user = new Gson().fromJson(req.body(),UserData.class);
         var loginUser = userService.checkUser(user);
         var authUser = DataTransformation.transform(loginUser,generateToken());
@@ -155,7 +155,7 @@ public class Server {
         }
     }
 
-    private Object clear(Request req, Response res) throws DataAccessException {
+    private Object clear(Request req, Response res) throws DataAccessException, SQLException {
         userService.clear();
         gameService.clear();
         authService.clear();

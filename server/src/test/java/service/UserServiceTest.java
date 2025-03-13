@@ -21,7 +21,7 @@ public class UserServiceTest {
     UserData tweedleDee = new UserData("TweedleDee","tweedleDum","deadPoetsSocieity@taylor.com");
 
     @BeforeEach
-    void clear() throws ResponseException, DataAccessException {
+    void clear() throws ResponseException, DataAccessException, SQLException {
         USERSERVICE.clear();
     }
 

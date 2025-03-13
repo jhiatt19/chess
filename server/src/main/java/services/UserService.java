@@ -22,20 +22,11 @@ public class UserService {
 
     public UserData createUser(UserData user) throws ResponseException, DataAccessException {
         //System.out.println(userData);
-        if (userData.getUser(user) != null){
-            throw new ResponseException(403, "Error: already taken");
+        try {
+            return userData.createUser(user);
         }
-        else if (user.username() == null || user.password() == null){
-            throw new ResponseException(400,"Error: bad request");
-        }
-        else {
-            try {
-                return userData.createUser(user);
-            }
-            catch (Exception ex){
-                throw new DataAccessException(String.format("Did not add user", ex.getMessage()));
-            }
-
+        catch (Exception ex){
+            throw new DataAccessException(String.format("Did not add user", ex.getMessage()));
         }
     }
 
@@ -53,7 +44,7 @@ public class UserService {
         }
     }
 
-    public void clear() throws DataAccessException{
+    public void clear() throws DataAccessException, SQLException {
         userData.clear();
     }
 

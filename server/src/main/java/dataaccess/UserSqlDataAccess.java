@@ -24,12 +24,12 @@ public class UserSqlDataAccess implements UserDAO{
     }
     @Override
     public UserData createUser(UserData user) throws DataAccessException {
-        var statement = "INSERT INTO user (username, password, email, json) VALUES (?, ?, ?, ?)";
-        this.currUser = user;
-        this.currJson = new Gson().toJson(user);
+        var statement = "INSERT INTO users (username, password, email, json) VALUES (?, ?, ?, ?)";
         this.hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
+        this.currUser = new UserData(user.username(), hashedPassword, user.email());
+        this.currJson = new Gson().toJson(currUser);
         executeUpdate(statement);
-        return new UserData(user.username(), user.password(), user.email());
+        return currUser;
     }
 
     @Override
@@ -38,9 +38,16 @@ public class UserSqlDataAccess implements UserDAO{
     }
 
     @Override
-    public void clear() throws DataAccessException{
-        var stmt = "TRUNCATE users";
-        executeUpdate(stmt);
+    public void clear() throws DataAccessException, SQLException {
+        try (var conn = DatabaseManager.getConnection()){
+            var stmt = "TRUNCATE TABLE users";
+            var ps = conn.prepareStatement(stmt);
+            ps.executeUpdate();
+        }
+        catch (SQLException ex){
+            throw new DataAccessException(String.format("Unable to clear table: %s", ex.getMessage()));
+        }
+
     }
 
 
@@ -73,11 +80,13 @@ public class UserSqlDataAccess implements UserDAO{
             """
             CREATE TABLE IF NOT EXISTS users (
             `username` VARCHAR(50) NOT NULL,
-            `password` VARCHAR(50) NOT NULL,
+            `password` VARCHAR(500) NOT NULL,
             `email` VARCHAR(50),
-            PRIMARY KEY (username)
-            );
+            `json` TEXT NOT NULL,
+            PRIMARY KEY (`username`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
+            //Any changes made to this require you to go in and manually drop the table to have a new table created
     };
 
     private void configureDatabase() throws DataAccessException {
