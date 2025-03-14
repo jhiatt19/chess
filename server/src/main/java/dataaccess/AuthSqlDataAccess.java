@@ -132,7 +132,7 @@ public class AuthSqlDataAccess implements AuthDAO{
             }
         }
         catch (SQLException ex) {
-            throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
+            throw new DataAccessException(String.format("Unable to configure table: %s", ex.getMessage()));
         }
     }
 }

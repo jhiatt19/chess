@@ -12,7 +12,10 @@ public class GameMemoryAccess implements GameDAO {
     HashSet<GameData> gameDB = new HashSet<>();
     int gameID = 0;
 
-    public int createGame(String name) {
+    public int createGame(String name) throws ResponseException {
+        if (name == null){
+            throw new ResponseException(400,"Error: bad request");
+        }
         setGameID(gameID+1);
         var madeGame = new GameData(gameID,null,null,name,new ChessGame());
         gameDB.add(madeGame);

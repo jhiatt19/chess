@@ -5,20 +5,21 @@ import model.AuthData;
 import model.GameData;
 import model.JoinGameData;
 
+import java.sql.SQLException;
 import java.util.HashSet;
 
 public interface GameDAO {
-    int createGame(String name); //implement throw
+    int createGame(String name) throws DataAccessException, ResponseException; //implement throw
 
     HashSet<GameData> listGame();
 
-    GameData joinGame(JoinGameData color, String user) throws ResponseException;
+    GameData joinGame(JoinGameData color, String user) throws ResponseException, SQLException, DataAccessException;
 
-    void clear();
+    void clear() throws DataAccessException, SQLException;
 
     void addPlayer(JoinGameData color, String user, GameData game, String otherPlayer);
 
     GameData findGame(int gameID);
 
-    int size();
+    int size() throws SQLException, DataAccessException;
 }

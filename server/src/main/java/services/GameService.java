@@ -1,6 +1,7 @@
 package services;
 
 import chess.ChessGame;
+import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import exception.ResponseException;
@@ -8,6 +9,7 @@ import model.AuthData;
 import model.GameData;
 import model.JoinGameData;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -23,18 +25,15 @@ public class GameService {
         return gameData.listGame();
     }
 
-    public int createGame(String game) throws ResponseException{
-        if (game == null){
-            throw new ResponseException(400,"Error: bad request");
-        }
+    public int createGame(String game) throws ResponseException, DataAccessException {
         return gameData.createGame(game);
     }
 
-    public void clear(){
+    public void clear() throws SQLException, DataAccessException {
         gameData.clear();
     }
 
-    public GameData joinGame(JoinGameData game, String username)throws ResponseException {
+    public GameData joinGame(JoinGameData game, String username) throws ResponseException, SQLException, DataAccessException {
         var specificGameID = gameData.findGame(game.gameID());
         var added = gameData.joinGame(game,username);
         if (specificGameID == null || added == null){
@@ -53,7 +52,7 @@ public class GameService {
         return game;
     }
 
-    public int size(){
+    public int size() throws SQLException, DataAccessException {
         return gameData.size();
     }
 
