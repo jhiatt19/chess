@@ -53,10 +53,10 @@ public class GameSqlDataAccess implements GameDAO{
     public void joinGame(JoinGameData color, String user) throws DataAccessException, SQLException, ResponseException {
         String stmt;
         if (color.playerColor().equals("WHITE") || color.playerColor().equals("WHITE/BLACK")) {
-            stmt = "UPDATE games " + "SET white = ? " + "WHERE gameID = ?";
+            stmt = "UPDATE games " + "SET white = ? " + "WHERE gameID = ? AND white IS NULL";
         }
         else if (color.playerColor().equals("BLACK")) {
-            stmt = "UPDATE games " + "SET black = ? " + "WHERE gameID = ?";
+            stmt = "UPDATE games " + "SET black = ? " + "WHERE gameID = ? AND black IS NULL";
         }
         else {
             throw new ResponseException(400, "Error: bad request");
@@ -104,11 +104,13 @@ public class GameSqlDataAccess implements GameDAO{
                 var jsonData = rs.getString(1);
                 return new Gson().fromJson(jsonData,GameData.class);
             }
+            else {
+                throw new DataAccessException("Not a valid gameID");
+            }
         }
         catch (SQLException ex) {
             throw new DataAccessException(String.format("Unable to find game: %s", ex.getMessage()));
         }
-        return null;
     }
 
     @Override

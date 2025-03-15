@@ -42,14 +42,13 @@ public class DatabaseManager {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
-                var nextStatement = conn.createStatement();
-                String triggerSQL = finalTrigger[0];
-                nextStatement.execute(triggerSQL);
-                var lastStatement = conn.createStatement();
-                String triggersql = invalidIDtrigger[0];
-                lastStatement.execute(triggersql);
             }
-
+//            var nextStatement = conn.createStatement();
+//            String triggerSQL = finalTrigger[0];
+//            nextStatement.execute(triggerSQL);
+//            var lastStatement = conn.createStatement();
+//            String triggersql = invalidIDtrigger[0];
+//            lastStatement.execute(triggersql);
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
