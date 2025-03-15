@@ -34,11 +34,8 @@ public class GameService {
     }
 
     public void joinGame(JoinGameData game, String username) throws ResponseException, SQLException, DataAccessException {
-        var specificGameID = gameData.findGame(game.gameID());
+        gameData.findGame(game.gameID());
         gameData.joinGame(game,username);
-        if (specificGameID == null){
-            throw new ResponseException(400,"Error: bad request");
-        }
     }
 
     public GameData getGame(int gameID) throws ResponseException, DataAccessException {

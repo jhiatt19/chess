@@ -31,10 +31,15 @@ public class AuthMemoryAccess implements AuthDAO{
     };
 
     public void deleteAuth(String token) throws ResponseException{
+        var deleted = false;
         for (AuthData data : authDB){
             if (data.authToken().equals(token)){
                 authDB.remove(data);
+                deleted = true;
             }
+        }
+        if (!deleted) {
+            throw new ResponseException(400, "Error: bad request");
         }
     };
 

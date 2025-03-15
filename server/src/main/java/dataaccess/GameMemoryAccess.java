@@ -40,17 +40,22 @@ public class GameMemoryAccess implements GameDAO {
                     else {
                         var otherPlayer = game.blackUsername();
                         addPlayer(playerColor, username, game, otherPlayer);
+                        break;
                     }
                 }
-                else {
+                else if (playerColor.playerColor().equals("BLACK")){
                     if (game.blackUsername() != null) {
                         throw new ResponseException(403, "Error: Already taken");
                     }
                     else {
                     var otherPlayer = game.getWhiteUsername();
                     addPlayer(playerColor, otherPlayer, game, username);
+                    break;
                     }
                }
+                else {
+                    throw new ResponseException(401, "Error: bad request");
+                }
             }
         }
     };
@@ -68,13 +73,13 @@ public class GameMemoryAccess implements GameDAO {
         setGameID(0);
     };
 
-    public GameData findGame(int idGame){
+    public GameData findGame(int idGame) throws ResponseException {
         for (GameData game : gameDB){
             if (game.getGameID() == idGame){
                 return game;
             }
         }
-        return null;
+        throw new ResponseException(400, "Error: bad request");
     }
 
     public int size() {

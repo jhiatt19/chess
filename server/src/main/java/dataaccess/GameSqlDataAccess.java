@@ -52,7 +52,7 @@ public class GameSqlDataAccess implements GameDAO{
     @Override
     public void joinGame(JoinGameData color, String user) throws DataAccessException, SQLException, ResponseException {
         String stmt;
-        if (color.playerColor().equals("WHITE")) {
+        if (color.playerColor().equals("WHITE") || color.playerColor().equals("WHITE/BLACK")) {
             stmt = "UPDATE games " + "SET white = ? " + "WHERE gameID = ?";
         }
         else if (color.playerColor().equals("BLACK")) {
@@ -142,6 +142,8 @@ public class GameSqlDataAccess implements GameDAO{
             throw new DataAccessException(String.format("Unable to add to table: %s", ex.getMessage()));
         }
     }
+
+
 
     private final String[] createTable = {
             """

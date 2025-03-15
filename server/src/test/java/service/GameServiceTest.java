@@ -92,7 +92,8 @@ public class GameServiceTest {
 
         var joinGame = new JoinGameData(1,"WHITE");
         assertDoesNotThrow(() -> GAMESERVICE.joinGame(joinGame,"HelloPoppet"));
-        var updatedGame = new GameData(0,null,null,"test",new ChessGame());
+        var updatedGame = new GameData(1,null,null,"soloist",new ChessGame());
+        gamesList.add(updatedGame);
         for (GameData game : gamesList){
             if (game.gameID() == 1){
                 gamesList.remove(game);

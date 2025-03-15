@@ -19,7 +19,7 @@ public interface GameDAO {
 
     void addPlayer(JoinGameData color, String user, GameData game, String otherPlayer);
 
-    GameData findGame(int gameID) throws DataAccessException;
+    GameData findGame(int gameID) throws DataAccessException, ResponseException;
 
     int size() throws SQLException, DataAccessException;
 }

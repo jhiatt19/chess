@@ -85,7 +85,7 @@ public class GameDAOTests {
 
         gameAccess.createGame("Numero Uno");
 
-        assertThrows(Exception.class, () -> gameAccess.findGame(4));
+        assertThrows(Exception.class, () -> gameAccess.findGame(40));
     }
 
     @ParameterizedTest
@@ -115,7 +115,7 @@ public class GameDAOTests {
         //assertThrows(Exception.class, () -> gameAccess.joinGame(badGame1, "General Kenobi"));
         assertDoesNotThrow(() -> gameAccess.joinGame(badGame2, "Padme"));
         assertThrows(Exception.class, () -> gameAccess.joinGame(badGame2, "General Skywalker"));
-        //assertThrows(Exception.class, () -> gameAccess.joinGame(badGame3, "Yoda"));
+        assertThrows(Exception.class, () -> gameAccess.joinGame(badGame3, "Yoda"));
 
     }
 }

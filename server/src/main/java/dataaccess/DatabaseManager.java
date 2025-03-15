@@ -42,11 +42,49 @@ public class DatabaseManager {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
+                var nextStatement = conn.createStatement();
+                String triggerSQL = finalTrigger[0];
+                nextStatement.execute(triggerSQL);
+                var lastStatement = conn.createStatement();
+                String triggersql = invalidIDtrigger[0];
+                lastStatement.execute(triggersql);
             }
+
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
     }
+
+    static final String[] finalTrigger = {
+            """
+            CREATE TRIGGER no_update_notNull_column
+            BEFORE UPDATE ON games
+            FOR EACH ROW
+            BEGIN
+                IF OLD.white IS NOT NULL AND NEW.white IS NOT NULL AND OLD.white != NEW.white THEN
+                    SIGNAL SQLSTATE '45000'
+                    SET MESSAGE_TEXT = 'Cannot modify white column after initial setting.';
+                ELSEIF OLD.black IS NOT NULL AND NEW.black IS NOT NULL AND OLD.black != NEW.black THEN
+                    SIGNAL SQLSTATE '45000'
+                    SET MESSAGE_TEXT = 'Cannot modify black column after initial setting.';
+                END IF;
+            END;
+            """
+    };
+
+    static final String[] invalidIDtrigger = {
+            """
+            CREATE TRIGGER check_for_id
+            BEFORE UPDATE ON games
+            FOR EACH ROW
+            BEGIN
+                IF (SELECT COUNT(*) FROM games WHERE gameID = OLD.gameID) = 0 THEN
+                    SIGNAL SQLSTATE '45000'
+                    SET MESSAGE_TEXT = 'No game with that gameID.';
+                END IF;
+            END;
+            """
+    };
 
     /**
      * Create a connection to the database and sets the catalog based upon the
