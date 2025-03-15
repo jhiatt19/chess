@@ -8,8 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import javax.xml.crypto.Data;
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GameDAOTests {
 
@@ -34,5 +33,12 @@ public class GameDAOTests {
         var gameID = gameAccess.createGame("First game");
         assertEquals(1,gameID);
         assertDoesNotThrow(() -> gameAccess.createGame("Second game"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {GameSqlDataAccess.class, GameMemoryAccess.class})
+    void createGameNoName(Class<? extends GameDAO> gameDBclass) throws DataAccessException, ResponseException, SQLException {
+        GameDAO gameAccess = getGameDAOAccess(gameDBclass);
+        assertThrows(Exception.class, () -> gameAccess.createGame(null));
     }
 }

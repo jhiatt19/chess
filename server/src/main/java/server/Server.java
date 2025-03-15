@@ -135,7 +135,7 @@ public class Server {
         }
     }
 
-    private Object joinGame(Request req, Response res) throws ResponseException, DataAccessException {
+    private Object joinGame(Request req, Response res) throws ResponseException, DataAccessException, SQLException {
         var auth = req.headers("authorization");
         var checkedAuth = authService.checkAuth(auth);
         if (checkedAuth != null) {

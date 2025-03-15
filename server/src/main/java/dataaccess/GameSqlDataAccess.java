@@ -31,7 +31,7 @@ public class GameSqlDataAccess implements GameDAO{
         if (name == null){
             throw new ResponseException(400,"Error: bad request");
         }
-        var statement = "INSERT INTO games (white, black, gameName, game, json) VALUES (?, ?, ?, ?, ?)";
+        var statement = "INSERT INTO games (white, black, gameName, json) VALUES (?, ?, ?, ?)";
         this.currGameName = name;
         setGameID(gameID+1);
         this.currGame = new GameData(gameID,null, null, name, new ChessGame());
@@ -99,8 +99,7 @@ public class GameSqlDataAccess implements GameDAO{
                 ps.setNull(1, Types.VARCHAR);
                 ps.setNull(2,Types.VARCHAR);
                 ps.setString(3,currGameName);
-                ps.setObject(4,currGame.game());
-                ps.setString(5,currJSON);
+                ps.setString(4,currJSON);
                 var gameid = ps.executeUpdate();
                 setGameID(gameid);
             }
@@ -116,7 +115,6 @@ public class GameSqlDataAccess implements GameDAO{
             `white` VARCHAR(50),
             `black` VARCHAR(50),
             `gameName` VARCHAR(50) NOT NULL,
-            `game` TEXT NOT NULL,
             `json` TEXT NOT NULL,
             PRIMARY KEY(`gameID`)
             );

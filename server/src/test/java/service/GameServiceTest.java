@@ -1,6 +1,7 @@
 package service;
 
 import chess.ChessGame;
+import dataaccess.DataAccessException;
 import dataaccess.GameMemoryAccess;
 import exception.ResponseException;
 import model.GameData;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import services.GameService;
 
+import java.sql.SQLException;
 import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,12 +20,12 @@ public class GameServiceTest {
     HashSet<GameData> gamesList = new HashSet<>();
 
     @BeforeEach
-    void clear() throws ResponseException {
+    void clear() throws ResponseException, SQLException, DataAccessException {
         GAMESERVICE.clear();
     }
 
     @Test
-    void getGame() throws ResponseException {
+    void getGame() throws ResponseException, SQLException, DataAccessException {
         GAMESERVICE.clear();
         var gameID2 = GAMESERVICE.createGame("doubleTrouble");
         System.out.println(gameID2);
@@ -38,7 +40,7 @@ public class GameServiceTest {
     }
 
     @Test
-    void createGame() throws ResponseException {
+    void createGame() throws ResponseException, DataAccessException, SQLException {
         var name = "reallyCoolGameName";
         var gameID = GAMESERVICE.createGame(name);
         var chessGame = GAMESERVICE.getGame(gameID);
@@ -52,7 +54,7 @@ public class GameServiceTest {
 
 
     @Test
-    void notValidGameID() throws ResponseException{
+    void notValidGameID() throws ResponseException, DataAccessException {
         GAMESERVICE.createGame("soloist");
         GAMESERVICE.createGame("doubleTrouble");
         GAMESERVICE.createGame("TripleThreat");
@@ -66,7 +68,7 @@ public class GameServiceTest {
     }
 
     @Test
-    void listGames() throws ResponseException {
+    void listGames() throws ResponseException, DataAccessException {
         var gameID2 = GAMESERVICE.createGame("doubleTrouble");
         var gameID3 = GAMESERVICE.createGame("TripleThreat");
 
@@ -81,7 +83,7 @@ public class GameServiceTest {
     }
 
     @Test
-    void joinGame() throws ResponseException {
+    void joinGame() throws ResponseException, DataAccessException, SQLException {
         GAMESERVICE.createGame("soloist");
         GAMESERVICE.createGame("doubleTrouble");
         GAMESERVICE.createGame("TripleThreat");
@@ -102,7 +104,7 @@ public class GameServiceTest {
     }
 
     @Test
-    void badGameID() throws ResponseException {
+    void badGameID() throws ResponseException, DataAccessException, SQLException {
         GAMESERVICE.createGame("soloist");
         GAMESERVICE.createGame("doubleTrouble");
         GAMESERVICE.createGame("TripleThreat");
@@ -115,7 +117,7 @@ public class GameServiceTest {
     }
 
     @Test
-    void stealColor() throws ResponseException {
+    void stealColor() throws ResponseException, DataAccessException, SQLException {
         GAMESERVICE.createGame("soloist");
         GAMESERVICE.createGame("doubleTrouble");
         GAMESERVICE.createGame("TripleThreat");
@@ -129,7 +131,7 @@ public class GameServiceTest {
     }
 
     @Test
-    void size() throws ResponseException{
+    void size() throws ResponseException, DataAccessException, SQLException {
         GAMESERVICE.createGame("soloist");
         GAMESERVICE.createGame("doubleTrouble");
         GAMESERVICE.createGame("TripleThreat");
@@ -137,7 +139,7 @@ public class GameServiceTest {
         assertEquals(3,GAMESERVICE.size());
     }
     @Test
-    void clearAll() throws ResponseException{
+    void clearAll() throws ResponseException, DataAccessException, SQLException {
         GAMESERVICE.createGame("soloist");
         GAMESERVICE.createGame("doubleTrouble");
         GAMESERVICE.createGame("TripleThreat");
