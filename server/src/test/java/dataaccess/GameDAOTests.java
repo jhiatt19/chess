@@ -41,4 +41,26 @@ public class GameDAOTests {
         GameDAO gameAccess = getGameDAOAccess(gameDBclass);
         assertThrows(Exception.class, () -> gameAccess.createGame(null));
     }
+
+    @ParameterizedTest
+    @ValueSource(classes = {GameSqlDataAccess.class, GameMemoryAccess.class})
+    void clear(Class<? extends GameDAO> gameClearClass) throws DataAccessException, ResponseException, SQLException{
+        GameDAO gameAccess = getGameDAOAccess(gameClearClass);
+
+        assertDoesNotThrow(gameAccess::clear);
+        assertEquals(0,gameAccess.size());
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {GameSqlDataAccess.class, GameMemoryAccess.class})
+    void size(Class<? extends GameDAO> gameSizeClass) throws DataAccessException, ResponseException, SQLException{
+        GameDAO gameAccess = getGameDAOAccess(gameSizeClass);
+
+        gameAccess.createGame("First");
+        gameAccess.createGame("Second");
+        gameAccess.createGame("Third");
+
+        assertDoesNotThrow(gameAccess::size);
+        assertEquals(3,gameAccess.size());
+    }
 }
