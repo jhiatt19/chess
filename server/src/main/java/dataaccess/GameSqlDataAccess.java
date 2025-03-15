@@ -2,6 +2,7 @@ package dataaccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import exception.ResponseException;
 import model.GameData;
 import model.JoinGameData;
@@ -15,7 +16,7 @@ import java.util.HashSet;
 public class GameSqlDataAccess implements GameDAO{
     String currGameName;
     String currJSON;
-    int gameID = 1;
+    int gameID = 0;
     GameData currGame;
 
     public GameSqlDataAccess() {
@@ -49,8 +50,28 @@ public class GameSqlDataAccess implements GameDAO{
     }
 
     @Override
-    public GameData joinGame(JoinGameData color, String user) throws DataAccessException, SQLException, ResponseException {
-        return null;
+    public void joinGame(JoinGameData color, String user) throws DataAccessException, SQLException, ResponseException {
+        String stmt;
+        if (color.playerColor().equals("WHITE")) {
+            stmt = "UPDATE games " + "SET white = ? " + "WHERE gameID = ?";
+        }
+        else if (color.playerColor().equals("BLACK")) {
+            stmt = "UPDATE games " + "SET black = ? " + "WHERE gameID = ?";
+        }
+        else {
+            throw new ResponseException(400, "Error: bad request");
+        }
+
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(stmt)) {
+                ps.setString(1,user);
+                ps.setInt(2,color.gameID());
+                ps.executeUpdate();
+            }
+        }
+        catch (SQLException ex) {
+            throw new DataAccessException(String.format("Could not join game: %s",ex.getMessage()));
+        }
     }
 
     @Override
@@ -72,7 +93,21 @@ public class GameSqlDataAccess implements GameDAO{
     }
 
     @Override
-    public GameData findGame(int gameID) {
+    public GameData findGame(int gameID) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var stmt = "SELECT json FROM games WHERE gameID = ?";
+            var ps = conn.prepareStatement(stmt, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1,gameID);
+            var rs = ps.executeQuery();
+
+            if (rs.next()) {
+                var jsonData = rs.getString(1);
+                return new Gson().fromJson(jsonData,GameData.class);
+            }
+        }
+        catch (SQLException ex) {
+            throw new DataAccessException(String.format("Unable to find game: %s", ex.getMessage()));
+        }
         return null;
     }
 

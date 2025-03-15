@@ -33,18 +33,15 @@ public class GameService {
         gameData.clear();
     }
 
-    public GameData joinGame(JoinGameData game, String username) throws ResponseException, SQLException, DataAccessException {
+    public void joinGame(JoinGameData game, String username) throws ResponseException, SQLException, DataAccessException {
         var specificGameID = gameData.findGame(game.gameID());
-        var added = gameData.joinGame(game,username);
-        if (specificGameID == null || added == null){
+        gameData.joinGame(game,username);
+        if (specificGameID == null){
             throw new ResponseException(400,"Error: bad request");
-        }
-        else {
-            return added;
         }
     }
 
-    public GameData getGame(int gameID) throws ResponseException{
+    public GameData getGame(int gameID) throws ResponseException, DataAccessException {
         var game = gameData.findGame(gameID);
         if (game == null){
             throw new ResponseException(400,"Error: bad request");

@@ -91,16 +91,16 @@ public class GameServiceTest {
         assertEquals(3,GAMESERVICE.size());
 
         var joinGame = new JoinGameData(1,"WHITE");
-        var gameData = GAMESERVICE.joinGame(joinGame,"HelloPoppet");
+        assertDoesNotThrow(() -> GAMESERVICE.joinGame(joinGame,"HelloPoppet"));
         var updatedGame = new GameData(0,null,null,"test",new ChessGame());
         for (GameData game : gamesList){
             if (game.gameID() == 1){
                 gamesList.remove(game);
                 updatedGame = new GameData(game.gameID(),"HelloPoppet",game.blackUsername(),game.gameName(),game.game());
                 gamesList.add(updatedGame);
-                assertEquals(updatedGame,gameData);
             }
         }
+        assertEquals(updatedGame,GAMESERVICE.getGame(1));
     }
 
     @Test

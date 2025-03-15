@@ -13,13 +13,13 @@ public interface GameDAO {
 
     HashSet<GameData> listGame();
 
-    GameData joinGame(JoinGameData color, String user) throws ResponseException, SQLException, DataAccessException;
+    void joinGame(JoinGameData color, String user) throws ResponseException, SQLException, DataAccessException;
 
     void clear() throws DataAccessException, SQLException;
 
     void addPlayer(JoinGameData color, String user, GameData game, String otherPlayer);
 
-    GameData findGame(int gameID);
+    GameData findGame(int gameID) throws DataAccessException;
 
     int size() throws SQLException, DataAccessException;
 }

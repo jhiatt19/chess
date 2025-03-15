@@ -30,7 +30,7 @@ public class GameMemoryAccess implements GameDAO {
         return gameDB;
     };
 
-    public GameData joinGame(JoinGameData playerColor, String username) throws ResponseException {
+    public void joinGame(JoinGameData playerColor, String username) throws ResponseException {
         for (GameData game : gameDB){
             if (game.gameID() == playerColor.gameID()){
                 if (playerColor.playerColor().equals("WHITE") || playerColor.playerColor().equals("WHITE/BLACK")){
@@ -40,7 +40,6 @@ public class GameMemoryAccess implements GameDAO {
                     else {
                         var otherPlayer = game.blackUsername();
                         addPlayer(playerColor, username, game, otherPlayer);
-                        return game;
                     }
                 }
                 else {
@@ -50,12 +49,10 @@ public class GameMemoryAccess implements GameDAO {
                     else {
                     var otherPlayer = game.getWhiteUsername();
                     addPlayer(playerColor, otherPlayer, game, username);
-                    return game;
                     }
                }
             }
         }
-        return null;
     };
 
     public void addPlayer(JoinGameData playerColor,String whitePlayer,GameData game, String blackPlayer){

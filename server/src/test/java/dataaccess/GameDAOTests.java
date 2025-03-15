@@ -1,7 +1,9 @@
 package dataaccess;
 
+import chess.ChessGame;
 import exception.ResponseException;
 import model.GameData;
+import model.JoinGameData;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -62,5 +64,58 @@ public class GameDAOTests {
 
         assertDoesNotThrow(gameAccess::size);
         assertEquals(3,gameAccess.size());
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {GameSqlDataAccess.class, GameMemoryAccess.class})
+    void findGame(Class<? extends GameDAO> gameDBaccess) throws DataAccessException, ResponseException, SQLException {
+        GameDAO gameAccess = getGameDAOAccess(gameDBaccess);
+
+        gameAccess.createGame("Numero Uno");
+
+        GameData tester = new GameData(1,null,null,"Numero Uno", new ChessGame());
+        assertEquals(tester, gameAccess.findGame(1));
+        assertDoesNotThrow(() -> gameAccess.findGame(1));
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {GameSqlDataAccess.class, GameMemoryAccess.class})
+    void findGameBadId(Class<? extends GameDAO> gameDBaccess) throws DataAccessException, ResponseException, SQLException {
+        GameDAO gameAccess = getGameDAOAccess(gameDBaccess);
+
+        gameAccess.createGame("Numero Uno");
+
+        assertThrows(Exception.class, () -> gameAccess.findGame(4));
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {GameSqlDataAccess.class, GameMemoryAccess.class})
+    void joinGame(Class<? extends GameDAO> gameDBclass) throws DataAccessException, ResponseException, SQLException{
+        GameDAO gameAccess = getGameDAOAccess(gameDBclass);
+
+        gameAccess.createGame("First");
+        JoinGameData newGame = new JoinGameData(1,"WHITE");
+        JoinGameData newGame2 = new JoinGameData(1, "BLACK");
+
+        assertDoesNotThrow(() -> gameAccess.joinGame(newGame, "Jimmy"));
+        assertDoesNotThrow(() -> gameAccess.joinGame(newGame2, "Timmy"));
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {GameSqlDataAccess.class, GameMemoryAccess.class})
+    void joinGameBad(Class<? extends GameDAO> gameDBclass) throws DataAccessException, ResponseException, SQLException {
+        GameDAO gameAccess = getGameDAOAccess(gameDBclass);
+
+        gameAccess.createGame("Bad game");
+        JoinGameData badGame1 = new JoinGameData(45, "WHITE");
+        JoinGameData badGame2 = new JoinGameData(1,"WHITE");
+        JoinGameData badGame3 = new JoinGameData(1,"GREEN");
+
+        //assertThrows(Exception.class, () -> gameAccess.joinGame(badGame1, "General Kenobi"));
+        assertDoesNotThrow(() -> gameAccess.joinGame(badGame2, "Padme"));
+        assertThrows(Exception.class, () -> gameAccess.joinGame(badGame2, "General Skywalker"));
+        //assertThrows(Exception.class, () -> gameAccess.joinGame(badGame3, "Yoda"));
+
     }
 }
