@@ -25,6 +25,9 @@ public class UserService {
     public UserData createUser(UserData user) throws ResponseException, DataAccessException {
         //System.out.println(userData);
         try {
+            if (user.password() == null) {
+                throw new ResponseException(400, "Error: bad request");
+            }
             return userData.createUser(user);
         }
         catch (DataAccessException ex){
@@ -36,11 +39,14 @@ public class UserService {
         UserData foundUser;
         try  {
             foundUser = userData.getUser(user);
+            if (foundUser == null){
+                throw new DataAccessException("User not found");
+            }
         } catch (DataAccessException ex) {
             throw new ResponseException(401, "Error: unauthorized");
         }
-        var hashedPassword = BCrypt.checkpw(user.password(), BCrypt.gensalt());
-        if (foundUser == null || hashedPassword){
+        var hashedPassword = BCrypt.checkpw(user.password(), foundUser.password());
+        if (!hashedPassword){
             throw new ResponseException(401,"Error: unauthorized");
         }
         else {

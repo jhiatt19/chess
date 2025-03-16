@@ -25,7 +25,12 @@ public class AuthService {
     }
 
     public AuthData setAuth(AuthData authdata) throws ResponseException, DataAccessException {
-        return authData.setAuth(authdata);
+        try {
+            return authData.setAuth(authdata);
+        } catch (DataAccessException ex) {
+            throw new ResponseException(400,"Error: bad request");
+        }
+
     }
 
     public void deleteAuth(String token) throws ResponseException, SQLException, DataAccessException {

@@ -34,8 +34,7 @@ public class GameSqlDataAccess implements GameDAO{
         }
         var statement = "INSERT INTO games (whiteUsername, blackUsername, gameName, json) VALUES (?, ?, ?, ?)";
         this.currGameName = name;
-        setGameID(gameID+1);
-        this.currGame = new GameData(gameID,null, null, name, new ChessGame());
+        this.currGame = new GameData(gameID+1, null, null, name, new ChessGame());
         this.currJSON = new Gson().toJson(currGame);
         executeUpdate(statement);
         return gameID;
@@ -118,6 +117,7 @@ public class GameSqlDataAccess implements GameDAO{
             var stmt = "TRUNCATE TABLE games";
             var ps = conn.prepareStatement(stmt);
             ps.executeUpdate();
+            setGameID(0);
         }
         catch (SQLException ex) {
             throw new DataAccessException(String.format("Unable to clear table: %s", ex.getMessage()));
@@ -170,8 +170,16 @@ public class GameSqlDataAccess implements GameDAO{
                 ps.setNull(2,Types.VARCHAR);
                 ps.setString(3,currGameName);
                 ps.setString(4,currJSON);
-                var gameid = ps.executeUpdate();
-                setGameID(gameid);
+                var rowsAffected = ps.executeUpdate();
+                if (rowsAffected != 0) {
+                    try (var gameid = ps.getGeneratedKeys()) {
+                        if (gameid.next()) {
+                            var newGameID = gameid.getInt(1);
+                            setGameID(newGameID);
+                        }
+                    }
+                }
+
             }
         } catch (SQLException ex) {
             throw new DataAccessException(String.format("Unable to add to table: %s", ex.getMessage()));

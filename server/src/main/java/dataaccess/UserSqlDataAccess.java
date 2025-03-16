@@ -25,12 +25,16 @@ public class UserSqlDataAccess implements UserDAO{
     }
     @Override
     public UserData createUser(UserData user) throws DataAccessException {
-        var statement = "INSERT INTO users (username, password, email, json) VALUES (?, ?, ?, ?)";
-        this.hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
-        this.currUser = new UserData(user.username(), hashedPassword, user.email());
-        this.currJson = new Gson().toJson(currUser);
-        executeUpdate(statement);
-        return currUser;
+        try (var conn = DatabaseManager.getConnection()){
+            var statement = "INSERT INTO users (username, password, email, json) VALUES (?, ?, ?, ?)";
+            this.hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
+            this.currUser = new UserData(user.username(), hashedPassword, user.email());
+            this.currJson = new Gson().toJson(currUser);
+            executeUpdate(statement);
+            return currUser;
+        } catch (SQLException ex) {
+            throw new DataAccessException(String.format("Error: registering user: %s", ex.getMessage()));
+        }
     }
 
     @Override

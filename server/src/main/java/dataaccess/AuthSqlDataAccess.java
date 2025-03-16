@@ -102,6 +102,7 @@ public class AuthSqlDataAccess implements AuthDAO{
 
     private void executeUpdate(String statement) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
+
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setString(1,currAuth.authToken());
                 ps.setString(2,currAuth.username());
@@ -120,7 +121,7 @@ public class AuthSqlDataAccess implements AuthDAO{
             `authToken` VARCHAR(50) NOT NULL,
             `username` VARCHAR(50) NOT NULL,
             `json` TEXT NOT NULL,
-            PRIMARY KEY (`username`)
+            PRIMARY KEY (`authToken`)
             );
             """
     };
