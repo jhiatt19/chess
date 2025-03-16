@@ -2,6 +2,7 @@ package dataaccess;
 
 import exception.ResponseException;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -18,7 +19,8 @@ public class UserMemoryAccess implements UserDAO {
             throw new ResponseException(400,"Error: bad request");
         }
         else {
-            var madeUser = new UserData(user.username(), user.password(), user.email());
+            var hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
+            var madeUser = new UserData(user.username(), hashedPassword, user.email());
             userDB.add(madeUser);
             return madeUser;
         }

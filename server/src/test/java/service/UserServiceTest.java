@@ -67,13 +67,17 @@ public class UserServiceTest {
 
     @Test
     void checkUser() throws ResponseException, DataAccessException, SQLException {
-        user = USERSERVICE.createUser(user);
-        nextUser = USERSERVICE.createUser(nextUser);
-        tweedleDee = USERSERVICE.createUser(tweedleDee);
+        UserData userTester = new UserData("Tester","asdf","u@yahoo.com");
+        UserData nextUserTester = new UserData("Swiper","noswiping","dora@explorer.com");
+        UserData tweedleDeeTester = new UserData("TweedleDee","tweedleDum","deadPoetsSocieity@taylor.com");
 
-        assertEquals(USERSERVICE.checkUser(user),user);
-        assertEquals(USERSERVICE.checkUser(nextUser),nextUser);
-        assertEquals(USERSERVICE.checkUser(tweedleDee),tweedleDee);
+        USERSERVICE.createUser(userTester);
+        USERSERVICE.createUser(nextUserTester);
+        USERSERVICE.createUser(tweedleDeeTester);
+
+        assertDoesNotThrow(() -> USERSERVICE.checkUser(userTester));
+        assertDoesNotThrow(() -> USERSERVICE.checkUser(nextUserTester));
+        assertDoesNotThrow(() -> USERSERVICE.checkUser(tweedleDeeTester));
 
     }
 

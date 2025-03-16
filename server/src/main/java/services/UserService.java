@@ -45,7 +45,9 @@ public class UserService {
         } catch (DataAccessException ex) {
             throw new ResponseException(401, "Error: unauthorized");
         }
+
         var hashedPassword = BCrypt.checkpw(user.password(), foundUser.password());
+
         if (!hashedPassword){
             throw new ResponseException(401,"Error: unauthorized");
         }
