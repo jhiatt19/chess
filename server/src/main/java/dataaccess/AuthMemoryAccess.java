@@ -36,6 +36,7 @@ public class AuthMemoryAccess implements AuthDAO{
             if (data.authToken().equals(token)){
                 authDB.remove(data);
                 deleted = true;
+                break;
             }
         }
         if (!deleted) {
