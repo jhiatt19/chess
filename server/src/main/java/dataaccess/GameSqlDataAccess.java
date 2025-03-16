@@ -172,11 +172,10 @@ public class GameSqlDataAccess implements GameDAO{
                 ps.setString(4,currJSON);
                 var rowsAffected = ps.executeUpdate();
                 if (rowsAffected != 0) {
-                    try (var gameid = ps.getGeneratedKeys()) {
+                    var gameid = ps.getGeneratedKeys() ;
                         if (gameid.next()) {
                             var newGameID = gameid.getInt(1);
                             setGameID(newGameID);
-                        }
                     }
                 }
 
