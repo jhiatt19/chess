@@ -29,7 +29,11 @@ public class AuthService {
     }
 
     public void deleteAuth(String token) throws ResponseException, SQLException, DataAccessException {
-        authData.deleteAuth(token);
+        try {
+            authData.deleteAuth(token);
+        } catch (DataAccessException ex) {
+            throw new ResponseException(401,"Error: unauthorized");
+        }
     }
 
     public void clear() throws SQLException, DataAccessException {
@@ -37,7 +41,11 @@ public class AuthService {
     }
 
     public AuthData checkAuth(String token) throws ResponseException, DataAccessException {
-        return authData.checkAuth(token);
+        try {
+            return authData.checkAuth(token);
+        } catch (DataAccessException ex) {
+            throw new ResponseException(401, "Error: bad request");
+        }
     }
 
     public int size() throws SQLException, DataAccessException {

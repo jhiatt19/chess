@@ -9,6 +9,7 @@ import model.AuthData;
 import model.GameData;
 import model.JoinGameData;
 
+import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,8 +35,17 @@ public class GameService {
     }
 
     public void joinGame(JoinGameData game, String username) throws ResponseException, SQLException, DataAccessException {
-        gameData.findGame(game.gameID());
-        gameData.joinGame(game,username);
+        try {
+            gameData.findGame(game.gameID());
+        } catch (DataAccessException ex) {
+            throw new ResponseException(400, "Error: bad request");
+
+        }
+        try {
+            gameData.joinGame(game,username);
+        } catch (DataAccessException ex) {
+            throw new ResponseException(403, String.format("Error: already taken: %s",ex.getMessage()));
+        }
     }
 
     public GameData getGame(int gameID) throws ResponseException, DataAccessException {

@@ -45,7 +45,7 @@ public class AuthSqlDataAccess implements AuthDAO{
                         return new Gson().fromJson(jsonString, AuthData.class);
                     }
                     else {
-                        throw new DataAccessException(String.format("Authtoken provided not found: %s"));
+                        throw new DataAccessException("Authtoken provided not found: %s");
                     }
                 }
             }

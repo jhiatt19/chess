@@ -15,12 +15,12 @@ import java.util.Map;
 import java.util.UUID;
 
 public class Server {
-    private final AuthService authService;
-    private final GameService gameService;
-    private final UserService userService;
-    private final GameDAO gameDAO;
-    private final UserDAO userDAO;
-    private final AuthDAO authDAO;
+    private AuthService authService;
+    private GameService gameService;
+    private UserService userService;
+    private GameDAO gameDAO;
+    private UserDAO userDAO;
+    private AuthDAO authDAO;
 
     public Server()  {
         this.gameDAO = new GameSqlDataAccess();
@@ -85,7 +85,7 @@ public class Server {
         var user = new Gson().fromJson(req.body(),UserData.class);
         var loginUser = userService.checkUser(user);
         var authUser = DataTransformation.transform(loginUser,generateToken());
-        authService.setAuth(authUser);
+        authUser = authService.setAuth(authUser);
         res.status(200);
         res.type("application/json");
         return new Gson().toJson(authUser);
@@ -95,7 +95,7 @@ public class Server {
         var token = req.headers("authorization");
         authService.deleteAuth(token);
         res.status(200);
-        return new Gson().toJson(Map.of("xyz", 123));
+        return new Gson().toJson(Map.of());
     }
 
     private Object listGame(Request req, Response res) throws ResponseException, DataAccessException {
@@ -153,6 +153,7 @@ public class Server {
         userService.clear();
         gameService.clear();
         authService.clear();
-        return "{}";
+        res.status(200);
+        return new Gson().toJson(Map.of());
     }
 }

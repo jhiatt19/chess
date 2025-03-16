@@ -66,21 +66,41 @@ public class GameSqlDataAccess implements GameDAO{
 
     @Override
     public void joinGame(JoinGameData color, String user) throws DataAccessException, SQLException, ResponseException {
-        String stmt;
-        if (color.playerColor().equals("WHITE") || color.playerColor().equals("WHITE/BLACK")) {
-            stmt = "UPDATE games " + "SET whiteUsername = ? " + "WHERE gameID = ? AND whiteUsername IS NULL";
-        }
-        else if (color.playerColor().equals("BLACK")) {
-            stmt = "UPDATE games " + "SET blackUsername = ? " + "WHERE gameID = ? AND blackUsername IS NULL";
-        }
-        else {
-            throw new ResponseException(400, "Error: bad request");
-        }
-
         try (var conn = DatabaseManager.getConnection()) {
+        String stmt;
+        String stringJson;
+        GameData newGameData;
+        var pullStmt = "SELECT json FROM games WHERE gameID = ?";
+            try (var pullSt = conn.prepareStatement(pullStmt, Statement.RETURN_GENERATED_KEYS)) {
+                pullSt.setInt(1,color.gameID());
+                var rs = pullSt.executeQuery();
+                if (rs.next()) {
+                    var jsonString = rs.getString("json");
+                    newGameData = new Gson().fromJson(jsonString, GameData.class);
+                }
+                else {
+                    throw new SQLException("No json string");
+                }
+            } catch (SQLException ex) {
+                throw new DataAccessException(String.format("Problem getting json: %s", ex.getMessage()));
+            }
+            if (color.playerColor().equals("WHITE") || color.playerColor().equals("WHITE/BLACK")) {
+                var gameData = new GameData(newGameData.gameID(),user, newGameData.blackUsername(), newGameData.gameName(),newGameData.game());
+                stringJson = new Gson().toJson(gameData);
+                stmt = "UPDATE games " + "SET whiteUsername = ?, json = ? " + "WHERE gameID = ? AND whiteUsername IS NULL";
+            }
+            else if (color.playerColor().equals("BLACK")) {
+                var gameData = new GameData(newGameData.gameID(), newGameData.whiteUsername(), user, newGameData.gameName(),newGameData.game());
+                stringJson = new Gson().toJson(gameData);
+                stmt = "UPDATE games " + "SET blackUsername = ?, json = ? " + "WHERE gameID = ? AND blackUsername IS NULL";
+            }
+            else {
+                throw new ResponseException(400, "Error: bad request");
+            }
             try (var ps = conn.prepareStatement(stmt, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1,user);
-                ps.setInt(2,color.gameID());
+                ps.setString(2,stringJson);
+                ps.setInt(3,color.gameID());
                 var affectedRows = ps.executeUpdate();
                 if (affectedRows == 0){
                     throw new DataAccessException("Color already taken");

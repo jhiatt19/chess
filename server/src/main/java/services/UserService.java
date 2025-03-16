@@ -27,19 +27,20 @@ public class UserService {
             return userData.createUser(user);
         }
         catch (DataAccessException ex){
-            throw new DataAccessException(String.format("Did not add user", ex.getMessage()));
+            throw new ResponseException(403, "Error: already taken");
         }
     }
 
     public UserData checkUser(UserData user) throws ResponseException, SQLException, DataAccessException {
-        var foundUser = userData.getUser(user);
-        if (foundUser == null){
+        UserData foundUser;
+        try  {
+            foundUser = userData.getUser(user);
+        } catch (DataAccessException ex) {
+            throw new ResponseException(401, "Error: unauthorized");
+        }
+        if (foundUser == null || !foundUser.password().equals(user.password())){
             throw new ResponseException(401,"Error: unauthorized");
         }
-        else if (!foundUser.password().equals(user.password())){
-            throw new ResponseException(401,"Error: unauthorized");
-        }
-
         else {
             return foundUser;
         }
