@@ -143,8 +143,6 @@ public class GameSqlDataAccess implements GameDAO{
         }
     }
 
-
-
     private final String[] createTable = {
             """
             CREATE TABLE IF NOT EXISTS games (

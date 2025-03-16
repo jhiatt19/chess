@@ -99,7 +99,7 @@ public class AuthDAOTests {
         authAccess.setAuth(auth);
 
         var nullToken = generateToken();
-        authAccess.deleteAuth(nullToken);
+        assertThrows(Exception.class, () -> authAccess.deleteAuth(nullToken));
         assertThrows(Exception.class, () -> authAccess.checkAuth(nullToken));
         assertEquals(1,authAccess.size());
     }

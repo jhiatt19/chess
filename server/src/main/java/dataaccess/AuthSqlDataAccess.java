@@ -59,9 +59,12 @@ public class AuthSqlDataAccess implements AuthDAO{
     public void deleteAuth(String token) throws ResponseException, DataAccessException, SQLException {
         try (var conn = DatabaseManager.getConnection()) {
             var stmt = "DELETE FROM auth WHERE authToken=?";
-            var ps = conn.prepareStatement(stmt);
+        var ps = conn.prepareStatement(stmt, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1,token);
-            ps.executeUpdate();
+            var rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 0){
+                throw new DataAccessException("AuthCode not found");
+            }
         }
         catch (SQLException ex){
             throw new DataAccessException(String.format("Error occurred: %s", ex.getMessage()));
