@@ -133,5 +133,7 @@ public class UserDAOTests {
         assertEquals("Timmy", userAccess.getUser(user2).username());
         assertEquals("Mike", userAccess.getUser(user3).username());
         assertNull(userAccess.getUser(user4));
+
+        userAccess.clear();
     }
 }

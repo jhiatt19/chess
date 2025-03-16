@@ -4,6 +4,7 @@ import chess.ChessGame;
 import exception.ResponseException;
 import model.GameData;
 import model.JoinGameData;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -26,6 +27,7 @@ public class GameDAOTests {
         gameDB.clear();
         return gameDB;
     }
+
 
     @ParameterizedTest
     @ValueSource(classes = {GameSqlDataAccess.class, GameMemoryAccess.class})
@@ -117,5 +119,35 @@ public class GameDAOTests {
         assertThrows(Exception.class, () -> gameAccess.joinGame(badGame2, "General Skywalker"));
         assertThrows(Exception.class, () -> gameAccess.joinGame(badGame3, "Yoda"));
 
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {GameSqlDataAccess.class, GameMemoryAccess.class})
+    void listGames(Class<? extends GameDAO> gameDBclass) throws DataAccessException, ResponseException, SQLException {
+        GameDAO gameAccess = getGameDAOAccess(gameDBclass);
+
+        gameAccess.createGame("A new Hope");
+        JoinGameData game1 = new JoinGameData(1,"WHITE");
+        gameAccess.joinGame(game1,"Kenobi");
+        JoinGameData game1B = new JoinGameData(1,"BLACK");
+        gameAccess.joinGame(game1B,"Vader");
+
+        assertDoesNotThrow(gameAccess::listGame);
+
+        var game = gameAccess.findGame(1);
+
+        var recievedGame = gameAccess.listGame().toArray();
+        assertEquals(game,recievedGame[0]);
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {GameSqlDataAccess.class, GameMemoryAccess.class})
+    void listGameNone(Class<? extends GameDAO> gameDBclass) throws SQLException,ResponseException,DataAccessException {
+        GameDAO gameAccess = getGameDAOAccess(gameDBclass);
+
+        assertDoesNotThrow(gameAccess::listGame);
+
+        gameAccess.clear();
     }
 }

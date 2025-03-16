@@ -11,7 +11,7 @@ import java.util.HashSet;
 public interface GameDAO {
     int createGame(String name) throws DataAccessException, ResponseException; //implement throw
 
-    HashSet<GameData> listGame();
+    HashSet<GameData> listGame() throws DataAccessException;
 
     void joinGame(JoinGameData color, String user) throws ResponseException, SQLException, DataAccessException;
 

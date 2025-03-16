@@ -39,7 +39,7 @@ public class AuthMemoryAccess implements AuthDAO{
             }
         }
         if (!deleted) {
-            throw new ResponseException(400, "Error: bad request");
+            throw new ResponseException(401, "Error: unauthorized");
         }
     };
 

@@ -21,7 +21,7 @@ public class GameService {
         this.gameData = gameData;
     }
 
-    public HashSet<GameData> listGame() throws ResponseException{
+    public HashSet<GameData> listGame() throws ResponseException, DataAccessException {
         return gameData.listGame();
     }
 

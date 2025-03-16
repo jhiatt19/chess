@@ -32,7 +32,7 @@ public class GameSqlDataAccess implements GameDAO{
         if (name == null){
             throw new ResponseException(400,"Error: bad request");
         }
-        var statement = "INSERT INTO games (white, black, gameName, json) VALUES (?, ?, ?, ?)";
+        var statement = "INSERT INTO games (whiteUsername, blackUsername, gameName, json) VALUES (?, ?, ?, ?)";
         this.currGameName = name;
         setGameID(gameID+1);
         this.currGame = new GameData(gameID,null, null, name, new ChessGame());
@@ -45,18 +45,33 @@ public class GameSqlDataAccess implements GameDAO{
         this.gameID = gameID;
     }
     @Override
-    public HashSet<GameData> listGame() {
-        return null;
+    public HashSet<GameData> listGame() throws DataAccessException {
+        var gamesList = new HashSet<GameData>();
+        try (var conn = DatabaseManager.getConnection()) {
+            var stmt = "SELECT json FROM games";
+            try (var ps = conn.prepareStatement(stmt)) {
+                try (var rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        var json = rs.getString("json");
+                        var game = new Gson().fromJson(json,GameData.class);
+                        gamesList.add(game);
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException(String.format("Problem getting games from database: %s",ex.getMessage()));
+        }
+        return gamesList;
     }
 
     @Override
     public void joinGame(JoinGameData color, String user) throws DataAccessException, SQLException, ResponseException {
         String stmt;
         if (color.playerColor().equals("WHITE") || color.playerColor().equals("WHITE/BLACK")) {
-            stmt = "UPDATE games " + "SET white = ? " + "WHERE gameID = ? AND white IS NULL";
+            stmt = "UPDATE games " + "SET whiteUsername = ? " + "WHERE gameID = ? AND whiteUsername IS NULL";
         }
         else if (color.playerColor().equals("BLACK")) {
-            stmt = "UPDATE games " + "SET black = ? " + "WHERE gameID = ? AND black IS NULL";
+            stmt = "UPDATE games " + "SET blackUsername = ? " + "WHERE gameID = ? AND blackUsername IS NULL";
         }
         else {
             throw new ResponseException(400, "Error: bad request");
@@ -147,8 +162,8 @@ public class GameSqlDataAccess implements GameDAO{
             """
             CREATE TABLE IF NOT EXISTS games (
             `gameID` INT NOT NULL AUTO_INCREMENT,
-            `white` VARCHAR(50),
-            `black` VARCHAR(50),
+            `whiteUsername` VARCHAR(50),
+            `blackUsername` VARCHAR(50),
             `gameName` VARCHAR(50) NOT NULL,
             `json` TEXT NOT NULL,
             PRIMARY KEY(`gameID`)
