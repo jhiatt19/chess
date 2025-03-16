@@ -6,6 +6,7 @@ import dataaccess.UserMemoryAccess;
 import exception.ResponseException;
 import model.AuthData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import javax.xml.crypto.Data;
 import java.sql.SQLException;
@@ -38,7 +39,8 @@ public class UserService {
         } catch (DataAccessException ex) {
             throw new ResponseException(401, "Error: unauthorized");
         }
-        if (foundUser == null || !foundUser.password().equals(user.password())){
+        var hashedPassword = BCrypt.checkpw(user.password(), BCrypt.gensalt());
+        if (foundUser == null || hashedPassword){
             throw new ResponseException(401,"Error: unauthorized");
         }
         else {
