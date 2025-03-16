@@ -60,7 +60,7 @@ public class GameMemoryAccess implements GameDAO {
         }
     };
 
-    public void addPlayer(JoinGameData playerColor,String whitePlayer,GameData game, String blackPlayer){
+    private void addPlayer(JoinGameData playerColor,String whitePlayer,GameData game, String blackPlayer){
         var chessgame = game.game();
         var gameName = game.gameName();
         var madeGame = new GameData(playerColor.gameID(), whitePlayer, blackPlayer, gameName,chessgame);

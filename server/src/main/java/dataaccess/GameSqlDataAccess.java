@@ -63,10 +63,13 @@ public class GameSqlDataAccess implements GameDAO{
         }
 
         try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(stmt)) {
+            try (var ps = conn.prepareStatement(stmt, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1,user);
                 ps.setInt(2,color.gameID());
-                ps.executeUpdate();
+                var affectedRows = ps.executeUpdate();
+                if (affectedRows == 0){
+                    throw new DataAccessException("Color already taken");
+                }
             }
         }
         catch (SQLException ex) {
@@ -84,11 +87,6 @@ public class GameSqlDataAccess implements GameDAO{
         catch (SQLException ex) {
             throw new DataAccessException(String.format("Unable to clear table: %s", ex.getMessage()));
         }
-
-    }
-
-    @Override
-    public void addPlayer(JoinGameData color, String user, GameData game, String otherPlayer) {
 
     }
 

@@ -17,7 +17,7 @@ public interface GameDAO {
 
     void clear() throws DataAccessException, SQLException;
 
-    void addPlayer(JoinGameData color, String user, GameData game, String otherPlayer);
+    //void addPlayer(JoinGameData color, String user, GameData game, String otherPlayer);
 
     GameData findGame(int gameID) throws DataAccessException, ResponseException;
 
