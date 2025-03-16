@@ -158,7 +158,7 @@ public class GameSqlDataAccess implements GameDAO{
         }
     }
 
-    private final String[] createTable = {
+    private final String[] createGameTable = {
             """
             CREATE TABLE IF NOT EXISTS games (
             `gameID` INT NOT NULL AUTO_INCREMENT,
@@ -174,7 +174,7 @@ public class GameSqlDataAccess implements GameDAO{
     private void configureDatabase() throws DataAccessException {
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
-            for (String line : createTable) {
+            for (String line : createGameTable) {
                 try (var preppedStatement = conn.prepareStatement(line)) {
                     preppedStatement.executeUpdate();
                 }

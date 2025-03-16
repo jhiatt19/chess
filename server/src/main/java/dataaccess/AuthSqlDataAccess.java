@@ -114,7 +114,7 @@ public class AuthSqlDataAccess implements AuthDAO{
         }
     }
 
-    private final String[] createTable = {
+    private final String[] createAuthTable = {
             """
             CREATE TABLE IF NOT EXISTS auth (
             `authToken` VARCHAR(50) NOT NULL,
@@ -128,7 +128,7 @@ public class AuthSqlDataAccess implements AuthDAO{
     private void configureDatabase() throws DataAccessException {
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
-            for (String line : createTable) {
+            for (String line : createAuthTable) {
                 try (var preppedStatement = conn.prepareStatement(line)) {
                     preppedStatement.executeUpdate();
                 }

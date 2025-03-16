@@ -23,17 +23,12 @@ public class Server {
     private final AuthDAO authDAO;
 
     public Server()  {
-//        try {
-            this.gameDAO = new GameMemoryAccess();
-            this.authDAO = new AuthMemoryAccess();
-            this.userDAO = new UserMemoryAccess();
-            this.authService = new AuthService(authDAO);
-            this.gameService = new GameService(gameDAO);
-            this.userService = new UserService(userDAO);
-//        }
-//        catch (DataAccessException ex) {
-//            throw new DataAccessException(String.format("Problem creating server connection",ex.getMessage()));
-//        }
+        this.gameDAO = new GameSqlDataAccess();
+        this.authDAO = new AuthSqlDataAccess();
+        this.userDAO = new UserSqlDataAccess();
+        this.authService = new AuthService(authDAO);
+        this.gameService = new GameService(gameDAO);
+        this.userService = new UserService(userDAO);
 
     }
 
@@ -122,12 +117,10 @@ public class Server {
         var authorized = authService.checkAuth(token);
         if (authorized != null) {
             var game = new Gson().fromJson(req.body(),GameData.class);
-            //System.out.println(game);
             if (game == null){
                 throw new ResponseException(400, "Error: bad request");
             }
             var responseMap = gameService.createGame(game.gameName());
-            //System.out.println(gameService.getGame(responseMap));
             return new Gson().toJson(Map.of("gameID", responseMap));
         }
         else {

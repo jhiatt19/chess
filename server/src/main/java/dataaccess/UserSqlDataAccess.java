@@ -95,7 +95,7 @@ public class UserSqlDataAccess implements UserDAO{
         }
     }
 
-    private final String[] create = {
+    private final String[] createUserTable = {
             """
             CREATE TABLE IF NOT EXISTS users (
             `username` VARCHAR(50) NOT NULL,
@@ -111,7 +111,7 @@ public class UserSqlDataAccess implements UserDAO{
     private void configureDatabase() throws DataAccessException {
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()){
-            for (String line : create){
+            for (String line : createUserTable){
                 try (var preppedStatement = conn.prepareStatement(line)){
                     preppedStatement.executeUpdate();
                 }
