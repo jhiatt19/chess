@@ -29,6 +29,7 @@ public class UserClient {
                 case "quit" -> quit();
                 case "login" -> login(params);
                 case "logout" -> logout();
+                case "clear" -> clear();
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -66,10 +67,14 @@ public class UserClient {
 
     public String logout() throws ResponseException {
         assertSignedIn();
-        server.logoutUser();
+        server.logoutUser(token);
         state = State.SIGNEDOUT;
         username = null;
         return String.format("Goodbye!");
+
+    }
+
+    public void clear(){
 
     }
 

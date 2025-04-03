@@ -52,13 +52,11 @@ public class ServerFacade {
     }
 
     private static void writeBody(Object request, String authToken, HttpURLConnection http) throws IOException {
-        if (request != null) {
-            http.addRequestProperty("Content-Type", "application/json");
-            http.addRequestProperty("Authorization", authToken);
-            String reqData = new Gson().toJson(request);
-            try (OutputStream reqBody = http.getOutputStream()) {
-                reqBody.write(reqData.getBytes());
-            }
+        http.addRequestProperty("Content-Type", "application/json");
+        http.addRequestProperty("authorization", authToken);
+        String reqData = new Gson().toJson(request);
+        try (OutputStream reqBody = http.getOutputStream()) {
+            reqBody.write(reqData.getBytes());
         }
     }
 
