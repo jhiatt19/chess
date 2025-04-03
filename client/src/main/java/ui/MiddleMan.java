@@ -23,7 +23,11 @@ public class MiddleMan {
 
             try {
                 result = client.eval(line);
-                System.out.print(SET_BG_COLOR_BLACK + result);
+                if (result.equals("quit")) {
+                    System.out.print("Goodbye");
+                } else {
+                    System.out.print(result);
+                }
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);
@@ -33,6 +37,6 @@ public class MiddleMan {
     }
 
     private void printPrompt() {
-        System.out.print("\n" + RESET + ">>>" + SET_TEXT_COLOR_BLUE);
+        System.out.print("\n" + ">>> ");
     }
 }

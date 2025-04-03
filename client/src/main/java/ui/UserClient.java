@@ -25,6 +25,7 @@ public class UserClient {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "register" -> register(params);
+                case "quit" -> quit();
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -40,6 +41,10 @@ public class UserClient {
             return String.format("You successfully registered as %s.", username);
         }
         throw new ResponseException(400, "Expected: <username>");
+    }
+
+    public String quit() throws ResponseException {
+        return String.format("quit");
     }
 
     public String help() {
