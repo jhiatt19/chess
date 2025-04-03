@@ -33,6 +33,11 @@ public class ServerFacade {
         this.makeRequest("DELETE", path, null, AuthData.class, authToken);
     }
 
+    public void clear() throws ResponseException {
+        var path = "/db";
+        this.makeRequest("DELETE", path, null, AuthUser.class, null);
+    }
+
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();

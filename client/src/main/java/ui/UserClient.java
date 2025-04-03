@@ -70,12 +70,18 @@ public class UserClient {
         server.logoutUser(token);
         state = State.SIGNEDOUT;
         username = null;
-        return String.format("Goodbye!");
+        token = null;
+        return "Goodbye!";
 
     }
 
-    public void clear(){
-
+    public String clear() throws ResponseException{
+        assertSignedIn();
+        server.clear();
+        state = State.SIGNEDOUT;
+        username = null;
+        token = null;
+        return "Database cleared";
     }
 
     public String help() {
