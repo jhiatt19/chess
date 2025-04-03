@@ -2,6 +2,9 @@ package server;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
+import model.AuthData;
+import model.AuthUser;
+import model.DataTransformation;
 import model.UserData;
 import java.io.*;
 import java.net.*;
@@ -15,24 +18,29 @@ public class ServerFacade {
         serverUrl = url;
     }
 
-    public UserData createUser(UserData user) throws ResponseException {
+    public AuthUser createUser(UserData user) throws ResponseException {
         var path = "/user";
-        return this.makeRequest("POST", path, user, UserData.class);
+        return this.makeRequest("POST", path, user, AuthUser.class,null);
     }
 
-    public UserData loginUser(UserData user) throws ResponseException {
+    public AuthUser loginUser(UserData user) throws ResponseException {
         var path = "/session";
-        return this.makeRequest("POST", path, user, UserData.class);
+        return this.makeRequest("POST", path, user, AuthUser.class,null);
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    public void logoutUser(String authToken) throws ResponseException {
+        var path = "/session";
+        this.makeRequest("DELETE", path, null, AuthData.class, authToken);
+    }
+
+    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
 
-            writeBody(request, http);
+            writeBody(request, authToken, http);
             http.connect();
             throwIfNotSuccessful(http);
             return readBody(http,responseClass);
@@ -43,9 +51,10 @@ public class ServerFacade {
         }
     }
 
-    private static void writeBody(Object request, HttpURLConnection http) throws IOException {
+    private static void writeBody(Object request, String authToken, HttpURLConnection http) throws IOException {
         if (request != null) {
             http.addRequestProperty("Content-Type", "application/json");
+            http.addRequestProperty("Authorization", authToken);
             String reqData = new Gson().toJson(request);
             try (OutputStream reqBody = http.getOutputStream()) {
                 reqBody.write(reqData.getBytes());

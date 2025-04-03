@@ -8,6 +8,8 @@ import java.util.Arrays;
 
 public class UserClient {
 
+    private String username = null;
+    private String token = null;
     private final ServerFacade server;
     private final String serverUrl;
     private State state = State.SIGNEDOUT;
@@ -26,6 +28,7 @@ public class UserClient {
                 case "register" -> register(params);
                 case "quit" -> quit();
                 case "login" -> login(params);
+                case "logout" -> logout();
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -38,7 +41,9 @@ public class UserClient {
             UserData user = new UserData(params[0],params[1],params[2]);
             var auth = server.createUser(user);
             state = State.SIGNEDIN;
-            return String.format("You successfully registered as %s.", auth.username());
+            username = auth.username();
+            token = auth.authToken();
+            return String.format("You successfully registered as %s.", username);
         }
         throw new ResponseException(400, "Expected: <username> <password> <email>");
     }
@@ -48,13 +53,24 @@ public class UserClient {
             UserData user = new UserData(params[0],params[1],null);
             var auth = server.loginUser(user);
             state = State.SIGNEDIN;
-            return String.format("Welcome %s", auth.username());
+            username = auth.username();
+            token = auth.authToken();
+            return String.format("Welcome %s", username);
         }
         throw new ResponseException(400,"Expected: <username> <password>");
     }
 
-    public String quit() throws ResponseException {
+    public String quit() {
         return String.format("quit");
+    }
+
+    public String logout() throws ResponseException {
+        assertSignedIn();
+        server.logoutUser();
+        state = State.SIGNEDOUT;
+        username = null;
+        return String.format("Goodbye!");
+
     }
 
     public String help() {
