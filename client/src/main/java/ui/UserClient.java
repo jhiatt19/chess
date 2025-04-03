@@ -1,6 +1,8 @@
 package ui;
 
+import chess.ChessGame;
 import exception.ResponseException;
+import model.GameData;
 import model.UserData;
 import server.ServerFacade;
 
@@ -19,6 +21,9 @@ public class UserClient {
         this.serverUrl = serverUrl;
     }
 
+    public State getState(){
+        return state;
+    }
     public String eval(String input) {
         try {
             var tokens = input.toLowerCase().split(" ");
@@ -30,6 +35,7 @@ public class UserClient {
                 case "login" -> login(params);
                 case "logout" -> logout();
                 case "clear" -> clear();
+                case "creategame" -> createGame(params);
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -82,6 +88,13 @@ public class UserClient {
         username = null;
         token = null;
         return "Database cleared";
+    }
+
+    public String createGame(String... params) throws ResponseException {
+        assertSignedIn();
+        var game = new GameData(0,null,null,params[0],new ChessGame());
+        var newGame = server.createGame(game,token);
+        return String.format("Created game: " + game.gameName() + ", with ID number: " + newGame.gameID());
     }
 
     public String help() {

@@ -37,6 +37,10 @@ public class MiddleMan {
     }
 
     private void printPrompt() {
-        System.out.print("\n" + ">>> ");
+        if (client.getState().equals(State.SIGNEDIN)) {
+            System.out.print("\n" + ">>> ");
+        } else {
+            System.out.print("[LOGGED_OUT]" + " >>> ");
+        }
     }
 }
