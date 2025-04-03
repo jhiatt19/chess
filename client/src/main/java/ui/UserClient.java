@@ -97,6 +97,11 @@ public class UserClient {
         return String.format("Created game: " + game.gameName() + ", with ID number: " + newGame.gameID());
     }
 
+    public String listGames() throws ResponseException {
+        assertSignedIn();
+        var games = server.listGames(token);
+    }
+
     public String help() {
         if (state == State.SIGNEDOUT){
             return """

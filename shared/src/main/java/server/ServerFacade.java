@@ -6,6 +6,7 @@ import model.*;
 
 import java.io.*;
 import java.net.*;
+import java.util.HashSet;
 
 public class ServerFacade {
 
@@ -39,6 +40,11 @@ public class ServerFacade {
     public GameData createGame(GameData game, String authToken) throws ResponseException {
         var path = "/game";
         return this.makeRequest("POST", path, game, GameData.class, authToken);
+    }
+
+    public HashSet<GameData> listGames(String authToken) throws ResponseException {
+        var path = "/game";
+        return this.makeRequest("GET", path, null, HashSet<GameData>,authToken);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
