@@ -8,7 +8,6 @@ import java.util.Arrays;
 
 public class UserClient {
 
-    private String username = null;
     private final ServerFacade server;
     private final String serverUrl;
     private State state = State.SIGNEDOUT;
@@ -26,6 +25,7 @@ public class UserClient {
             return switch (cmd) {
                 case "register" -> register(params);
                 case "quit" -> quit();
+                case "login" -> login(params);
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -34,13 +34,23 @@ public class UserClient {
     }
 
     public String register(String... params) throws ResponseException {
-        if (params.length >= 3) {
+        if (params.length == 3) {
             UserData user = new UserData(params[0],params[1],params[2]);
             var auth = server.createUser(user);
             state = State.SIGNEDIN;
-            return String.format("You successfully registered as %s.", username);
+            return String.format("You successfully registered as %s.", auth.username());
         }
-        throw new ResponseException(400, "Expected: <username>");
+        throw new ResponseException(400, "Expected: <username> <password> <email>");
+    }
+
+    public String login(String... params) throws ResponseException {
+        if (params.length == 2) {
+            UserData user = new UserData(params[0],params[1],null);
+            var auth = server.loginUser(user);
+            state = State.SIGNEDIN;
+            return String.format("Welcome %s", auth.username());
+        }
+        throw new ResponseException(400,"Expected: <username> <password>");
     }
 
     public String quit() throws ResponseException {
@@ -50,8 +60,8 @@ public class UserClient {
     public String help() {
         if (state == State.SIGNEDOUT){
             return """
-                    - login
-                    - register
+                    - login <username> <password>
+                    - register <username> <password> <email>
                     - help
                     - quit
                     """;

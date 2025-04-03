@@ -20,6 +20,11 @@ public class ServerFacade {
         return this.makeRequest("POST", path, user, UserData.class);
     }
 
+    public UserData loginUser(UserData user) throws ResponseException {
+        var path = "/session";
+        return this.makeRequest("POST", path, user, UserData.class);
+    }
+
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
