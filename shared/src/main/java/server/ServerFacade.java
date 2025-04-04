@@ -6,10 +6,7 @@ import model.*;
 
 import java.io.*;
 import java.net.*;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 public class ServerFacade {
 
@@ -45,11 +42,11 @@ public class ServerFacade {
         return this.makeRequest("POST", path, game, GameData.class, authToken);
     }
 
-    public HashSet listGames(String authToken) throws ResponseException {
+    public String listGames(String authToken) throws ResponseException {
         var path = "/game";
-        var body = this.makeRequest("GET", path, null, HashSet.class,authToken);
+        var body = this.makeRequest("GET", path, null, ArrayList.class,authToken);
         System.out.print(body);
-        return body;
+        return "Placeholder";
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
@@ -63,6 +60,7 @@ public class ServerFacade {
 
             writeBody(request, http);
             http.connect();
+            System.out.print(http);
             throwIfNotSuccessful(http);
             return readBody(http,responseClass);
         } catch (ResponseException ex) {

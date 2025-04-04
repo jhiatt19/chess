@@ -1,11 +1,11 @@
 package dataaccess;
 
 import exception.ResponseException;
-import model.AuthData;
 import model.GameData;
 import model.JoinGameData;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public interface GameDAO {

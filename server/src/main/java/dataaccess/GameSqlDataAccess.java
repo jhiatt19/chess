@@ -2,15 +2,14 @@ package dataaccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import exception.ResponseException;
 import model.GameData;
 import model.JoinGameData;
 
-import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class GameSqlDataAccess implements GameDAO{
@@ -18,7 +17,7 @@ public class GameSqlDataAccess implements GameDAO{
     String currJSON;
     int gameID = 0;
     GameData currGame;
-
+    HashSet<GameData> gamesList = new HashSet<>();
     public GameSqlDataAccess() {
         try {
             configureDatabase();
@@ -45,18 +44,16 @@ public class GameSqlDataAccess implements GameDAO{
     }
     @Override
     public HashSet<GameData> listGame() throws DataAccessException {
-        var gamesList = new HashSet<GameData>();
         try (var conn = DatabaseManager.getConnection()) {
-            var stmt = "SELECT gameID, whiteUsername, blackUsername, gameName FROM games";
+            var stmt = "SELECT gameID, json FROM games";
             try (var ps = conn.prepareStatement(stmt)) {
                 try (var rs = ps.executeQuery()) {
                     while (rs.next()) {
                         var gameID = rs.getInt("gameID");
-                        var white = rs.getString("whiteUsername");
-                        var black = rs.getString("blackUsername");
-                        var gameName = rs.getString("gameName");
-                        var gameData = new GameData(gameID,white,black,gameName,null);
-                        gamesList.add(gameData);
+                        var json = rs.getString("json");
+
+                        var game = new Gson().fromJson(json,GameData.class);
+                        gamesList.add(game);
                     }
                 }
             }

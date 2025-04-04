@@ -99,12 +99,12 @@ public class Server {
     private Object listGame(Request req, Response res) throws ResponseException, DataAccessException {
         var token = req.headers("authorization");
         if (authService.checkAuth(token) != null){
-            HashSet<GameData> responseSet = gameService.listGame();
-            List<GameData> gameList = new ArrayList<>(responseSet);
-            for (GameData game : gameList){
-                System.out.print(game);
-            }
-            return new Gson().toJson(gameList);
+            HashSet<GameData> responseList = gameService.listGame();
+            List<GameData> gameList = new ArrayList<>(responseList);
+            //Collection<GameData> dataHolder = responseList.values();
+            //List<Object> finalData = new ArrayList<>(dataHolder);
+            System.out.print(gameList);
+            return new Gson().toJson(Map.of("games",gameList));
         }
         else {
             throw new ResponseException(401,"Error: unauthorized");

@@ -49,7 +49,7 @@ public class AuthService {
         try {
             return authData.checkAuth(token);
         } catch (DataAccessException ex) {
-            throw new ResponseException(400, "Error: bad request");
+            throw new ResponseException(401, "Error: unauthorized");
         }
     }
 

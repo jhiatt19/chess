@@ -2,10 +2,10 @@ package dataaccess;
 
 import chess.ChessGame;
 import exception.ResponseException;
-import model.AuthData;
 import model.GameData;
 import model.JoinGameData;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class GameMemoryAccess implements GameDAO {
@@ -27,6 +27,10 @@ public class GameMemoryAccess implements GameDAO {
     }
 
     public HashSet<GameData> listGame(){
+        HashMap<Integer,GameData> modifiedDB = new HashMap<>();
+        for(GameData game : gameDB){
+            modifiedDB.put(game.gameID(),game);
+        }
         return gameDB;
     };
 
