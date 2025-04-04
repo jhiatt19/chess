@@ -45,13 +45,11 @@ public class ServerFacade {
         return this.makeRequest("POST", path, game, GameData.class, authToken);
     }
 
-    public HashSet<GameData> listGames(String authToken) throws ResponseException {
+    public HashSet listGames(String authToken) throws ResponseException {
         var path = "/game";
-        var body = this.makeRequest("GET", path, null, HashMap.class,authToken);
-        var legs = body.get("games");
-        HashSet<GameData> games = new HashSet<>(legs);
-        System.out.print(games + "\n");
-        return games;
+        var body = this.makeRequest("GET", path, null, HashSet.class,authToken);
+        System.out.print(body);
+        return body;
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
@@ -65,7 +63,6 @@ public class ServerFacade {
 
             writeBody(request, http);
             http.connect();
-            System.out.print(http);
             throwIfNotSuccessful(http);
             return readBody(http,responseClass);
         } catch (ResponseException ex) {

@@ -103,6 +103,7 @@ public class UserClient {
     public String listGames() throws ResponseException {
         assertSignedIn();
         var games = server.listGames(token);
+        System.out.print(games);
         return "Debugging";
     }
 

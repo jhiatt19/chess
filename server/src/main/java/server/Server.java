@@ -104,7 +104,7 @@ public class Server {
             for (GameData game : gameList){
                 System.out.print(game);
             }
-            return new Gson().toJson(Map.of("games",gameList));
+            return new Gson().toJson(gameList);
         }
         else {
             throw new ResponseException(401,"Error: unauthorized");

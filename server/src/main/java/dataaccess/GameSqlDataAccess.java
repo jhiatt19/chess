@@ -47,13 +47,16 @@ public class GameSqlDataAccess implements GameDAO{
     public HashSet<GameData> listGame() throws DataAccessException {
         var gamesList = new HashSet<GameData>();
         try (var conn = DatabaseManager.getConnection()) {
-            var stmt = "SELECT json FROM games";
+            var stmt = "SELECT gameID, whiteUsername, blackUsername, gameName FROM games";
             try (var ps = conn.prepareStatement(stmt)) {
                 try (var rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        var json = rs.getString("json");
-                        var game = new Gson().fromJson(json,GameData.class);
-                        gamesList.add(game);
+                        var gameID = rs.getInt("gameID");
+                        var white = rs.getString("whiteUsername");
+                        var black = rs.getString("blackUsername");
+                        var gameName = rs.getString("gameName");
+                        var gameData = new GameData(gameID,white,black,gameName,null);
+                        gamesList.add(gameData);
                     }
                 }
             }
