@@ -138,9 +138,9 @@ public class Server {
                     res.status(200);
                     return new Gson().toJson(Map.of());
                 }
-                throw new ResponseException(405,"Error: bad request");
+                throw new ResponseException(400,"Error: bad request");
             } else {
-                throw new ResponseException(406, "Error: bad request");
+                throw new ResponseException(400, "Error: bad request");
             }
         }
         else {

@@ -6,6 +6,7 @@ import model.*;
 
 import java.io.*;
 import java.net.*;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -46,9 +47,11 @@ public class ServerFacade {
 
     public HashSet<GameData> listGames(String authToken) throws ResponseException {
         var path = "/game";
-        var body = this.makeRequest("GET", path, null, String.class,authToken);
-        System.out.print(body);
-        return null;
+        var body = this.makeRequest("GET", path, null, HashMap.class,authToken);
+        var legs = body.get("games");
+        HashSet<GameData> games = new HashSet<>(legs);
+        System.out.print(games + "\n");
+        return games;
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
@@ -57,8 +60,10 @@ public class ServerFacade {
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
+            http.addRequestProperty("Content-Type", "application/json");
+            http.addRequestProperty("authorization", authToken);
 
-            writeBody(request, authToken, http);
+            writeBody(request, http);
             http.connect();
             System.out.print(http);
             throwIfNotSuccessful(http);
@@ -70,13 +75,12 @@ public class ServerFacade {
         }
     }
 
-    private static void writeBody(Object request, String authToken, HttpURLConnection http) throws IOException {
-        String reqData;
-        http.addRequestProperty("Content-Type", "application/json");
-        http.addRequestProperty("authorization", authToken);
-        reqData = new Gson().toJson(request);
-        try (OutputStream reqBody = http.getOutputStream()) {
-            reqBody.write(reqData.getBytes());
+    private static void writeBody(Object request, HttpURLConnection http) throws IOException {
+        if (request != null) {
+            String reqData = new Gson().toJson(request);
+            try (OutputStream reqBody = http.getOutputStream()) {
+                reqBody.write(reqData.getBytes());
+            }
         }
     }
 
@@ -90,7 +94,6 @@ public class ServerFacade {
                 }
             }
         }
-        System.out.print(response);
         return response;
     }
 
