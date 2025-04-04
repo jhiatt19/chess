@@ -54,7 +54,7 @@ public class GameMemoryAccess implements GameDAO {
                     }
                }
                 else {
-                    throw new ResponseException(401, "Error: bad request");
+                    throw new ResponseException(400, "Error: bad request");
                 }
             }
         }

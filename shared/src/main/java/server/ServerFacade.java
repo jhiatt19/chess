@@ -6,7 +6,9 @@ import model.*;
 
 import java.io.*;
 import java.net.*;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class ServerFacade {
 
@@ -44,7 +46,9 @@ public class ServerFacade {
 
     public HashSet<GameData> listGames(String authToken) throws ResponseException {
         var path = "/game";
-        return this.makeRequest("GET", path, null, HashSet<GameData>,authToken);
+        var body = this.makeRequest("GET", path, null, String.class,authToken);
+        System.out.print(body);
+        return null;
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
@@ -56,6 +60,7 @@ public class ServerFacade {
 
             writeBody(request, authToken, http);
             http.connect();
+            System.out.print(http);
             throwIfNotSuccessful(http);
             return readBody(http,responseClass);
         } catch (ResponseException ex) {
@@ -66,9 +71,10 @@ public class ServerFacade {
     }
 
     private static void writeBody(Object request, String authToken, HttpURLConnection http) throws IOException {
+        String reqData;
         http.addRequestProperty("Content-Type", "application/json");
         http.addRequestProperty("authorization", authToken);
-        String reqData = new Gson().toJson(request);
+        reqData = new Gson().toJson(request);
         try (OutputStream reqBody = http.getOutputStream()) {
             reqBody.write(reqData.getBytes());
         }
@@ -80,10 +86,11 @@ public class ServerFacade {
             try (InputStream respBody = http.getInputStream()) {
                 InputStreamReader reader = new InputStreamReader(respBody);
                 if (responseClass != null) {
-                    response = new Gson().fromJson(reader,responseClass);
+                    response = new Gson().fromJson(reader, responseClass);
                 }
             }
         }
+        System.out.print(response);
         return response;
     }
 

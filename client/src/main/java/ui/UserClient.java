@@ -8,13 +8,15 @@ import server.ServerFacade;
 
 import java.util.Arrays;
 
+import static ui.State.SIGNEDOUT;
+
 public class UserClient {
 
     private String username = null;
     private String token = null;
     private final ServerFacade server;
     private final String serverUrl;
-    private State state = State.SIGNEDOUT;
+    private State state = SIGNEDOUT;
 
     public UserClient(String serverUrl) {
         server = new ServerFacade(serverUrl);
@@ -36,6 +38,7 @@ public class UserClient {
                 case "logout" -> logout();
                 case "clear" -> clear();
                 case "creategame" -> createGame(params);
+                case "listgames" -> listGames();
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -74,7 +77,7 @@ public class UserClient {
     public String logout() throws ResponseException {
         assertSignedIn();
         server.logoutUser(token);
-        state = State.SIGNEDOUT;
+        state = SIGNEDOUT;
         username = null;
         token = null;
         return "Goodbye!";
@@ -84,7 +87,7 @@ public class UserClient {
     public String clear() throws ResponseException{
         assertSignedIn();
         server.clear();
-        state = State.SIGNEDOUT;
+        state = SIGNEDOUT;
         username = null;
         token = null;
         return "Database cleared";
@@ -100,10 +103,11 @@ public class UserClient {
     public String listGames() throws ResponseException {
         assertSignedIn();
         var games = server.listGames(token);
+        return "Debugging";
     }
 
     public String help() {
-        if (state == State.SIGNEDOUT){
+        if (state == SIGNEDOUT){
             return """
                     - login <username> <password>
                     - register <username> <password> <email>
@@ -122,7 +126,7 @@ public class UserClient {
     }
 
     private void assertSignedIn() throws ResponseException {
-        if (state == State.SIGNEDOUT) {
+        if (state == SIGNEDOUT) {
             throw new ResponseException(400, "You must sign in");
         }
     }

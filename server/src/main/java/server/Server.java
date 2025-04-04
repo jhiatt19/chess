@@ -10,9 +10,7 @@ import services.UserService;
 import spark.*;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class Server {
     private AuthService authService;
@@ -101,11 +99,12 @@ public class Server {
     private Object listGame(Request req, Response res) throws ResponseException, DataAccessException {
         var token = req.headers("authorization");
         if (authService.checkAuth(token) != null){
-            var responseMap = gameService.listGame();
-            for (GameData game : responseMap){
-                System.out.println(game);
+            HashSet<GameData> responseSet = gameService.listGame();
+            List<GameData> gameList = new ArrayList<>(responseSet);
+            for (GameData game : gameList){
+                System.out.print(game);
             }
-            return new Gson().toJson(Map.of("games",responseMap));
+            return new Gson().toJson(Map.of("games",gameList));
         }
         else {
             throw new ResponseException(401,"Error: unauthorized");
@@ -139,9 +138,9 @@ public class Server {
                     res.status(200);
                     return new Gson().toJson(Map.of());
                 }
-                throw new ResponseException(400,"Error: bad request");
+                throw new ResponseException(405,"Error: bad request");
             } else {
-                throw new ResponseException(400, "Error: bad request");
+                throw new ResponseException(406, "Error: bad request");
             }
         }
         else {
