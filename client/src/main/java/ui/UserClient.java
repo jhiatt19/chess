@@ -103,8 +103,12 @@ public class UserClient {
     public String listGames() throws ResponseException {
         assertSignedIn();
         var games = server.listGames(token);
-        System.out.print(games);
-        return "Debugging";
+        StringBuffer gamesList = new StringBuffer();
+        for (GameData game : games){
+            String g = "\nID: " + game.gameID() + " white: " + game.whiteUsername() + " black: " + game.blackUsername() + " gameName: " + game.gameName() + "\n";
+            gamesList.append(g);
+        }
+        return gamesList.toString();
     }
 
     public String help() {

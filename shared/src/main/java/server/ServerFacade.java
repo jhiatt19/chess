@@ -11,6 +11,7 @@ import java.util.*;
 public class ServerFacade {
 
     private final String serverUrl;
+    List<GameData> gameData = new ArrayList<>();
 
 
     public ServerFacade(String url) {
@@ -42,11 +43,16 @@ public class ServerFacade {
         return this.makeRequest("POST", path, game, GameData.class, authToken);
     }
 
-    public String listGames(String authToken) throws ResponseException {
+    public List<GameData> listGames(String authToken) throws ResponseException {
         var path = "/game";
         var body = this.makeRequest("GET", path, null, ArrayList.class,authToken);
-        System.out.print(body);
-        return "Placeholder";
+        for (Object x : body){
+            GameData y = new Gson().fromJson((String) x,GameData.class);
+            gameData.add(y);
+        }
+        List<GameData> sendToConsole = new ArrayList<>(gameData);
+        gameData.clear();
+        return sendToConsole;
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
@@ -57,10 +63,10 @@ public class ServerFacade {
             http.setDoOutput(true);
             http.addRequestProperty("Content-Type", "application/json");
             http.addRequestProperty("authorization", authToken);
+            http.addRequestProperty("test","false");
 
             writeBody(request, http);
             http.connect();
-            System.out.print(http);
             throwIfNotSuccessful(http);
             return readBody(http,responseClass);
         } catch (ResponseException ex) {

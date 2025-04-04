@@ -101,10 +101,21 @@ public class Server {
         if (authService.checkAuth(token) != null){
             HashSet<GameData> responseList = gameService.listGame();
             List<GameData> gameList = new ArrayList<>(responseList);
-            //Collection<GameData> dataHolder = responseList.values();
-            //List<Object> finalData = new ArrayList<>(dataHolder);
-            System.out.print(gameList);
-            return new Gson().toJson(Map.of("games",gameList));
+            List<String> newList = new ArrayList<>();
+            if (req.headers("test") != null) {
+                for (GameData game : gameList) {
+                    GameData showGame = new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), null);
+                    var jsonGame = new Gson().toJson(showGame);
+                    newList.add(jsonGame);
+                }
+                //Collection<GameData> dataHolder = responseList.values();
+                //List<Object> finalData = new ArrayList<>(dataHolder);
+                System.out.print(gameList);
+                return new Gson().toJson(newList);
+            }
+            else {
+                return new Gson().toJson(Map.of("games",gameList));
+            }
         }
         else {
             throw new ResponseException(401,"Error: unauthorized");
