@@ -99,8 +99,7 @@ public class Server {
     private Object listGame(Request req, Response res) throws ResponseException, DataAccessException {
         var token = req.headers("authorization");
         if (authService.checkAuth(token) != null){
-            HashSet<GameData> responseList = gameService.listGame();
-            List<GameData> gameList = new ArrayList<>(responseList);
+            List<GameData> gameList = gameService.listGame();
             List<String> newList = new ArrayList<>();
             if (req.headers("test") != null) {
                 for (GameData game : gameList) {

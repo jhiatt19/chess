@@ -39,6 +39,7 @@ public class UserClient {
                 case "clear" -> clear();
                 case "creategame" -> createGame(params);
                 case "listgames" -> listGames();
+                case "playgame" -> joinGame(params);
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -111,6 +112,15 @@ public class UserClient {
         return gamesList.toString();
     }
 
+    public String joinGame(String... params) throws ResponseException {
+        assertSignedIn();
+        if (params.length == 2) {
+
+            return server.joinGame(token, params[1].toUpperCase(), Integer.parseInt(params[0]));
+        }
+        throw new ResponseException(400, "Expected: <GameID> [BLACK|WHITE]");
+    }
+
     public String help() {
         if (state == SIGNEDOUT){
             return """
@@ -123,10 +133,10 @@ public class UserClient {
         return """
                 - help
                 - logout
-                - createGame
+                - createGame <GameName>
                 - listGames
-                - playGame
-                - watchGame
+                - playGame <GameID> <BLACK/WHITE>
+                - watchGame <GameID>
                 """;
     }
 

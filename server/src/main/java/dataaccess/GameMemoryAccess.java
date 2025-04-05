@@ -5,11 +5,13 @@ import exception.ResponseException;
 import model.GameData;
 import model.JoinGameData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 public class GameMemoryAccess implements GameDAO {
-    HashSet<GameData> gameDB = new HashSet<>();
+    List<GameData> gameDB = new ArrayList<>();
     int gameID = 0;
 
     public int createGame(String name) throws ResponseException {
@@ -26,7 +28,7 @@ public class GameMemoryAccess implements GameDAO {
         this.gameID = gameID;
     }
 
-    public HashSet<GameData> listGame(){
+    public List<GameData> listGame(){
         HashMap<Integer,GameData> modifiedDB = new HashMap<>();
         for(GameData game : gameDB){
             modifiedDB.put(game.gameID(),game);

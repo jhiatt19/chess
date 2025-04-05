@@ -9,21 +9,24 @@ import model.JoinGameData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameSqlDataAccess implements GameDAO{
     String currGameName;
     String currJSON;
-    int gameID = 0;
+    int gameID;
     GameData currGame;
-    HashSet<GameData> gamesList = new HashSet<>();
+    List<GameData> gamesList = new ArrayList<>();
     public GameSqlDataAccess() {
         try {
             configureDatabase();
+            gameID = this.size();
         }
         catch (DataAccessException e) {
             System.out.println(e.getMessage());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
     @Override
@@ -43,11 +46,12 @@ public class GameSqlDataAccess implements GameDAO{
         this.gameID = gameID;
     }
     @Override
-    public HashSet<GameData> listGame() throws DataAccessException {
+    public List<GameData> listGame() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             var stmt = "SELECT gameID, json FROM games";
             try (var ps = conn.prepareStatement(stmt)) {
                 try (var rs = ps.executeQuery()) {
+                    gamesList.clear();
                     while (rs.next()) {
                         var gameID = rs.getInt("gameID");
                         var json = rs.getString("json");
@@ -69,6 +73,7 @@ public class GameSqlDataAccess implements GameDAO{
         String stmt;
         String stringJson;
         GameData newGameData;
+        gamesList.clear();
         var pullStmt = "SELECT json FROM games WHERE gameID = ?";
             try (var pullSt = conn.prepareStatement(pullStmt, Statement.RETURN_GENERATED_KEYS)) {
                 pullSt.setInt(1,color.gameID());

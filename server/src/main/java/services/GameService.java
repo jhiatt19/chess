@@ -9,6 +9,7 @@ import model.JoinGameData;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 public class GameService {
     HashMap<String,String> returnVal = new HashMap<>();
@@ -18,7 +19,7 @@ public class GameService {
         this.gameData = gameData;
     }
 
-    public HashSet<GameData> listGame() throws ResponseException, DataAccessException {
+    public List<GameData> listGame() throws ResponseException, DataAccessException {
         return gameData.listGame();
     }
 

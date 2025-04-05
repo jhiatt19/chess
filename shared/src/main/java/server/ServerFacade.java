@@ -12,6 +12,7 @@ public class ServerFacade {
 
     private final String serverUrl;
     List<GameData> gameData = new ArrayList<>();
+    HashMap<String,Object> request = new HashMap<>();
 
 
     public ServerFacade(String url) {
@@ -53,6 +54,15 @@ public class ServerFacade {
         List<GameData> sendToConsole = new ArrayList<>(gameData);
         gameData.clear();
         return sendToConsole;
+    }
+
+    public String joinGame(String authToken, String color, int gameID) throws ResponseException {
+        var path = "/game";
+        request.put("playerColor", color);
+        request.put("gameID", gameID);
+        this.makeRequest("PUT",path,request, Map.class,authToken);
+        request.clear();
+        return "Joining game";
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {

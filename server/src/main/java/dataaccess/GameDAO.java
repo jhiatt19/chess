@@ -5,13 +5,12 @@ import model.GameData;
 import model.JoinGameData;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 
 public interface GameDAO {
     int createGame(String name) throws DataAccessException, ResponseException; //implement throw
 
-    HashSet<GameData> listGame() throws DataAccessException;
+    List<GameData> listGame() throws DataAccessException;
 
     void joinGame(JoinGameData color, String user) throws ResponseException, SQLException, DataAccessException;
 
