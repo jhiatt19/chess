@@ -42,6 +42,7 @@ public class Server {
         Spark.get("/game",this::listGame);
         Spark.post("/game",this::createGame);
         Spark.put("/game",this::joinGame);
+        Spark.get("/watch",this::watch);
         Spark.delete("/db",this::clear);
         Spark.exception(ResponseException.class,this::exceptionHandler);
         Spark.exception(DataAccessException.class,this::dataExceptionHandler);
@@ -156,6 +157,11 @@ public class Server {
         else {
             throw new ResponseException(401,"Error: unauthorized");
         }
+    }
+
+    private Object watch(Request req, Response res) throws ResponseException, DataAccessException, SQLException {
+        var auth = req.headers("authorization");
+        var checkedAuth = authService.checkAuth(auth);
     }
 
     private Object clear(Request req, Response res) throws DataAccessException, SQLException {
