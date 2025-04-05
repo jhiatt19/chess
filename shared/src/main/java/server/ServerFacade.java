@@ -65,15 +65,17 @@ public class ServerFacade {
         return "Joining game";
     }
 
-    public String observe(String authToken, int gameID) throws ResponseException {
-        var path = "/game";
-        this.makeRequest("GET",path,gameID,GameData.class,authToken);
+    public String observe(String authToken, String gameID) throws ResponseException {
+        var path = "/game/" + gameID;
+        var game = this.makeRequest("GET",path,null,GameData.class,authToken);
+        return "Observing game";
 
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
+            System.out.print(url + "\n");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);

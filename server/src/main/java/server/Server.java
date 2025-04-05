@@ -13,17 +13,14 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class Server {
-    private AuthService authService;
-    private GameService gameService;
-    private UserService userService;
-    private GameDAO gameDAO;
-    private UserDAO userDAO;
-    private AuthDAO authDAO;
+    private final AuthService authService;
+    private final GameService gameService;
+    private final UserService userService;
 
     public Server()  {
-        this.gameDAO = new GameSqlDataAccess();
-        this.authDAO = new AuthSqlDataAccess();
-        this.userDAO = new UserSqlDataAccess();
+        GameDAO gameDAO = new GameSqlDataAccess();
+        AuthDAO authDAO = new AuthSqlDataAccess();
+        UserDAO userDAO = new UserSqlDataAccess();
         this.authService = new AuthService(authDAO);
         this.gameService = new GameService(gameDAO);
         this.userService = new UserService(userDAO);
@@ -42,7 +39,7 @@ public class Server {
         Spark.get("/game",this::listGame);
         Spark.post("/game",this::createGame);
         Spark.put("/game",this::joinGame);
-        Spark.get("/watch",this::watch);
+        Spark.get("/game/:gameid",this::watch);
         Spark.delete("/db",this::clear);
         Spark.exception(ResponseException.class,this::exceptionHandler);
         Spark.exception(DataAccessException.class,this::dataExceptionHandler);
@@ -110,7 +107,7 @@ public class Server {
                 }
                 //Collection<GameData> dataHolder = responseList.values();
                 //List<Object> finalData = new ArrayList<>(dataHolder);
-                System.out.print(gameList);
+                //System.out.print(gameList);
                 return new Gson().toJson(newList);
             }
             else {
@@ -162,6 +159,15 @@ public class Server {
     private Object watch(Request req, Response res) throws ResponseException, DataAccessException, SQLException {
         var auth = req.headers("authorization");
         var checkedAuth = authService.checkAuth(auth);
+        if (checkedAuth != null) {
+            var game = req.params("gameID");
+            int gameInt = Integer.parseInt(game);
+            var specGame = gameService.getGame(gameInt);
+            res.status(200);
+            return new Gson().toJson(specGame);
+        } else {
+            throw new ResponseException(401, "Error: unauthorized");
+        }
     }
 
     private Object clear(Request req, Response res) throws DataAccessException, SQLException {

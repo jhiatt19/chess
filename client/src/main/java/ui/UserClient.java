@@ -40,6 +40,7 @@ public class UserClient {
                 case "creategame" -> createGame(params);
                 case "listgames" -> listGames();
                 case "playgame" -> joinGame(params);
+                case "watchgame" -> observe(params);
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -115,10 +116,17 @@ public class UserClient {
     public String joinGame(String... params) throws ResponseException {
         assertSignedIn();
         if (params.length == 2) {
-
             return server.joinGame(token, params[1].toUpperCase(), Integer.parseInt(params[0]));
         }
         throw new ResponseException(400, "Expected: <GameID> [BLACK|WHITE]");
+    }
+
+    public String observe(String... params) throws ResponseException {
+        assertSignedIn();
+        if (params.length == 1) {
+            return server.observe(token,params[0]);
+        }
+        throw new ResponseException(400, "Expected: <GameID>");
     }
 
     public String help() {
