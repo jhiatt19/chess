@@ -16,23 +16,29 @@ public class ChessBoard {
     private static final String[] blackEdge = {" H ", " G ", " F ", " E ", " D ", " C ", " B ", " A "};
     public static void main(String[] args) {
         var out = new PrintStream(System.out,true, StandardCharsets.UTF_8);
-        out.println();
-        out.print("White Board:");
-        out.println();
+        if (args.length == 2) {
+            if (args[1].equals("WHITE")) {
+                topBottomEdges(out, whiteEdge);
+                drawWhiteChessBoard(out);
+                topBottomEdges(out, whiteEdge);
+            } else {
 
-        topBottomEdges(out,whiteEdge);
-        drawWhiteChessBoard(out);
-        topBottomEdges(out,whiteEdge);
+                topBottomEdges(out, blackEdge);
+                drawBlackChessBoard(out);
+                topBottomEdges(out, blackEdge);
+            }
+        } else {
+            topBottomEdges(out, whiteEdge);
+            drawWhiteChessBoard(out);
+            topBottomEdges(out, whiteEdge);
 
-        out.println();
-        out.print("Black Board:");
-        out.println();
+            out.println();
 
-        topBottomEdges(out,blackEdge);
-        drawBlackChessBoard(out);
-        topBottomEdges(out,blackEdge);
-
-        out.println();
+            topBottomEdges(out, blackEdge);
+            drawBlackChessBoard(out);
+            topBottomEdges(out, blackEdge);
+        }
+            out.println();
     }
 
     private static void topBottomEdges(PrintStream out, String[] alphaChars) {
