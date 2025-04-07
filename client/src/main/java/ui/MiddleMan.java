@@ -5,6 +5,7 @@ import static ui.EscapeSequences.*;
 
 public class MiddleMan {
     private final UserClient client;
+    private String appState = "";
 
     public MiddleMan(String serverUrl) {
         client = new UserClient(serverUrl);
@@ -37,8 +38,16 @@ public class MiddleMan {
     }
 
     private void printPrompt() {
+        System.out.println();
         if (client.getState().equals(State.SIGNEDIN)) {
-            System.out.print("\n" + ">>> ");
+            if (appState.isEmpty()){
+                appState = "[Chess]";
+                System.out.print(appState + " >>> ");
+            }
+            else if (appState.equals("[Chess]")) {
+                appState = "[Chess Game]";
+                System.out.print(appState + " >>> ");
+            }
         } else {
             System.out.print("[LOGGED_OUT]" + " >>> ");
         }
