@@ -8,10 +8,10 @@ import static ui.EscapeSequences.*;
 
 public class ChessBoard {
     private static final int BOARD_SIZE_IN_SQUARES = 8;
-    private static final int SQUARE_SIZE_IN_PADDED_CHARS = 3;
-    private static final int LINE_WIDTH_IN_PADDED_CHARS = 1;
-    private final static String[] blackPieces = {BLACK_ROOK, BLACK_KNIGHT, BLACK_BISHOP, BLACK_QUEEN, BLACK_KING, BLACK_BISHOP, BLACK_KNIGHT, BLACK_ROOK};
-    private final static String[] whitePieces = {WHITE_ROOK, WHITE_KNIGHT, WHITE_BISHOP, WHITE_QUEEN, WHITE_KING, WHITE_BISHOP, WHITE_KNIGHT, WHITE_ROOK};
+    private static final int SQUARE_SIZE_IN_PADDED_CHARS = 1;
+    //private static final int LINE_WIDTH_IN_PADDED_CHARS = 1;
+    private final static String[] pieces = {" R ", " N ", " B ", " Q ", " K ", " B ", " N ", " R "};
+    //private final static String[] whitePieces = {WHITE_ROOK, WHITE_KNIGHT, WHITE_BISHOP, WHITE_QUEEN, WHITE_KING, WHITE_BISHOP, WHITE_KNIGHT, WHITE_ROOK};
     private static final String[] whiteEdge = {" A ", " B ", " C ", " D ", " E ", " F ", " G ", " H "};
     private static final String[] blackEdge = {" H ", " G ", " F ", " E ", " D ", " C ", " B ", " A "};
     public static void main(String[] args) {
@@ -37,15 +37,13 @@ public class ChessBoard {
 
     private static void topBottomEdges(PrintStream out, String[] alphaChars) {
             for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_PADDED_CHARS; ++squareRow) {
-                out.print(EMPTY);
+                out.print(BLANK);
                 setEdges(out);
                 for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES + 2; ++boardCol) {
-                    if (squareRow == SQUARE_SIZE_IN_PADDED_CHARS / 2 && (boardCol != 0 && boardCol != 9)) {
-                        int prefixLength = SQUARE_SIZE_IN_PADDED_CHARS / 2;
-                        int suffixLength = SQUARE_SIZE_IN_PADDED_CHARS - prefixLength - 1;
-                        out.print(EMPTY.repeat(prefixLength) + alphaChars[boardCol-1] + EMPTY.repeat(suffixLength));
+                    if (boardCol != 0 && boardCol != 9) {
+                        out.print(alphaChars[boardCol-1]);
                     } else {
-                        out.print(EMPTY.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
+                        out.print(BLANK.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
                     }
                 }
                 out.print(RESET);
@@ -69,141 +67,108 @@ public class ChessBoard {
 
     private static void drawRowOfSquaresWhite(PrintStream out, int rowNum){
         for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_PADDED_CHARS; ++squareRow){
-            out.print(EMPTY);
+            out.print(BLANK);
             setEdges(out);
-            if (squareRow == SQUARE_SIZE_IN_PADDED_CHARS / 2) {
-                int prefixLength = SQUARE_SIZE_IN_PADDED_CHARS / 2;
-                int suffixLength = SQUARE_SIZE_IN_PADDED_CHARS - prefixLength - 1;
-                out.print(EMPTY.repeat(prefixLength) + BLACK_QUEEN + EMPTY.repeat(suffixLength));
-            } else {
-                out.print(EMPTY.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
-            }
+            out.print(" " + rowNum + " ");
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
                 if (boardCol % 2 == 0) {
                     setLightGrey(out);
-                    if (squareRow == SQUARE_SIZE_IN_PADDED_CHARS / 2) {
-                        int prefixLength = SQUARE_SIZE_IN_PADDED_CHARS / 2;
-                        int suffixLength = SQUARE_SIZE_IN_PADDED_CHARS - prefixLength - 1;
-                        if (rowNum == 1){
-                            out.print(EMPTY.repeat(prefixLength) + whitePieces[boardCol] + EMPTY.repeat(suffixLength));
-                        }else if (rowNum == 8) {
-                            out.print(EMPTY.repeat(prefixLength) + blackPieces[boardCol] + EMPTY.repeat(suffixLength));
-                        } else if (rowNum == 2) {
-                            out.print(EMPTY.repeat(prefixLength) + WHITE_PAWN + EMPTY.repeat(suffixLength));
-                        }
-                        else if (rowNum == 7) {
-                            out.print(EMPTY.repeat(prefixLength) + BLACK_PAWN + EMPTY.repeat(suffixLength));
+                        if (rowNum == 1 || rowNum == 8) {
+                            if (rowNum == 8){
+                                setTextBlack(out);
+                            } else {
+                                setTextWhite(out);
+                            }
+                            out.print(pieces[boardCol]);
+                        } else if (rowNum == 2 || rowNum == 7) {
+                            if (rowNum == 7){
+                                setTextBlack(out);
+                            } else {
+                                setTextWhite(out);
+                            }
+                            out.print(" P ");
                         }
                         else {
-                            out.print(EMPTY.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
+                            out.print(BLANK.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
                         }
-                    }
-                    else {
-                        out.print(EMPTY.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
-                    }
                 } else {
                     setDarkGrey(out);
-                    if (squareRow == SQUARE_SIZE_IN_PADDED_CHARS / 2) {
-                        int prefixLength = SQUARE_SIZE_IN_PADDED_CHARS / 2;
-                        int suffixLength = SQUARE_SIZE_IN_PADDED_CHARS - prefixLength - 1;
-                        if (rowNum == 1){
-                            out.print(EMPTY.repeat(prefixLength) + whitePieces[boardCol] + EMPTY.repeat(suffixLength));
-                        }else if (rowNum == 8) {
-                            out.print(EMPTY.repeat(prefixLength) + blackPieces[boardCol] + EMPTY.repeat(suffixLength));
-                        } else if (rowNum == 2) {
-                            out.print(EMPTY.repeat(prefixLength) + WHITE_PAWN + EMPTY.repeat(suffixLength));
-                        }
-                        else if (rowNum == 7) {
-                            out.print(EMPTY.repeat(prefixLength) + BLACK_PAWN + EMPTY.repeat(suffixLength));
+                        if (rowNum == 1 || rowNum == 8){
+                            if (rowNum == 8){
+                                setTextBlack(out);
+                            } else {
+                                setTextWhite(out);
+                            }
+                            out.print(pieces[boardCol]);
+                        } else if (rowNum == 2 || rowNum == 7) {
+                            if (rowNum == 7){
+                                setTextBlack(out);
+                            } else {
+                                setTextWhite(out);
+                            }
+                            out.print(" P ");
                         }
                         else {
-                            out.print(EMPTY.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
+                            out.print(BLANK.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
                         }
-                    } else {
-                        out.print(EMPTY.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
-                    }
                 }
                 //resetBoard(out);
             }
             setEdges(out);
-            if (squareRow == SQUARE_SIZE_IN_PADDED_CHARS / 2) {
-                int prefixLength = SQUARE_SIZE_IN_PADDED_CHARS / 2;
-                int suffixLength = SQUARE_SIZE_IN_PADDED_CHARS - prefixLength - 1;
-                out.print(EMPTY.repeat(prefixLength) + " " + rowNum + " " + EMPTY.repeat(suffixLength));
-            } else {
-                out.print(EMPTY.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
-            }
+            out.print(" " + rowNum + " ");
             out.print(RESET);
             System.out.println();
         }
     }
 
-    private static void drawRowOfSquaresBlack(PrintStream out, int rowNum){
-        for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_PADDED_CHARS; ++squareRow){
-            out.print(EMPTY);
+    private static void drawRowOfSquaresBlack(PrintStream out, int rowNum) {
+        for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_PADDED_CHARS; ++squareRow) {
+            out.print(BLANK);
             setEdges(out);
-            if (squareRow == SQUARE_SIZE_IN_PADDED_CHARS / 2) {
-                int prefixLength = SQUARE_SIZE_IN_PADDED_CHARS / 2;
-                int suffixLength = SQUARE_SIZE_IN_PADDED_CHARS - prefixLength - 1;
-                out.print(EMPTY.repeat(prefixLength) + rowNum + EMPTY.repeat(suffixLength));
-            } else {
-                out.print(EMPTY.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
-            }
-            for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol){
+            out.print(" " + rowNum + " ");
+            for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
                 if (boardCol % 2 == 0) {
                     setDarkGrey(out);
-                    if (squareRow == SQUARE_SIZE_IN_PADDED_CHARS / 2) {
-                        int prefixLength = SQUARE_SIZE_IN_PADDED_CHARS / 2;
-                        int suffixLength = SQUARE_SIZE_IN_PADDED_CHARS - prefixLength - 1;
-                        if (rowNum == 1){
-                            out.print(EMPTY.repeat(prefixLength) + whitePieces[boardCol] + EMPTY.repeat(suffixLength));
-                        }else if (rowNum == 8) {
-                            out.print(EMPTY.repeat(prefixLength) + blackPieces[boardCol] + EMPTY.repeat(suffixLength));
-                        } else if (rowNum == 2) {
-                            out.print(EMPTY.repeat(prefixLength) + WHITE_PAWN + EMPTY.repeat(suffixLength));
+                    if (rowNum == 1 || rowNum == 8) {
+                        if (rowNum == 8){
+                            setTextBlack(out);
+                        } else {
+                            setTextWhite(out);
                         }
-                        else if (rowNum == 7) {
-                            out.print(EMPTY.repeat(prefixLength) + BLACK_PAWN + EMPTY.repeat(suffixLength));
+                        out.print(pieces[boardCol]);
+                    } else if (rowNum == 2 || rowNum == 7) {
+                        if (rowNum == 7){
+                            setTextBlack(out);
+                        } else {
+                            setTextWhite(out);
                         }
-                        else {
-                            out.print(EMPTY.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
-                        }
-                    }
-                    else {
-                        out.print(EMPTY.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
+                        out.print(" P ");
+                    } else {
+                        out.print(BLANK.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
                     }
                 } else {
                     setLightGrey(out);
-                    if (squareRow == SQUARE_SIZE_IN_PADDED_CHARS / 2) {
-                        int prefixLength = SQUARE_SIZE_IN_PADDED_CHARS / 2;
-                        int suffixLength = SQUARE_SIZE_IN_PADDED_CHARS - prefixLength - 1;
-                        if (rowNum == 1){
-                            out.print(EMPTY.repeat(prefixLength) + whitePieces[boardCol] + EMPTY.repeat(suffixLength));
-                        }else if (rowNum == 8) {
-                            out.print(EMPTY.repeat(prefixLength) + blackPieces[boardCol] + EMPTY.repeat(suffixLength));
-                        } else if (rowNum == 2) {
-                            out.print(EMPTY.repeat(prefixLength) + WHITE_PAWN + EMPTY.repeat(suffixLength));
+                    if (rowNum == 1 || rowNum == 8) {
+                        if (rowNum == 8){
+                            setTextBlack(out);
+                        } else {
+                            setTextWhite(out);
                         }
-                        else if (rowNum == 7) {
-                            out.print(EMPTY.repeat(prefixLength) + BLACK_PAWN + EMPTY.repeat(suffixLength));
+                        out.print(pieces[boardCol]);
+                    } else if (rowNum == 2 || rowNum == 7) {
+                        if (rowNum == 7){
+                            setTextBlack(out);
+                        } else {
+                            setTextWhite(out);
                         }
-                        else {
-                            out.print(EMPTY.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
-                        }
-                    }
-                    else {
-                        out.print(EMPTY.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
+                        out.print(" P ");
+                    } else {
+                        out.print(BLANK.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
                     }
                 }
             }
             setEdges(out);
-            if (squareRow == SQUARE_SIZE_IN_PADDED_CHARS / 2) {
-                int prefixLength = SQUARE_SIZE_IN_PADDED_CHARS / 2;
-                int suffixLength = SQUARE_SIZE_IN_PADDED_CHARS - prefixLength - 1;
-                out.print(EMPTY.repeat(prefixLength) + rowNum + EMPTY.repeat(suffixLength));
-            } else {
-                out.print(EMPTY.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
-            }
+            out.print(" " + rowNum + " ");
             out.print(RESET);
             System.out.println();
         }
@@ -222,18 +187,13 @@ public class ChessBoard {
         out.print(SET_TEXT_COLOR_WHITE);
     }
 
-    private static void border(PrintStream out, boolean x) {
+   private static void setTextBlack(PrintStream out){
+       out.print(SET_TEXT_BOLD);
+        out.print(SET_TEXT_COLOR_BLACK);
 
-    }
-
-    private static void borderRowText(PrintStream out){
-
-    }
-    private static void printPiece(PrintStream out) {
-
-    }
-
-//    private static void drawColNames(PrintStream out) {
-//
-//    }
+   }
+   private static void setTextWhite(PrintStream out) {
+        out.print(SET_TEXT_BOLD);
+        out.print(SET_TEXT_COLOR_WHITE);
+   }
 }
