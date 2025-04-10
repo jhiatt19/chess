@@ -152,4 +152,14 @@ public class ServerFacadeTests {
         assertEquals("Error: unauthorized", facade.eval("login jo jo"));
     }
 
+    @Test
+    public void anotherTest() throws ResponseException {
+        assertEquals("You successfully registered as jo.",facade.eval("register jo jo jo"));
+        assertEquals("Created game: testgame, with ID number: 1",facade.eval("createGame testgame"));
+        assertDoesNotThrow(() -> facade.eval("playGame 1 WHITE"));
+        assertEquals("Error: already taken: Color already taken",facade.eval("playGame 1 WHITE"));
+        assertDoesNotThrow(() -> facade.eval("playGame 1 BLACK"));
+        assertEquals("\nID: 1 white: jo black: jo gameName: testgame\n",facade.eval("listgames"));
+    }
+
 }
