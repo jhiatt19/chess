@@ -120,6 +120,7 @@ public class ChessBoard {
                 }
                 //resetBoard(out);
             }
+            out.print(RESET);
             setEdges(out);
             out.print(" " + rowNum + " ");
             out.print(RESET);
@@ -173,6 +174,7 @@ public class ChessBoard {
                     }
                 }
             }
+            out.print(RESET);
             setEdges(out);
             out.print(" " + rowNum + " ");
             out.print(RESET);
