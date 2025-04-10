@@ -125,42 +125,10 @@ public class ChessBoard {
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
                 if (boardCol % 2 == 0) {
                     setDarkGrey(out);
-                    if (rowNum == 1 || rowNum == 8) {
-                        if (rowNum == 8){
-                            setTextBlack(out);
-                        } else {
-                            setTextWhite(out);
-                        }
-                        out.print(PIECES[boardCol]);
-                    } else if (rowNum == 2 || rowNum == 7) {
-                        if (rowNum == 7){
-                            setTextBlack(out);
-                        } else {
-                            setTextWhite(out);
-                        }
-                        out.print(" P ");
-                    } else {
-                        out.print(BLANK.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
-                    }
+                    printPieces(out,rowNum,boardCol);
                 } else {
                     setLightGrey(out);
-                    if (rowNum == 1 || rowNum == 8) {
-                        if (rowNum == 8){
-                            setTextBlack(out);
-                        } else {
-                            setTextWhite(out);
-                        }
-                        out.print(PIECES[boardCol]);
-                    } else if (rowNum == 2 || rowNum == 7) {
-                        if (rowNum == 7){
-                            setTextBlack(out);
-                        } else {
-                            setTextWhite(out);
-                        }
-                        out.print(" P ");
-                    } else {
-                        out.print(BLANK.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
-                    }
+                    printPieces(out,rowNum,boardCol);
                 }
             }
             out.print(RESET);
