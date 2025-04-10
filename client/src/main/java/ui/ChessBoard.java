@@ -96,7 +96,6 @@ public class ChessBoard {
 
 
     private static void printPieces(PrintStream out,int rowNum, int boardCol) {
-        setDarkGrey(out);
         if (rowNum == 1 || rowNum == 8) {
             if (rowNum == 8) {
                 setTextBlack(out);
