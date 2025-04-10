@@ -78,10 +78,12 @@ public class ChessBoard {
             out.print(" " + rowNum + " ");
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
                 if (boardCol % 2 == 0) {
-                    printPiecesWhite(out,rowNum,boardCol);
+                    setLightGrey(out);
+                    printPieces(out,rowNum,boardCol);
                 } else {
-                        printPiecesBlack(out,rowNum,boardCol);
-                        }
+                    setDarkGrey(out);
+                    printPieces(out,rowNum,boardCol);
+                }
 
                 }
                 //resetBoard(out);
@@ -93,28 +95,8 @@ public class ChessBoard {
             System.out.println();
         }
 
-    private static void printPiecesWhite(PrintStream out, int rowNum, int boardCol) {
-        setLightGrey(out);
-        if (rowNum == 1 || rowNum == 8) {
-            if (rowNum == 8) {
-                setTextBlack(out);
-            } else {
-                setTextWhite(out);
-            }
-            out.print(PIECES[boardCol]);
-        } else if (rowNum == 2 || rowNum == 7) {
-            if (rowNum == 7) {
-                setTextBlack(out);
-            } else {
-                setTextWhite(out);
-            }
-            out.print(" P ");
-        } else {
-            out.print(BLANK.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
-        }
-    }
 
-    private static void printPiecesBlack(PrintStream out,int rowNum, int boardCol) {
+    private static void printPieces(PrintStream out,int rowNum, int boardCol) {
         setDarkGrey(out);
         if (rowNum == 1 || rowNum == 8) {
             if (rowNum == 8) {
