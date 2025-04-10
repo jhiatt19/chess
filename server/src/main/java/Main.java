@@ -7,8 +7,12 @@ public class Main {
         var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         System.out.println("♕ 240 Chess server.Server: " + piece);
         try {
+            var port = 8080;
+            if (args.length >= 1){
+                port = Integer.parseInt(args[0]);
+            }
             Server server = new Server();
-            server.run(8080);
+            server.run(port);
             //System.out.printf("Server started on port %d with Memory Access Data%n");
         }
         catch (Throwable ex) {
