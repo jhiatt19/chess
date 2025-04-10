@@ -143,4 +143,13 @@ public class ServerFacadeTests {
         assertEquals(exp,facade.eval("help please"));
     }
 
+    @Test
+    public void clearAll() throws ResponseException{
+        facade.eval("register jo jo jo");
+        facade.eval("logout");
+        facade.eval("register ho ho ho");
+        assertDoesNotThrow(() -> facade.eval("clear"));
+        assertEquals("Error: unauthorized", facade.eval("login jo jo"));
+    }
+
 }
