@@ -5,8 +5,5 @@ public class DataTransformation {
         return new AuthData(authToken, userData.username());
     };
 
-    public static AuthUser transformToAuthUser(UserData userData, String authToken){
-        return new AuthUser(authToken, userData.username());
-    };
 
 }

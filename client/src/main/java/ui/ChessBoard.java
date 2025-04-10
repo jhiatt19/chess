@@ -11,7 +11,6 @@ public class ChessBoard {
     private static final int SQUARE_SIZE_IN_PADDED_CHARS = 1;
     //private static final int LINE_WIDTH_IN_PADDED_CHARS = 1;
     private final static String[] PIECES = {" R ", " N ", " B ", " Q ", " K ", " B ", " N ", " R "};
-    //private final static String[] whitePieces = {WHITE_ROOK, WHITE_KNIGHT, WHITE_BISHOP, WHITE_QUEEN, WHITE_KING, WHITE_BISHOP, WHITE_KNIGHT, WHITE_ROOK};
     private static final String[] WHITE_EDGE = {" A ", " B ", " C ", " D ", " E ", " F ", " G ", " H "};
     private static final String[] BLACK_EDGE = {" H ", " G ", " F ", " E ", " D ", " C ", " B ", " A "};
     public static void main(String[] args) {

@@ -105,9 +105,6 @@ public class Server {
                     var jsonGame = new Gson().toJson(showGame);
                     newList.add(jsonGame);
                 }
-                //Collection<GameData> dataHolder = responseList.values();
-                //List<Object> finalData = new ArrayList<>(dataHolder);
-                //System.out.print(gameList);
                 return new Gson().toJson(newList);
             }
             else {

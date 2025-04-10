@@ -110,7 +110,8 @@ public class UserClient {
         var games = server.listGames(token);
         StringBuilder gamesList = new StringBuilder();
         for (GameData game : games){
-            String g = "\nID: " + game.gameID() + " white: " + game.whiteUsername() + " black: " + game.blackUsername() + " gameName: " + game.gameName() + "\n";
+            String g = "\nID: " + game.gameID() + " white: " + game.whiteUsername()
+                    + " black: " + game.blackUsername() + " gameName: " + game.gameName() + "\n";
             gamesList.append(g);
         }
         return gamesList.toString();
