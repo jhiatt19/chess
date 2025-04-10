@@ -72,8 +72,8 @@ public class UserClient {
         throw new ResponseException(400,"Expected: <username> <password>");
     }
 
-    public String quit() {
-        return String.format("quit");
+    private String quit() {
+        return "quit";
     }
 
     public String logout() throws ResponseException {
@@ -97,15 +97,18 @@ public class UserClient {
 
     public String createGame(String... params) throws ResponseException {
         assertSignedIn();
-        var game = new GameData(0,null,null,params[0],new ChessGame());
-        var newGame = server.createGame(game,token);
-        return String.format("Created game: " + game.gameName() + ", with ID number: " + newGame.gameID());
+        if (params.length == 1) {
+            var game = new GameData(0, null, null, params[0], new ChessGame());
+            var newGame = server.createGame(game, token);
+            return String.format("Created game: " + game.gameName() + ", with ID number: " + newGame.gameID());
+        }
+        throw new ResponseException(400, "Expected: <gameName>");
     }
 
     public String listGames() throws ResponseException {
         assertSignedIn();
         var games = server.listGames(token);
-        StringBuffer gamesList = new StringBuffer();
+        StringBuilder gamesList = new StringBuilder();
         for (GameData game : games){
             String g = "\nID: " + game.gameID() + " white: " + game.whiteUsername() + " black: " + game.blackUsername() + " gameName: " + game.gameName() + "\n";
             gamesList.append(g);

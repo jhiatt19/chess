@@ -45,4 +45,84 @@ public class ServerFacadeTests {
         assertNotEquals("You successfully registered as testplayer1.",x);
     }
 
+    @Test
+    public void logoutUser() throws ResponseException {
+        facade.eval("register testPlayer1 password p1@email.com");
+        var res = facade.eval("logout");
+        assertEquals("Goodbye!",res);
+        var res1 = facade.eval("logout");
+        assertEquals("You must sign in", res1);
+    }
+
+    @Test
+    public void loginUser() throws ResponseException {
+        facade.eval("register ho jo jo");
+        var res = facade.eval("login ho jo");
+        assertEquals("Welcome ho", res);
+    }
+
+    @Test
+    public void loginUserBadCredentials() throws ResponseException {
+        var badUser = facade.eval("login jo jo");
+        assertEquals("Error: unauthorized", badUser);
+        var badPassword = facade.eval("login ho ho");
+        assertEquals("Error: unauthorized", badPassword);
+        var noCredentials = facade.eval("login");
+        assertEquals("Expected: <username> <password>", noCredentials);
+    }
+
+    @Test
+    public void createGame() throws ResponseException {
+        facade.eval("register jo jo jo");
+        var res = facade.eval("createGame testGame");
+        assertEquals("Created game: testgame, with ID number: 1", res);
+    }
+
+    @Test
+    public void createGameNoName() throws ResponseException {
+        facade.eval("register jo jo jo");
+        var res = facade.eval("createGame");
+        assertEquals("Expected: <gameName>", res);
+    }
+
+    @Test
+    public void listGames() throws ResponseException {
+        facade.eval("register jo jo jo");
+        facade.eval("createGame testGame");
+        var res = facade.eval("listGames");
+        assertEquals("\nID: 1 white: null black: null gameName: testgame\n",res);
+    }
+
+    @Test
+    public void joinGame() throws ResponseException {
+        facade.eval("register jo jo jo");
+        facade.eval("createGame testGame");
+        assertDoesNotThrow(() -> facade.eval("playGame 1 WHITE"));
+    }
+
+    @Test
+    public void stealColor() throws ResponseException {
+        facade.eval("register jo jo jo");
+        facade.eval("createGame testGame");
+        facade.eval("playGame 1 WHITE");
+        var res = facade.eval("playGame 1 WHITE");
+        assertEquals("Error: already taken: Color already taken",res);
+    }
+
+    @Test
+    public void observe() throws ResponseException {
+        facade.eval("register jo jo jo");
+        facade.eval("createGame testGame");
+        assertDoesNotThrow(() -> facade.eval("observe 1"));
+    }
+
+    @Test
+    public void observeNotGameIDProvided() throws ResponseException {
+        facade.eval("register jo jo jo");
+        assertThrows(ResponseException.class, () -> facade.eval("observe 1"));
+        facade.eval("createGame testGame");
+        var res = facade.eval("observe");
+        assertEquals("Expected: <GameID>",res);
+    }
+
 }
