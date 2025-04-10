@@ -55,6 +55,13 @@ public class ServerFacadeTests {
     }
 
     @Test
+    public void logoutUserExtra() throws ResponseException {
+        facade.eval("register jo jo jo");
+        var res = facade.eval("logout please");
+        assertEquals("Goodbye!", res);
+    }
+
+    @Test
     public void loginUser() throws ResponseException {
         facade.eval("register ho jo jo");
         var res = facade.eval("login ho jo");
@@ -123,6 +130,17 @@ public class ServerFacadeTests {
         facade.eval("createGame testGame");
         var res = facade.eval("watchGame");
         assertEquals("Expected: <GameID>",res);
+    }
+
+    @Test
+    public void help() throws ResponseException {
+        assertDoesNotThrow(() -> facade.eval("help"));
+    }
+
+    @Test
+    public void helpExtra() throws ResponseException {
+        var exp = facade.eval("help");
+        assertEquals(exp,facade.eval("help please"));
     }
 
 }
