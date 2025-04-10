@@ -10,33 +10,33 @@ public class ChessBoard {
     private static final int BOARD_SIZE_IN_SQUARES = 8;
     private static final int SQUARE_SIZE_IN_PADDED_CHARS = 1;
     //private static final int LINE_WIDTH_IN_PADDED_CHARS = 1;
-    private final static String[] pieces = {" R ", " N ", " B ", " Q ", " K ", " B ", " N ", " R "};
+    private final static String[] PIECES = {" R ", " N ", " B ", " Q ", " K ", " B ", " N ", " R "};
     //private final static String[] whitePieces = {WHITE_ROOK, WHITE_KNIGHT, WHITE_BISHOP, WHITE_QUEEN, WHITE_KING, WHITE_BISHOP, WHITE_KNIGHT, WHITE_ROOK};
-    private static final String[] whiteEdge = {" A ", " B ", " C ", " D ", " E ", " F ", " G ", " H "};
-    private static final String[] blackEdge = {" H ", " G ", " F ", " E ", " D ", " C ", " B ", " A "};
+    private static final String[] WHITE_EDGE = {" A ", " B ", " C ", " D ", " E ", " F ", " G ", " H "};
+    private static final String[] BLACK_EDGE = {" H ", " G ", " F ", " E ", " D ", " C ", " B ", " A "};
     public static void main(String[] args) {
         var out = new PrintStream(System.out,true, StandardCharsets.UTF_8);
         if (args.length == 2) {
             if (args[1].equals("WHITE")) {
-                topBottomEdges(out, whiteEdge);
+                topBottomEdges(out, WHITE_EDGE);
                 drawWhiteChessBoard(out);
-                topBottomEdges(out, whiteEdge);
+                topBottomEdges(out, WHITE_EDGE);
             } else {
 
-                topBottomEdges(out, blackEdge);
+                topBottomEdges(out, BLACK_EDGE);
                 drawBlackChessBoard(out);
-                topBottomEdges(out, blackEdge);
+                topBottomEdges(out, BLACK_EDGE);
             }
         } else {
-            topBottomEdges(out, whiteEdge);
+            topBottomEdges(out, WHITE_EDGE);
             drawWhiteChessBoard(out);
-            topBottomEdges(out, whiteEdge);
+            topBottomEdges(out, WHITE_EDGE);
 
             out.println();
 
-            topBottomEdges(out, blackEdge);
+            topBottomEdges(out, BLACK_EDGE);
             drawBlackChessBoard(out);
-            topBottomEdges(out, blackEdge);
+            topBottomEdges(out, BLACK_EDGE);
         }
             out.println();
     }
@@ -78,45 +78,11 @@ public class ChessBoard {
             out.print(" " + rowNum + " ");
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
                 if (boardCol % 2 == 0) {
-                    setLightGrey(out);
-                        if (rowNum == 1 || rowNum == 8) {
-                            if (rowNum == 8){
-                                setTextBlack(out);
-                            } else {
-                                setTextWhite(out);
-                            }
-                            out.print(pieces[boardCol]);
-                        } else if (rowNum == 2 || rowNum == 7) {
-                            if (rowNum == 7){
-                                setTextBlack(out);
-                            } else {
-                                setTextWhite(out);
-                            }
-                            out.print(" P ");
-                        }
-                        else {
-                            out.print(BLANK.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
-                        }
+                    printPiecesWhite(out,rowNum,boardCol);
                 } else {
-                    setDarkGrey(out);
-                        if (rowNum == 1 || rowNum == 8){
-                            if (rowNum == 8){
-                                setTextBlack(out);
-                            } else {
-                                setTextWhite(out);
-                            }
-                            out.print(pieces[boardCol]);
-                        } else if (rowNum == 2 || rowNum == 7) {
-                            if (rowNum == 7){
-                                setTextBlack(out);
-                            } else {
-                                setTextWhite(out);
-                            }
-                            out.print(" P ");
+                        printPiecesBlack(out,rowNum,boardCol);
                         }
-                        else {
-                            out.print(BLANK.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
-                        }
+
                 }
                 //resetBoard(out);
             }
@@ -125,6 +91,47 @@ public class ChessBoard {
             out.print(" " + rowNum + " ");
             out.print(RESET);
             System.out.println();
+        }
+
+    private static void printPiecesWhite(PrintStream out, int rowNum, int boardCol) {
+        setLightGrey(out);
+        if (rowNum == 1 || rowNum == 8) {
+            if (rowNum == 8) {
+                setTextBlack(out);
+            } else {
+                setTextWhite(out);
+            }
+            out.print(PIECES[boardCol]);
+        } else if (rowNum == 2 || rowNum == 7) {
+            if (rowNum == 7) {
+                setTextBlack(out);
+            } else {
+                setTextWhite(out);
+            }
+            out.print(" P ");
+        } else {
+            out.print(BLANK.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
+        }
+    }
+
+    private static void printPiecesBlack(PrintStream out,int rowNum, int boardCol) {
+        setDarkGrey(out);
+        if (rowNum == 1 || rowNum == 8) {
+            if (rowNum == 8) {
+                setTextBlack(out);
+            } else {
+                setTextWhite(out);
+            }
+            out.print(PIECES[boardCol]);
+        } else if (rowNum == 2 || rowNum == 7) {
+            if (rowNum == 7) {
+                setTextBlack(out);
+            } else {
+                setTextWhite(out);
+            }
+            out.print(" P ");
+        } else {
+            out.print(BLANK.repeat(SQUARE_SIZE_IN_PADDED_CHARS));
         }
     }
 
@@ -142,7 +149,7 @@ public class ChessBoard {
                         } else {
                             setTextWhite(out);
                         }
-                        out.print(pieces[boardCol]);
+                        out.print(PIECES[boardCol]);
                     } else if (rowNum == 2 || rowNum == 7) {
                         if (rowNum == 7){
                             setTextBlack(out);
@@ -161,7 +168,7 @@ public class ChessBoard {
                         } else {
                             setTextWhite(out);
                         }
-                        out.print(pieces[boardCol]);
+                        out.print(PIECES[boardCol]);
                     } else if (rowNum == 2 || rowNum == 7) {
                         if (rowNum == 7){
                             setTextBlack(out);
