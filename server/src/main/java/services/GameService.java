@@ -46,7 +46,12 @@ public class GameService {
     }
 
     public GameData getGame(int gameID) throws ResponseException, DataAccessException {
-        var game = gameData.findGame(gameID);
+        GameData game;
+        try {
+            game = gameData.findGame(gameID);
+        } catch (DataAccessException ex) {
+            throw new ResponseException(400, ex.getMessage());
+        }
         if (game == null){
             throw new ResponseException(400,"Error: bad request");
         }

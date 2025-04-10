@@ -119,9 +119,9 @@ public class ServerFacadeTests {
     @Test
     public void observeNotGameIDProvided() throws ResponseException {
         facade.eval("register jo jo jo");
-        assertThrows(ResponseException.class, () -> facade.eval("observe 1"));
+        assertEquals("Not a valid gameID",facade.eval("watchGame 1"));
         facade.eval("createGame testGame");
-        var res = facade.eval("observe");
+        var res = facade.eval("watchGame");
         assertEquals("Expected: <GameID>",res);
     }
 

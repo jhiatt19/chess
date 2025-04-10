@@ -163,7 +163,9 @@ public class Server {
             var game = req.params("gameID");
             int gameInt = Integer.parseInt(game);
             var specGame = gameService.getGame(gameInt);
-            res.status(200);
+            if (specGame == null) {
+                throw new ResponseException(401, "Error: Invalid Game ID");
+            }
             return new Gson().toJson(specGame);
         } else {
             throw new ResponseException(401, "Error: unauthorized");
