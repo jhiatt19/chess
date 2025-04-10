@@ -54,6 +54,10 @@ public class Server {
         Spark.awaitStop();
     }
 
+    public int port() {
+        return Spark.port();
+    }
+
     public static String generateToken() {
         return UUID.randomUUID().toString();
     }
