@@ -1,6 +1,7 @@
 package ui;
 
 import chess.ChessGame;
+import chess.ChessPosition;
 import exception.ResponseException;
 import model.GameData;
 import model.UserData;
@@ -120,10 +121,10 @@ public class UserClient {
     public String joinGame(String... params) throws ResponseException {
         assertSignedIn();
         if (params.length == 2) {
-            var check = server.joinGame(token, params[1].toUpperCase(), Integer.parseInt(params[0]));
-            if (check.equals("Joining game")){
-                    ChessBoard.main(params);
-                    return check + " as " + params[1];
+            var game = server.joinGame(token, params[1].toUpperCase(), Integer.parseInt(params[0]));
+            if (game != null){
+                ChessBoard.main(params,game.game());
+                return "Join game " + params[1];
             }
         }
         throw new ResponseException(400, "Expected: <GameID> [BLACK|WHITE]");
@@ -133,8 +134,8 @@ public class UserClient {
         assertSignedIn();
         if (params.length == 1) {
             var game = server.observe(token,params[0]);
-            ChessBoard.main(params);
-            return game + " " +  params[0];
+            ChessBoard.main(params,game.game());
+            return "Watching game " + params[0];
         }
         throw new ResponseException(400, "Expected: <GameID>");
     }

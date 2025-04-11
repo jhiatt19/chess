@@ -56,20 +56,22 @@ public class ServerFacade {
         return sendToConsole;
     }
 
-    public String joinGame(String authToken, String color, int gameID) throws ResponseException {
+    public GameData joinGame(String authToken, String color, int gameID) throws ResponseException {
         var path = "/game";
         request.put("playerColor", color);
         request.put("gameID", gameID);
         this.makeRequest("PUT",path,request, Map.class,authToken);
+        path = "/game/" + gameID;
+        var game = this.makeRequest("GET",path,null, GameData.class,authToken);
         request.clear();
-        return "Joining game";
+        return game;
     }
 
-    public String observe(String authToken, String gameID) throws ResponseException {
+    public GameData observe(String authToken, String gameID) throws ResponseException {
         var path = "/game/" + gameID;
         var game = this.makeRequest("GET",path,null,GameData.class,authToken);
-        System.out.print(game);
-        return "Observing game";
+        System.out.print(game + "\n");
+        return game;
 
     }
 

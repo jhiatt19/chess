@@ -39,7 +39,7 @@ public class Server {
         Spark.get("/game",this::listGame);
         Spark.post("/game",this::createGame);
         Spark.put("/game",this::joinGame);
-        Spark.get("/game/:gameid",this::watch);
+        Spark.get("/game/:gameid",this::getGame);
         Spark.delete("/db",this::clear);
         Spark.exception(ResponseException.class,this::exceptionHandler);
         Spark.exception(DataAccessException.class,this::dataExceptionHandler);
@@ -105,7 +105,7 @@ public class Server {
             List<String> newList = new ArrayList<>();
             if (req.headers("test") != null) {
                 for (GameData game : gameList) {
-                    GameData showGame = new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), null);
+                    GameData showGame = new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
                     var jsonGame = new Gson().toJson(showGame);
                     newList.add(jsonGame);
                 }
@@ -157,7 +157,7 @@ public class Server {
         }
     }
 
-    private Object watch(Request req, Response res) throws ResponseException, DataAccessException, SQLException {
+    private Object getGame(Request req, Response res) throws ResponseException, DataAccessException, SQLException {
         var auth = req.headers("authorization");
         var checkedAuth = authService.checkAuth(auth);
         if (checkedAuth != null) {
