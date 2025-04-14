@@ -2,13 +2,17 @@ package ui;
 
 import chess.ChessGame;
 import chess.ChessPosition;
+import com.google.gson.Gson;
+import exception.ErrorResponse;
 import exception.ResponseException;
 import model.GameData;
 import model.UserData;
 import server.ServerFacade;
+import websocket.messages.ServerMessage;
 
 import java.util.Arrays;
 
+import static ui.State.GAMEPLAY;
 import static ui.State.SIGNEDOUT;
 
 public class UserClient {
@@ -19,7 +23,7 @@ public class UserClient {
     private final String serverUrl;
     private State state = SIGNEDOUT;
 
-    public UserClient(String serverUrl) {
+    public UserClient(String serverUrl){
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
     }
@@ -148,6 +152,15 @@ public class UserClient {
                     - help
                     - quit
                     """;
+        } else if (state == GAMEPLAY){
+            return """
+                    - move <chessPiece coordinate start> <chessPiece coordinate end>
+                    - highlight moves <chessPiece coordinate>
+                    - redraw board
+                    - resign
+                    - leave
+                    - help
+                    """;
         }
         return """
                 - help
@@ -162,6 +175,23 @@ public class UserClient {
     private void assertSignedIn() throws ResponseException {
         if (state == SIGNEDOUT) {
             throw new ResponseException(400, "You must sign in");
+        }
+    }
+
+    public void notify(ServerMessage message) {
+        switch (message.getServerMessageType()){
+            case NOTIFICATION -> displayNotification(((NotificationMessage) message).getMessage());
+            case ERROR -> displayError(((ErrorMessage) message).getErrorMessage());
+            case LOAD_GAME -> loadGame(((LoadGAmeMessage) message).getGame());
+        }
+    }
+
+    public void onMessage(String message) {
+        try {
+            ServerMessage msg = new Gson().fromJson(message, ServerMessage.class);
+            observer.notify(msg);
+        } catch (Exception ex) {
+            observer.notify(new ErrorResponse(ex.getMessage()));
         }
     }
 

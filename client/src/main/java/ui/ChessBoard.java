@@ -18,7 +18,6 @@ public class ChessBoard {
     private static final String[] WHITE_EDGE = {" A ", " B ", " C ", " D ", " E ", " F ", " G ", " H "};
     private static final String[] BLACK_EDGE = {" H ", " G ", " F ", " E ", " D ", " C ", " B ", " A "};
     public static void main(String[] args, ChessGame game) {
-
         var out = new PrintStream(System.out,true, StandardCharsets.UTF_8);
         if (args.length == 2) {
             if (args[1].equals("WHITE")) {

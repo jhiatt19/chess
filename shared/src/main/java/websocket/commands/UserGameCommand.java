@@ -1,5 +1,8 @@
 package websocket.commands;
 
+import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import spark.Spark;
+
 import java.util.Objects;
 
 /**
@@ -8,8 +11,8 @@ import java.util.Objects;
  * Note: You can add to this class, but you should not alter the existing
  * methods.
  */
-public class UserGameCommand {
 
+public class UserGameCommand {
     private final CommandType commandType;
 
     private final String authToken;
