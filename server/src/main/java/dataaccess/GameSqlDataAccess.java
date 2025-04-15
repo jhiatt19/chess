@@ -49,6 +49,8 @@ public class GameSqlDataAccess implements GameDAO{
                 updatestmt = "UPDATE games SET whiteUsername = NULL, json = ? WHERE gameID = ?";
             } else if (color.equals("BLACK")) {
                 updatestmt = "UPDATE games SET blackUsername = NULL, json = ? WHERE gameID = ?";
+            } else  if (color.equals("MOVE")){
+                updatestmt = "UPDATE games SET json = ? WHERE gameID = ?";
             }
             try (var updateStmt = conn.prepareStatement(updatestmt, Statement.RETURN_GENERATED_KEYS)) {
                 updateStmt.setString(1, new Gson().toJson(updatedGame));

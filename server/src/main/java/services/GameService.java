@@ -1,5 +1,6 @@
 package services;
 
+import chess.ChessGame;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import exception.ResponseException;
@@ -61,7 +62,7 @@ public class GameService {
         return gameData.size();
     }
 
-    public void updateGame(int gameID, String color) throws ResponseException, DataAccessException {
+    public void updateGame(int gameID, String color, ChessGame gameBoard) throws ResponseException, DataAccessException {
         GameData game;
         GameData updateGame = null;
         try {
@@ -73,6 +74,9 @@ public class GameService {
             }else if (color.equals("BLACK")){
                 updateGame = new GameData(gameID,game.whiteUsername(),null,game.gameName(),game.game());
                 gameData.updateGame(gameID, updateGame, color);
+            } else if (color.equals("MOVE")){
+                updateGame = new GameData(gameID,game.whiteUsername(),game.blackUsername(),game.gameName(),gameBoard);
+                gameData.updateGame(gameID,updateGame,color);
             }
         } catch(ResponseException | SQLException ex){
             throw new ResponseException(400, "Error: Bad request");

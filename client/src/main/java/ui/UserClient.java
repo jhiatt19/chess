@@ -1,7 +1,9 @@
 package ui;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import chess.ChessPosition;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import exception.ErrorResponse;
 import exception.ResponseException;
@@ -13,6 +15,7 @@ import websocket.messages.ServerMessage;
 import java.net.http.WebSocket;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import static chess.ChessGame.TeamColor.WHITE;
 import static ui.State.GAMEPLAY;
@@ -27,10 +30,20 @@ public class UserClient {
     private State state = SIGNEDOUT;
     private Integer currGameID;
     private String color = "WHITE";
+    private HashMap<String,Integer> alphaConversion = new HashMap<>();
+    private GameData game;
 
     public UserClient(String serverUrl){
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
+        alphaConversion.put("a",1);
+        alphaConversion.put("b",2);
+        alphaConversion.put("c",3);
+        alphaConversion.put("d",4);
+        alphaConversion.put("e",5);
+        alphaConversion.put("f",6);
+        alphaConversion.put("g",7);
+        alphaConversion.put("h",8);
     }
 
     public State getState(){
@@ -53,9 +66,10 @@ public class UserClient {
                 case "watchgame" -> observe(params);
                 case "redraw" -> redrawBoard();
                 case "leave" -> leave();
+                case "move" -> makeMove(params);
                 default -> help();
             };
-        } catch (ResponseException ex) {
+        } catch (ResponseException | InvalidMoveException ex) {
             return ex.getMessage();
         }
     }
@@ -110,7 +124,7 @@ public class UserClient {
     public String createGame(String... params) throws ResponseException {
         assertSignedIn();
         if (params.length == 1) {
-            var game = new GameData(0, null, null, params[0], new ChessGame());
+            this.game = new GameData(0, null, null, params[0], new ChessGame());
             var newGame = server.createGame(game, token);
             return String.format("Created game: " + game.gameName() + ", with ID number: " + newGame.gameID());
         }
@@ -132,7 +146,7 @@ public class UserClient {
     public String joinGame(String... params) throws ResponseException {
         assertSignedIn();
         if (params.length == 2) {
-            var game = server.joinGame(token, params[1].toUpperCase(), Integer.parseInt(params[0]));
+            this.game = server.joinGame(token, params[1].toUpperCase(), Integer.parseInt(params[0]));
             if (game != null){
                 //ws = new WebSocket()
                 ChessBoard.main(params,game.game());
@@ -158,7 +172,7 @@ public class UserClient {
 
     public String redrawBoard() throws ResponseException {
         assertSignedIn();
-        var game = server.observe(token,currGameID.toString());
+        this.game = server.observe(token,currGameID.toString());
         String[] params = new String[]{currGameID.toString(),color};
         ChessBoard.main(params,game.game());
         return "";
@@ -167,8 +181,32 @@ public class UserClient {
     public String leave() throws ResponseException {
         assertSignedIn();
         state = State.SIGNEDIN;
-        server.leave(token,currGameID.toString(),color);
+        server.update(token,currGameID.toString(),color,this.game);
         return "";
+    }
+
+    public String makeMove(String...params) throws ResponseException, InvalidMoveException {
+        assertSignedIn();
+        if (params.length == 2 && getState().equals(GAMEPLAY)){
+            String[] args = new String[]{currGameID.toString(),color};
+            var startPosRaw = params[0].toCharArray();
+            var endPosRaw = params[1].toCharArray();
+            String str = String.valueOf(startPosRaw[0]);
+            String str1 = String.valueOf(endPosRaw[0]);
+            System.out.println(str + str1);
+            int startPosInt = alphaConversion.get(str);
+            int endPosInt = alphaConversion.get(str1);
+            System.out.println(startPosInt + " " + endPosInt);
+            ChessPosition startPos = new ChessPosition(Integer.parseInt(String.valueOf(startPosRaw[1])),startPosInt);
+            ChessPosition endPos = new ChessPosition(Integer.parseInt(String.valueOf(endPosRaw[1])),endPosInt);
+            ChessMove userMove = new ChessMove(startPos,endPos,null);
+            game.game().makeMove(userMove);
+            server.update(token,currGameID.toString(),"MOVE",game);
+            ChessBoard.main(args,game.game());
+            return "";
+        } else {
+            return "Please enter a game. Expected: <Start Position> <End Position>";
+        }
     }
 
     public String help() {

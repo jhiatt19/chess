@@ -44,7 +44,7 @@ public class Server {
         Spark.get("/game",this::listGame);
         Spark.post("/game",this::createGame);
         Spark.put("/game",this::joinGame);
-        Spark.put("/game/:gameid",this::updateGame);
+        Spark.put("/game/:color",this::updateGame);
         Spark.get("/game/:gameid",this::getGame);
         Spark.delete("/db",this::clear);
         Spark.exception(ResponseException.class,this::exceptionHandler);
@@ -164,10 +164,9 @@ public class Server {
     }
 
     private Object updateGame(Request req, Response res) throws ResponseException, DataAccessException {
-        var game = req.params("gameID");
-        int gameInt = Integer.parseInt(game);
-        var color = new Gson().fromJson(req.body(), JoinGameData.class);
-        gameService.updateGame(gameInt, color.playerColor());
+        var color = req.params("color");
+        var game = new Gson().fromJson(req.body(),GameData.class);
+        gameService.updateGame(game.gameID(), color, game.game());
         return new Gson().toJson(Map.of());
     }
 
