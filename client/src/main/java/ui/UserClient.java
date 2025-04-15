@@ -11,8 +11,10 @@ import server.ServerFacade;
 import websocket.messages.ServerMessage;
 
 import java.net.http.WebSocket;
+import java.util.ArrayList;
 import java.util.Arrays;
 
+import static chess.ChessGame.TeamColor.WHITE;
 import static ui.State.GAMEPLAY;
 import static ui.State.SIGNEDOUT;
 
@@ -23,6 +25,8 @@ public class UserClient {
     private final ServerFacade server;
     private final String serverUrl;
     private State state = SIGNEDOUT;
+    private Integer currGameID;
+    private String color = "WHITE";
 
     public UserClient(String serverUrl){
         server = new ServerFacade(serverUrl);
@@ -130,6 +134,8 @@ public class UserClient {
             if (game != null){
                 //ws = new WebSocket()
                 ChessBoard.main(params,game.game());
+                currGameID = Integer.parseInt(params[0]);
+                color = params[1].toUpperCase();
                 return "Join game " + params[1];
             }
         }
@@ -141,9 +147,17 @@ public class UserClient {
         if (params.length == 1) {
             var game = server.observe(token,params[0]);
             ChessBoard.main(params,game.game());
+            currGameID = Integer.parseInt(params[0]);
             return "Watching game " + params[0];
         }
         throw new ResponseException(400, "Expected: <GameID>");
+    }
+
+    public void redrawBoard() throws ResponseException {
+        assertSignedIn();
+        var game = server.observe(token,currGameID.toString());
+        String[] params = new String[]{currGameID.toString(),color};
+        ChessBoard.main(params,game.game());
     }
 
     public String help() {

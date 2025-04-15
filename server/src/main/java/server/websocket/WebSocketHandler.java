@@ -4,14 +4,17 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import exception.ErrorResponse;
 import exception.ResponseException;
+import org.eclipse.jetty.server.Authentication;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.commands.UserGameCommand;
 import services.AuthService;
 import dataaccess.*;
+import websocket.messages.ServerMessage;
 
 
+import javax.management.Notification;
 import java.io.IOException;
 
 @WebSocket
@@ -28,20 +31,23 @@ public class WebSocketHandler {
 
             saveSession(command.getGameID(),session);
             switch (command.getCommandType()) {
-                case CONNECT -> connect(session, username, UserGameCommand.CommandType.CONNECT);
+                case CONNECT -> connect(session, username);
                 case MAKE_MOVE -> makeMove(session, username, UserGameCommand.CommandType.MAKE_MOVE);
                 case LEAVE -> leaveGame(session, username, UserGameCommand.CommandType.LEAVE);
                 case RESIGN -> resign(session, username, UserGameCommand.CommandType.RESIGN);
             }
-        } catch (UnauthorizedException ex) {
-            sendMessage(session.getRemote(), new ErrorResponse("Error: unauthorized"));
+        } catch (ResponseException ex) {
+            ex.printStackTrace();
+            System.out.println("Error: unauthorized");
         } catch (Exception ex) {
             ex.printStackTrace();
-            sendMessage(session.getRemote(), new ErrorResponse("Error: " + ex.getMessage()));
+            System.out.println(ex.getMessage());
         }
     }
 
-    private void connect(Session session, String username, UserGameCommand.CommandType command){
+    private void connect(Session session, String username){
+        connections.add(username, session);
+        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
 
     }
 
@@ -51,6 +57,18 @@ public class WebSocketHandler {
     }
 
     private void saveSession(Integer gameID, Session session){
+    }
+
+    private void makeMove(Session session, String username, UserGameCommand.CommandType command){
+
+    }
+
+    private void leaveGame(Session session, String username, UserGameCommand.CommandType command){
+
+    }
+
+    private void resign(Session session, String username, UserGameCommand.CommandType command){
+
     }
 
 }
