@@ -27,7 +27,10 @@ public class MiddleMan {
                 result = client.eval(line);
                 if (result.equals("quit")) {
                     System.out.print("Goodbye");
-                } else {
+                } else if (result.isEmpty()) {
+                    printPrompt();
+                }
+                else {
                     System.out.print(result);
                 }
             } catch (Throwable e) {
