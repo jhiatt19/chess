@@ -18,25 +18,4 @@ public class WSServer {
         Spark.get("/echo/:msg", (req, res) -> "HTTP response: " + req.params(":msg"));
     }
 
-    @OnWebSocketMessage
-    public void onMessage(Session session, String msg) {
-        try {
-            UserGameCommand command = new Gson().fromJson(msg, UserGameCommand.class);
-            String username = getUsername(command.getAuthToken());
-
-            saveSession(command.getGameID(),session);
-            switch (command.getCommandType()) {
-                case CONNECT -> connect(session, username, (ConnectCommand) command);
-                case MAKE_MOVE -> makeMove(session, username, (MakeMoveCommand) command);
-                case LEAVE -> leaveGame(session, username, (LeaveGameCommand) command);
-                case RESIGN -> resign(session, username, (ResignCommand) command);
-            }
-        } catch (UnauthorizedException ex) {
-            sendMessage(session.getRemote(), new ErrorResponse("Error: unauthorized"));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            sendMessage(session.getRemote(), new ErrorResponse("Error: " + ex.getMessage()));
-        }
-    }
-
 }

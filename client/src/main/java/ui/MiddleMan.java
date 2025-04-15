@@ -1,5 +1,6 @@
 package ui;
 
+import javax.management.Notification;
 import java.util.Scanner;
 import static ui.EscapeSequences.*;
 
@@ -51,5 +52,10 @@ public class MiddleMan {
         } else {
             System.out.print("[LOGGED_OUT]" + " >>> ");
         }
+    }
+
+    public void notify(Notification notification){
+        System.out.println(notification.getMessage());
+        printPrompt();
     }
 }

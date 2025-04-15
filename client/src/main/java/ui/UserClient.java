@@ -10,13 +10,14 @@ import model.UserData;
 import server.ServerFacade;
 import websocket.messages.ServerMessage;
 
+import java.net.http.WebSocket;
 import java.util.Arrays;
 
 import static ui.State.GAMEPLAY;
 import static ui.State.SIGNEDOUT;
 
 public class UserClient {
-
+    private WebSocket ws;
     private String username = null;
     private String token = null;
     private final ServerFacade server;
@@ -127,6 +128,7 @@ public class UserClient {
         if (params.length == 2) {
             var game = server.joinGame(token, params[1].toUpperCase(), Integer.parseInt(params[0]));
             if (game != null){
+                //ws = new WebSocket()
                 ChessBoard.main(params,game.game());
                 return "Join game " + params[1];
             }
@@ -177,22 +179,4 @@ public class UserClient {
             throw new ResponseException(400, "You must sign in");
         }
     }
-
-    public void notify(ServerMessage message) {
-        switch (message.getServerMessageType()){
-            case NOTIFICATION -> displayNotification(((NotificationMessage) message).getMessage());
-            case ERROR -> displayError(((ErrorMessage) message).getErrorMessage());
-            case LOAD_GAME -> loadGame(((LoadGAmeMessage) message).getGame());
-        }
-    }
-
-    public void onMessage(String message) {
-        try {
-            ServerMessage msg = new Gson().fromJson(message, ServerMessage.class);
-            observer.notify(msg);
-        } catch (Exception ex) {
-            observer.notify(new ErrorResponse(ex.getMessage()));
-        }
-    }
-
 }
