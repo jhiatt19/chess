@@ -94,7 +94,7 @@ public class GameMemoryAccess implements GameDAO {
     }
 
     @Override
-    public GameData updateGame(int gameID, GameData game) throws ResponseException, SQLException, DataAccessException {
+    public GameData updateGame(int gameID, GameData game, String color) throws ResponseException, SQLException, DataAccessException {
         return null;
     }
 

@@ -27,8 +27,6 @@ public class MiddleMan {
                 result = client.eval(line);
                 if (result.equals("quit")) {
                     System.out.print("Goodbye");
-                } else if (result.isEmpty()) {
-                    printPrompt();
                 }
                 else {
                     System.out.print(result);
@@ -38,16 +36,13 @@ public class MiddleMan {
                 System.out.print(msg);
             }
         }
-        System.out.println();
     }
 
     private void printPrompt() {
         System.out.println();
         if (client.getState().equals(State.SIGNEDIN)) {
-            if (appState.isEmpty()) {
-                appState = "[Chess]";
-                System.out.print(appState + " >>> ");
-            }
+            appState = "[Chess]";
+            System.out.print(appState + " >>> ");
         }
         else if (client.getState().equals(State.GAMEPLAY)) {
             appState = "[Chess Game]";

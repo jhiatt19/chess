@@ -167,7 +167,8 @@ public class Server {
         var game = req.params("gameID");
         int gameInt = Integer.parseInt(game);
         var color = new Gson().fromJson(req.body(), JoinGameData.class);
-        return new Gson().toJson(gameService.updateGame(gameInt, color.playerColor()));
+        gameService.updateGame(gameInt, color.playerColor());
+        return new Gson().toJson(Map.of());
     }
 
     private Object getGame(Request req, Response res) throws ResponseException, DataAccessException, SQLException {

@@ -42,12 +42,12 @@ public class GameSqlDataAccess implements GameDAO{
         return gameID;
     }
 
-    public GameData updateGame(int gameID, GameData updatedGame) throws DataAccessException, ResponseException, SQLException {
+    public GameData updateGame(int gameID, GameData updatedGame, String color) throws DataAccessException, ResponseException, SQLException {
         try (var conn = DatabaseManager.getConnection()) {
-            String updatestmt;
-            if (updatedGame.whiteUsername() == null) {
+            String updatestmt = "";
+            if (color.equals("WHITE")) {
                 updatestmt = "UPDATE games SET whiteUsername = NULL, json = ? WHERE gameID = ?";
-            } else {
+            } else if (color.equals("BLACK")) {
                 updatestmt = "UPDATE games SET blackUsername = NULL, json = ? WHERE gameID = ?";
             }
             try (var updateStmt = conn.prepareStatement(updatestmt, Statement.RETURN_GENERATED_KEYS)) {

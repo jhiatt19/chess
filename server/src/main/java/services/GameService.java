@@ -8,7 +8,6 @@ import model.JoinGameData;
 
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 public class GameService {
@@ -62,23 +61,22 @@ public class GameService {
         return gameData.size();
     }
 
-    public GameData updateGame(int gameID, String color) throws ResponseException, DataAccessException {
+    public void updateGame(int gameID, String color) throws ResponseException, DataAccessException {
         GameData game;
         GameData updateGame = null;
         try {
             game = gameData.findGame(gameID);
             if (color.equals("WHITE")) {
                 updateGame = new GameData(gameID, null, game.blackUsername(), game.gameName(), game.game());
-                return gameData.updateGame(gameID,updateGame);
+                gameData.updateGame(gameID, updateGame, color);
 
             }else if (color.equals("BLACK")){
                 updateGame = new GameData(gameID,game.whiteUsername(),null,game.gameName(),game.game());
-                return gameData.updateGame(gameID,updateGame);
+                gameData.updateGame(gameID, updateGame, color);
             }
         } catch(ResponseException | SQLException ex){
             throw new ResponseException(400, "Error: Bad request");
         }
-        return updateGame;
     }
 
 }

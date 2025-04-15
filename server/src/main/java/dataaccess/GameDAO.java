@@ -22,5 +22,5 @@ public interface GameDAO {
 
     int size() throws SQLException, DataAccessException;
 
-    GameData updateGame(int gameID, GameData game) throws ResponseException, SQLException, DataAccessException;
+    GameData updateGame(int gameID, GameData game, String color) throws ResponseException, SQLException, DataAccessException;
 }
