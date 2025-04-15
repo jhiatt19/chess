@@ -62,4 +62,21 @@ public class GameService {
         return gameData.size();
     }
 
+    public GameData updateGame(int gameID, String color) throws ResponseException, DataAccessException {
+        GameData game;
+        GameData updateGame = null;
+        try {
+            game = gameData.findGame(gameID);
+            if (color.equals("WHITE")) {
+                updateGame = new GameData(gameID, null, game.blackUsername(), game.gameName(), game.game());
+
+            }else if (color.equals("BLACK")){
+                updateGame = new GameData(gameID,game.whiteUsername(),null,game.gameName(),game.game());
+            }
+        } catch(ResponseException ex){
+            throw new ResponseException(400, "Error: Bad request");
+        }
+        return updateGame;
+    }
+
 }

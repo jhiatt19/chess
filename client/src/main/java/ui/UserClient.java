@@ -167,8 +167,9 @@ public class UserClient {
     public String leave() throws ResponseException {
         assertSignedIn();
         state = State.SIGNEDIN;
+        server.leave(token,currGameID.toString(),color);
         return "";
-        }
+    }
 
     public String help() {
         if (state == SIGNEDOUT){

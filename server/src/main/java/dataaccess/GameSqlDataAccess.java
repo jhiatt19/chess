@@ -42,6 +42,20 @@ public class GameSqlDataAccess implements GameDAO{
         return gameID;
     }
 
+    public GameData updateGame(int gameID, GameData updatedGame) throws DataAccessException, ResponseException, SQLException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var updatestmt = "UPDATE games SET json = ? WHERE gameID = ?";
+            try (var updateStmt = conn.prepareStatement(updatestmt, Statement.RETURN_GENERATED_KEYS)) {
+                updateStmt.setString(1, new Gson().toJson(updatedGame));
+                updateStmt.setInt(1, gameID);
+                updateStmt.executeQuery();
+                return updatedGame;
+            } catch (Exception ex) {
+                throw new ResponseException(400, ex.getMessage());
+            }
+        }
+    }
+
     private void setGameID(int gameID) {
         this.gameID = gameID;
     }

@@ -70,7 +70,12 @@ public class ServerFacade {
     public GameData observe(String authToken, String gameID) throws ResponseException {
         var path = "/game/" + gameID;
         return this.makeRequest("GET",path,null,GameData.class,authToken);
+    }
 
+    public void leave(String authToken, String gameID, String color) throws ResponseException {
+        var path = "/game/" + gameID;
+        request.put("playerColor", color);
+        this.makeRequest("PUT",path,request, GameData.class,authToken);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {

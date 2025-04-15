@@ -20,12 +20,11 @@ public class ChessBoard {
     public static void main(String[] args, ChessGame game) {
         var out = new PrintStream(System.out,true, StandardCharsets.UTF_8);
         if (args.length == 2) {
-            if (args[1].equals("WHITE")) {
+            if (args[1].toUpperCase().equals("WHITE")) {
                 topBottomEdges(out, WHITE_EDGE);
                 drawWhiteChessBoard(out,game);
                 topBottomEdges(out, WHITE_EDGE);
             } else {
-
                 topBottomEdges(out, BLACK_EDGE);
                 drawBlackChessBoard(out,game);
                 topBottomEdges(out, BLACK_EDGE);

@@ -44,6 +44,7 @@ public class Server {
         Spark.get("/game",this::listGame);
         Spark.post("/game",this::createGame);
         Spark.put("/game",this::joinGame);
+        Spark.put("/game/:gameid",this::updateGame);
         Spark.get("/game/:gameid",this::getGame);
         Spark.delete("/db",this::clear);
         Spark.exception(ResponseException.class,this::exceptionHandler);
@@ -160,6 +161,14 @@ public class Server {
         else {
             throw new ResponseException(401,"Error: unauthorized");
         }
+    }
+
+    private Object updateGame(Request req, Response res) throws ResponseException, DataAccessException {
+        var game = req.params("gameID");
+        int gameInt = Integer.parseInt(game);
+        var color = new Gson().fromJson(req.body(),String.class);
+        gameService.updateGame(gameInt, color);
+        return "Work in progress";
     }
 
     private Object getGame(Request req, Response res) throws ResponseException, DataAccessException, SQLException {
