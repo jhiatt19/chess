@@ -51,6 +51,8 @@ public class UserClient {
                 case "listgames" -> listGames();
                 case "playgame" -> joinGame(params);
                 case "watchgame" -> observe(params);
+                case "redraw" -> redrawBoard();
+                case "leave" -> leave();
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -136,6 +138,7 @@ public class UserClient {
                 ChessBoard.main(params,game.game());
                 currGameID = Integer.parseInt(params[0]);
                 color = params[1].toUpperCase();
+                state = GAMEPLAY;
                 return "Join game " + params[1];
             }
         }
@@ -153,12 +156,19 @@ public class UserClient {
         throw new ResponseException(400, "Expected: <GameID>");
     }
 
-    public void redrawBoard() throws ResponseException {
+    public String redrawBoard() throws ResponseException {
         assertSignedIn();
         var game = server.observe(token,currGameID.toString());
         String[] params = new String[]{currGameID.toString(),color};
         ChessBoard.main(params,game.game());
+        return "";
     }
+
+    public String leave() throws ResponseException {
+        assertSignedIn();
+        state = State.SIGNEDIN;
+        return "";
+        }
 
     public String help() {
         if (state == SIGNEDOUT){
@@ -170,6 +180,7 @@ public class UserClient {
                     """;
         } else if (state == GAMEPLAY){
             return """
+                    For commands in this section just type the first word.
                     - move <chessPiece coordinate start> <chessPiece coordinate end>
                     - highlight moves <chessPiece coordinate>
                     - redraw board

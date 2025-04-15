@@ -41,15 +41,16 @@ public class MiddleMan {
     private void printPrompt() {
         System.out.println();
         if (client.getState().equals(State.SIGNEDIN)) {
-            if (appState.isEmpty()){
+            if (appState.isEmpty()) {
                 appState = "[Chess]";
                 System.out.print(appState + " >>> ");
             }
-            else if (appState.equals("[Chess]")) {
-                appState = "[Chess Game]";
-                System.out.print(appState + " >>> ");
-            }
-        } else {
+        }
+        else if (client.getState().equals(State.GAMEPLAY)) {
+            appState = "[Chess Game]";
+            System.out.print(appState + " >>> ");
+        }
+        else {
             System.out.print("[LOGGED_OUT]" + " >>> ");
         }
     }

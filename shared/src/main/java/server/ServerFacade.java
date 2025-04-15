@@ -69,9 +69,7 @@ public class ServerFacade {
 
     public GameData observe(String authToken, String gameID) throws ResponseException {
         var path = "/game/" + gameID;
-        var game = this.makeRequest("GET",path,null,GameData.class,authToken);
-        System.out.print(game + "\n");
-        return game;
+        return this.makeRequest("GET",path,null,GameData.class,authToken);
 
     }
 
