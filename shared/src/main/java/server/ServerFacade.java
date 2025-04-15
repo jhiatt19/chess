@@ -1,5 +1,7 @@
 package server;
 
+import chess.ChessGame;
+import chess.ChessMove;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import model.*;
@@ -74,6 +76,7 @@ public class ServerFacade {
 
     public void leave(String authToken, String gameID, String color) throws ResponseException {
         var path = "/game/" + gameID;
+        request.put("gameID", gameID);
         request.put("playerColor", color);
         this.makeRequest("PUT",path,request, GameData.class,authToken);
     }

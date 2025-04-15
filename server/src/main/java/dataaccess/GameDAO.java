@@ -21,4 +21,6 @@ public interface GameDAO {
     GameData findGame(int gameID) throws DataAccessException, ResponseException;
 
     int size() throws SQLException, DataAccessException;
+
+    GameData updateGame(int gameID, GameData game) throws ResponseException, SQLException, DataAccessException;
 }

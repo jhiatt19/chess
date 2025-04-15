@@ -5,6 +5,7 @@ import exception.ResponseException;
 import model.GameData;
 import model.JoinGameData;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -90,6 +91,11 @@ public class GameMemoryAccess implements GameDAO {
 
     public int size() {
         return gameDB.size();
+    }
+
+    @Override
+    public GameData updateGame(int gameID, GameData game) throws ResponseException, SQLException, DataAccessException {
+        return null;
     }
 
 }

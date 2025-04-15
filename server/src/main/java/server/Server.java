@@ -166,9 +166,8 @@ public class Server {
     private Object updateGame(Request req, Response res) throws ResponseException, DataAccessException {
         var game = req.params("gameID");
         int gameInt = Integer.parseInt(game);
-        var color = new Gson().fromJson(req.body(),String.class);
-        gameService.updateGame(gameInt, color);
-        return "Work in progress";
+        var color = new Gson().fromJson(req.body(), JoinGameData.class);
+        return new Gson().toJson(gameService.updateGame(gameInt, color.playerColor()));
     }
 
     private Object getGame(Request req, Response res) throws ResponseException, DataAccessException, SQLException {

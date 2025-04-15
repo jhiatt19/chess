@@ -69,11 +69,13 @@ public class GameService {
             game = gameData.findGame(gameID);
             if (color.equals("WHITE")) {
                 updateGame = new GameData(gameID, null, game.blackUsername(), game.gameName(), game.game());
+                return gameData.updateGame(gameID,updateGame);
 
             }else if (color.equals("BLACK")){
                 updateGame = new GameData(gameID,game.whiteUsername(),null,game.gameName(),game.game());
+                return gameData.updateGame(gameID,updateGame);
             }
-        } catch(ResponseException ex){
+        } catch(ResponseException | SQLException ex){
             throw new ResponseException(400, "Error: Bad request");
         }
         return updateGame;
