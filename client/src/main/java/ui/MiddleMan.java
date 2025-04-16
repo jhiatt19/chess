@@ -1,15 +1,18 @@
 package ui;
 
+import websocket.commands.UserGameCommand;
+import websocket.messages.ServerMessage;
+
 import javax.management.Notification;
 import java.util.Scanner;
 import static ui.EscapeSequences.*;
 
-public class MiddleMan {
+public class MiddleMan implements NotificationHandler {
     private final UserClient client;
     private String appState = "";
 
     public MiddleMan(String serverUrl) {
-        client = new UserClient(serverUrl);
+        client = new UserClient(serverUrl,this);
     }
 
     public void run() {
@@ -53,8 +56,8 @@ public class MiddleMan {
         }
     }
 
-    public void notify(Notification notification){
-        System.out.println(notification.getMessage());
+    public void notify(ServerMessage notification){
+        System.out.println(notification);
         printPrompt();
     }
 }

@@ -10,6 +10,7 @@ import exception.ResponseException;
 import model.GameData;
 import model.UserData;
 import server.ServerFacade;
+import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
 import java.net.http.WebSocket;
@@ -22,7 +23,7 @@ import static ui.State.GAMEPLAY;
 import static ui.State.SIGNEDOUT;
 
 public class UserClient {
-    private WebSocket ws;
+    private WebSocketFacade ws;
     private String username = null;
     private String token = null;
     private final ServerFacade server;
@@ -33,9 +34,35 @@ public class UserClient {
     private GameData game;
     HashMap<String, Integer> alphaConversionWhite = new HashMap<>();
     HashMap<String, Integer> alphaConversionBlack = new HashMap<>();
+    private final NotificationHandler notificationHandler;
+
     public UserClient(String serverUrl){
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
+        this.notificationHandler = null;
+
+        alphaConversionWhite.put("a",1);
+        alphaConversionWhite.put("b",2);
+        alphaConversionWhite.put("c",3);
+        alphaConversionWhite.put("d",4);
+        alphaConversionWhite.put("e",5);
+        alphaConversionWhite.put("f",6);
+        alphaConversionWhite.put("g",7);
+        alphaConversionWhite.put("h",8);
+
+        alphaConversionBlack.put("h",1);
+        alphaConversionBlack.put("g",2);
+        alphaConversionBlack.put("f",3);
+        alphaConversionBlack.put("e",4);
+        alphaConversionBlack.put("d",5);
+        alphaConversionBlack.put("c",6);
+        alphaConversionBlack.put("b",7);
+        alphaConversionBlack.put("a",8);
+    }
+    public UserClient(String serverUrl, NotificationHandler notificationHandler){
+        server = new ServerFacade(serverUrl);
+        this.serverUrl = serverUrl;
+        this.notificationHandler = notificationHandler;
 
         alphaConversionWhite.put("a",1);
         alphaConversionWhite.put("b",2);
@@ -162,6 +189,7 @@ public class UserClient {
 
     public String joinGame(String... params) throws ResponseException {
         assertSignedIn();
+        ws = new WebSocketFacade(serverUrl, notificationHandler);
         if (params.length == 1) {
             this.currGameID = Integer.parseInt(params[0]);
             this.game = server.observe(token, currGameID.toString());
