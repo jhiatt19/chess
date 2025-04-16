@@ -5,6 +5,7 @@ import dataaccess.DataAccessException;
 import exception.ErrorResponse;
 import exception.ResponseException;
 import org.eclipse.jetty.server.Authentication;
+import org.eclipse.jetty.websocket.api.RemoteEndpoint;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
@@ -12,6 +13,7 @@ import services.GameService;
 import websocket.commands.UserGameCommand;
 import services.AuthService;
 import dataaccess.*;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
@@ -35,7 +37,7 @@ public class WebSocketHandler {
 
 
     @OnWebSocketMessage
-    public void onMessage(Session session, String msg) {
+    public void onMessage(Session session, String msg) throws IOException {
         try {
             UserGameCommand command = new Gson().fromJson(msg, UserGameCommand.class);
             String username = getUsername(command.getAuthToken());
@@ -47,13 +49,15 @@ public class WebSocketHandler {
                 case LEAVE -> leaveGame(session, username, command.getGameID());
                 case RESIGN -> resign(session, username, UserGameCommand.CommandType.RESIGN);
             }
-        } catch (ResponseException ex) {
-            ex.printStackTrace();
-            System.out.println("Error: unauthorized");
         } catch (Exception ex) {
-            ex.printStackTrace();
-            System.out.println(ex.getMessage());
+            sendMessage(session.getRemote(),new ErrorMessage(ex.getMessage()));
         }
+    }
+
+    private void sendMessage(RemoteEndpoint remote, ErrorMessage error) throws IOException {
+        var errorMessage = new Gson().toJson(error);
+        System.out.print(errorMessage);
+        remote.sendString(errorMessage);
     }
 
     private void connect(Session session, String username, int gameID) throws IOException, ResponseException, DataAccessException {
