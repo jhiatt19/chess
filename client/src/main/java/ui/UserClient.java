@@ -78,6 +78,7 @@ public class UserClient {
                 case "leave" -> leave();
                 case "move" -> makeMove(params);
                 case "resign" -> resign();
+                case "highlight" -> highlightMoves(params);
                 default -> help();
             };
         } catch (ResponseException | InvalidMoveException ex) {
@@ -161,7 +162,26 @@ public class UserClient {
 
     public String joinGame(String... params) throws ResponseException {
         assertSignedIn();
-        if (params.length == 2) {
+        if (params.length == 1) {
+            this.currGameID = Integer.parseInt(params[0]);
+            this.game = server.observe(token, currGameID.toString());
+            if (game.whiteUsername().equals(username)) {
+                this.color = "WHITE";
+                state = GAMEPLAY;
+                String[] args = new String[]{currGameID.toString(), color};
+                ChessBoard.main(args, game.game());
+                return "";
+            } else if (game.blackUsername().equals(username)) {
+                this.color = "BLACK";
+                state = GAMEPLAY;
+                String[] args = new String[]{currGameID.toString(), color};
+                ChessBoard.main(args, game.game());
+                return "";
+            } else {
+                return "Please choose color or find an open game.";
+            }
+        }
+        else if (params.length == 2) {
             this.game = server.joinGame(token, params[1].toUpperCase(), Integer.parseInt(params[0]));
             if (game != null){
                 //ws = new WebSocket()
@@ -170,22 +190,6 @@ public class UserClient {
                 color = params[1].toUpperCase();
                 state = GAMEPLAY;
                 return "Join game " + params[1];
-            }
-        } else if (params.length == 1){
-            this.currGameID = Integer.parseInt(params[0]);
-            this.game = server.observe(token,currGameID.toString());
-            if (game.whiteUsername().equals(username)) {
-                this.color = "WHITE";
-                state = GAMEPLAY;
-                String[] args = new String[]{currGameID.toString(),color};
-                ChessBoard.main(args,game.game());
-            } else if (game.blackUsername().equals(username)) {
-                this.color = "BLACK";
-                state = GAMEPLAY;
-                String[] args = new String[]{currGameID.toString(),color};
-                ChessBoard.main(args,game.game());
-            } else {
-                return "Please choose color or find an open game.";
             }
         }
         throw new ResponseException(400, "Expected: <GameID> [BLACK|WHITE]");
@@ -248,17 +252,27 @@ public class UserClient {
 
     public String resign() throws ResponseException {
         assertSignedIn();
-        if (state == GAMEPLAY) {
-            server.update(token, "RESIGN", game);
-        } else {
-            return "Please enter a game.";
-        }
+        assertInGame();
+        server.update(token, "RESIGN", game);
         return "";
     }
 
     public String highlightMoves(String...params) throws ResponseException {
         assertSignedIn();
-
+        assertInGame();
+        String[] args = new String[]{currGameID.toString(),color,"HIGHLIGHT"};
+        var startPosRaw = params[0].toCharArray();
+        String str = String.valueOf(startPosRaw[0]);
+        int startPosInt;
+        if (color.equals("WHITE")) {
+            startPosInt = alphaConversionWhite.get(str);
+        } else {
+            startPosInt = alphaConversionBlack.get(str);
+        }
+        var currPos = new ChessPosition(Integer.parseInt(String.valueOf(startPosRaw[1])), startPosInt);
+        game.game().validMoves(currPos);
+        ChessBoard.main(args,game.game());
+        return "";
     }
 
     public String help() {
@@ -293,6 +307,12 @@ public class UserClient {
     private void assertSignedIn() throws ResponseException {
         if (state == SIGNEDOUT) {
             throw new ResponseException(400, "You must sign in");
+        }
+    }
+
+    private void assertInGame() throws ResponseException {
+        if (state != GAMEPLAY){
+            throw new ResponseException(400, "You must enter a game.");
         }
     }
 }

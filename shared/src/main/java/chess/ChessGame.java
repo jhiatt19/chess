@@ -23,6 +23,14 @@ public class ChessGame {
         board.resetBoard();
     }
 
+    public Collection<ChessMove> getMoveHolder() {
+        return moveHolder;
+    }
+
+    public void setMoveHolder() {
+        moveHolder.clear();
+    }
+
     public Boolean getGameCompleted() {
         return gameCompleted;
     }
@@ -77,7 +85,7 @@ public class ChessGame {
                 setBoard(tempBoard);
             }
         }
-
+        this.moveHolder = goodMoves;
         return goodMoves;
     }
 

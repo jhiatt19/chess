@@ -1,6 +1,7 @@
 package ui;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
 
@@ -19,25 +20,33 @@ public class ChessBoard {
     private static final String[] BLACK_EDGE = {" H ", " G ", " F ", " E ", " D ", " C ", " B ", " A "};
     public static void main(String[] args, ChessGame game) {
         var out = new PrintStream(System.out,true, StandardCharsets.UTF_8);
-        if (args.length == 2) {
+        boolean highlight = false;
+        if (args.length == 2 || args.length == 3) {
             if (args[1].toUpperCase().equals("WHITE")) {
+                if (args.length == 3 && args[2].equals("HIGHLIGHT")){
+                    highlight = true;
+                }
                 topBottomEdges(out, WHITE_EDGE);
-                drawWhiteChessBoard(out,game);
+                drawWhiteChessBoard(out,game,highlight);
                 topBottomEdges(out, WHITE_EDGE);
             } else {
+                if (args.length == 3 && args[2].equals("HIGHLIGHT")){
+                    highlight = true;
+                }
                 topBottomEdges(out, BLACK_EDGE);
-                drawBlackChessBoard(out,game);
+                drawBlackChessBoard(out,game,highlight);
                 topBottomEdges(out, BLACK_EDGE);
             }
-        } else {
+        }
+        else {
             topBottomEdges(out, WHITE_EDGE);
-            drawWhiteChessBoard(out,game);
+            drawWhiteChessBoard(out,game,highlight);
             topBottomEdges(out, WHITE_EDGE);
 
             out.println();
 
             topBottomEdges(out, BLACK_EDGE);
-            drawBlackChessBoard(out,game);
+            drawBlackChessBoard(out,game,highlight);
             topBottomEdges(out, BLACK_EDGE);
         }
             out.println();
@@ -58,35 +67,47 @@ public class ChessBoard {
                 out.println();
             }
     }
-    private static void drawBlackChessBoard(PrintStream out,ChessGame game) {
+    private static void drawBlackChessBoard(PrintStream out,ChessGame game, boolean highlight) {
         for (int boardRow = 1; boardRow <= BOARD_SIZE_IN_SQUARES; boardRow +=2){
             // black perspective
-            drawRowOfSquaresWhite(out,boardRow,game);
-            drawRowOfSquaresBlack(out,boardRow+1,game);
+            drawRowOfSquaresWhite(out,boardRow,game,highlight);
+            drawRowOfSquaresBlack(out,boardRow+1,game,highlight);
 
         }
     }
-    private static void drawWhiteChessBoard(PrintStream out,ChessGame game) {
+    private static void drawWhiteChessBoard(PrintStream out,ChessGame game, boolean highlight) {
         for (int boardRow = 8; boardRow >= 1; boardRow -= 2){
             //white perspective
-            drawRowOfSquaresBlack(out,boardRow,game);
-            drawRowOfSquaresWhite(out,boardRow-1, game);
+            drawRowOfSquaresBlack(out,boardRow,game,highlight);
+            drawRowOfSquaresWhite(out,boardRow-1, game,highlight);
 
         }
     }
 
-    private static void drawRowOfSquaresWhite(PrintStream out, int rowNum, ChessGame game) {
+    private static void drawRowOfSquaresWhite(PrintStream out, int rowNum, ChessGame game,boolean highlight) {
         for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_PADDED_CHARS; ++squareRow) {
             out.print(BLANK);
             setEdges(out);
             out.print(" " + rowNum + " ");
             for (int boardCol = 1; boardCol < BOARD_SIZE_IN_SQUARES+1; ++boardCol) {
-                var square = game.getBoard().getPiece(new ChessPosition(rowNum,boardCol));
+                var currPos = new ChessPosition(rowNum,boardCol);
+                var square = game.getBoard().getPiece(currPos);
+                boolean x = false;
                 if (boardCol % 2 == 0) {
-                    setLightGrey(out);
+                    if (highlight) {
+                        x = printLightHighlight(out, currPos, game);
+                    }
+                    if (!x){
+                        setLightGrey(out);
+                    }
                     printPieces(out,square);
                 } else {
-                    setDarkGrey(out);
+                    if (highlight){
+                        x = printDarkHighlight(out,currPos,game);
+                    }
+                    if (!x) {
+                        setDarkGrey(out);
+                    }
                     printPieces(out,square);
                 }
                 //resetBoard(out);
@@ -113,6 +134,26 @@ public class ChessBoard {
         }
     }
 
+    private static boolean printLightHighlight(PrintStream out, ChessPosition currPos, ChessGame game){
+        for (ChessMove move : game.getMoveHolder()){
+            if (move.getEndPosition().equals(currPos)){
+                setLightHighlight(out);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean printDarkHighlight(PrintStream out, ChessPosition currPos, ChessGame game){
+        for (ChessMove move : game.getMoveHolder()){
+            if (move.getEndPosition().equals(currPos)){
+                setDarkHighlight(out);
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static void addPieces(PrintStream out, ChessPiece square){
         if (square.getPieceType().equals(ChessPiece.PieceType.ROOK)){
             out.print(" R ");
@@ -129,18 +170,30 @@ public class ChessBoard {
         }
     }
 
-    private static void drawRowOfSquaresBlack(PrintStream out, int rowNum, ChessGame game) {
+    private static void drawRowOfSquaresBlack(PrintStream out, int rowNum, ChessGame game, boolean highlight) {
         for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_PADDED_CHARS; ++squareRow) {
             out.print(BLANK);
             setEdges(out);
             out.print(" " + rowNum + " ");
             for (int boardCol = 1; boardCol < BOARD_SIZE_IN_SQUARES+1; ++boardCol) {
-                var square = game.getBoard().getPiece(new ChessPosition(rowNum,boardCol));
+                var currPos = new ChessPosition(rowNum,boardCol);
+                var square = game.getBoard().getPiece(currPos);
+                boolean x = false;
                 if (boardCol % 2 == 0) {
-                    setDarkGrey(out);
+                    if (highlight){
+                        x = printDarkHighlight(out,currPos,game);
+                    }
+                    if (!x){
+                        setDarkGrey(out);
+                    }
                     printPieces(out,square);
                 } else {
-                    setLightGrey(out);
+                    if (highlight){
+                        x = printLightHighlight(out,currPos,game);
+                    }
+                    if (!x){
+                        setLightGrey(out);
+                    }
                     printPieces(out,square);
                 }
             }
@@ -173,5 +226,13 @@ public class ChessBoard {
    private static void setTextWhite(PrintStream out) {
         out.print(SET_TEXT_BOLD);
         out.print(SET_TEXT_COLOR_WHITE);
+   }
+
+   private static void setDarkHighlight(PrintStream out){
+        out.print(SET_BG_COLOR_DARK_GREEN);
+   }
+
+   private static void setLightHighlight(PrintStream out){
+        out.print(SET_BG_COLOR_GREEN);
    }
 }
