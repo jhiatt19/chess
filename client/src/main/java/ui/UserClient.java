@@ -198,12 +198,14 @@ public class UserClient {
                 state = GAMEPLAY;
                 String[] args = new String[]{currGameID.toString(), color};
                 ChessBoard.main(args, game.game());
+                ws.connect(token,currGameID);
                 return "";
             } else if (game.blackUsername().equals(username)) {
                 this.color = "BLACK";
                 state = GAMEPLAY;
                 String[] args = new String[]{currGameID.toString(), color};
                 ChessBoard.main(args, game.game());
+                ws.connect(token,currGameID);
                 return "";
             } else {
                 return "Please choose color or find an open game.";
@@ -212,9 +214,9 @@ public class UserClient {
         else if (params.length == 2) {
             this.game = server.joinGame(token, params[1].toUpperCase(), Integer.parseInt(params[0]));
             if (game != null){
-                //ws = new WebSocket()
                 ChessBoard.main(params,game.game());
                 currGameID = Integer.parseInt(params[0]);
+                ws.connect(token,currGameID);
                 color = params[1].toUpperCase();
                 state = GAMEPLAY;
                 return "Join game " + params[1];
@@ -246,6 +248,7 @@ public class UserClient {
         assertSignedIn();
         state = State.SIGNEDIN;
         server.update(token,color,this.game);
+        ws.leave(token,currGameID);
         return "";
     }
 

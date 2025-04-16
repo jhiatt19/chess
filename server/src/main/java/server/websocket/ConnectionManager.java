@@ -1,5 +1,6 @@
 package server.websocket;
 
+import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
@@ -26,7 +27,8 @@ public class ConnectionManager {
         for (var c : connections.values()){
             if (c.session.isOpen()){
                 if (!c.username.equals(excludeUser)) {
-                    c.send(notification.toString());
+                    var note = new Gson().toJson(notification);
+                    c.send(note);
                 }
             } else {
                 removeList.add(c);
@@ -35,6 +37,17 @@ public class ConnectionManager {
 
         for (var c : removeList){
             connections.remove(c.username);
+        }
+    }
+
+    public void sendToSelf(String user, ServerMessage notification) throws IOException {
+        for (var c : connections.values()){
+            if (c.session.isOpen()){
+                if(c.username.equals(user)){
+                    var note = new Gson().toJson(notification);
+                    c.send(note);
+                }
+            }
         }
     }
 }
