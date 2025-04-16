@@ -30,20 +30,30 @@ public class UserClient {
     private State state = SIGNEDOUT;
     private Integer currGameID;
     private String color = "WHITE";
-    private HashMap<String,Integer> alphaConversion = new HashMap<>();
     private GameData game;
-
+    HashMap<String, Integer> alphaConversionWhite = new HashMap<>();
+    HashMap<String, Integer> alphaConversionBlack = new HashMap<>();
     public UserClient(String serverUrl){
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
-        alphaConversion.put("a",1);
-        alphaConversion.put("b",2);
-        alphaConversion.put("c",3);
-        alphaConversion.put("d",4);
-        alphaConversion.put("e",5);
-        alphaConversion.put("f",6);
-        alphaConversion.put("g",7);
-        alphaConversion.put("h",8);
+
+        alphaConversionWhite.put("a",1);
+        alphaConversionWhite.put("b",2);
+        alphaConversionWhite.put("c",3);
+        alphaConversionWhite.put("d",4);
+        alphaConversionWhite.put("e",5);
+        alphaConversionWhite.put("f",6);
+        alphaConversionWhite.put("g",7);
+        alphaConversionWhite.put("h",8);
+
+        alphaConversionBlack.put("h",1);
+        alphaConversionBlack.put("g",2);
+        alphaConversionBlack.put("f",3);
+        alphaConversionBlack.put("e",4);
+        alphaConversionBlack.put("d",5);
+        alphaConversionBlack.put("c",6);
+        alphaConversionBlack.put("b",7);
+        alphaConversionBlack.put("a",8);
     }
 
     public State getState(){
@@ -67,6 +77,7 @@ public class UserClient {
                 case "redraw" -> redrawBoard();
                 case "leave" -> leave();
                 case "move" -> makeMove(params);
+                case "resign" -> resign();
                 default -> help();
             };
         } catch (ResponseException | InvalidMoveException ex) {
@@ -136,8 +147,13 @@ public class UserClient {
         var games = server.listGames(token);
         StringBuilder gamesList = new StringBuilder();
         for (GameData game : games){
-            String g = "\nID: " + game.gameID() + " white: " + game.whiteUsername()
-                    + " black: " + game.blackUsername() + " gameName: " + game.gameName() + "\n";
+            String g;
+            if (game.game().getGameCompleted()){
+                g = "\nID: " + game.gameID() + ", gameName: " + game.gameName() + " has been completed.\n";
+            } else {
+                g = "\nID: " + game.gameID() + " white: " + game.whiteUsername()
+                        + " black: " + game.blackUsername() + " gameName: " + game.gameName() + "\n";
+            }
             gamesList.append(g);
         }
         return gamesList.toString();
@@ -154,6 +170,22 @@ public class UserClient {
                 color = params[1].toUpperCase();
                 state = GAMEPLAY;
                 return "Join game " + params[1];
+            }
+        } else if (params.length == 1){
+            this.currGameID = Integer.parseInt(params[0]);
+            this.game = server.observe(token,currGameID.toString());
+            if (game.whiteUsername().equals(username)) {
+                this.color = "WHITE";
+                state = GAMEPLAY;
+                String[] args = new String[]{currGameID.toString(),color};
+                ChessBoard.main(args,game.game());
+            } else if (game.blackUsername().equals(username)) {
+                this.color = "BLACK";
+                state = GAMEPLAY;
+                String[] args = new String[]{currGameID.toString(),color};
+                ChessBoard.main(args,game.game());
+            } else {
+                return "Please choose color or find an open game.";
             }
         }
         throw new ResponseException(400, "Expected: <GameID> [BLACK|WHITE]");
@@ -181,7 +213,7 @@ public class UserClient {
     public String leave() throws ResponseException {
         assertSignedIn();
         state = State.SIGNEDIN;
-        server.update(token,currGameID.toString(),color,this.game);
+        server.update(token,color,this.game);
         return "";
     }
 
@@ -193,20 +225,40 @@ public class UserClient {
             var endPosRaw = params[1].toCharArray();
             String str = String.valueOf(startPosRaw[0]);
             String str1 = String.valueOf(endPosRaw[0]);
-            System.out.println(str + str1);
-            int startPosInt = alphaConversion.get(str);
-            int endPosInt = alphaConversion.get(str1);
-            System.out.println(startPosInt + " " + endPosInt);
+            int startPosInt;
+            int endPosInt;
+            if (color.equals("WHITE")) {
+                startPosInt = alphaConversionWhite.get(str);
+                endPosInt = alphaConversionWhite.get(str1);
+            } else {
+                startPosInt = alphaConversionBlack.get(str);
+                endPosInt = alphaConversionBlack.get(str1);
+            }
             ChessPosition startPos = new ChessPosition(Integer.parseInt(String.valueOf(startPosRaw[1])),startPosInt);
             ChessPosition endPos = new ChessPosition(Integer.parseInt(String.valueOf(endPosRaw[1])),endPosInt);
             ChessMove userMove = new ChessMove(startPos,endPos,null);
             game.game().makeMove(userMove);
-            server.update(token,currGameID.toString(),"MOVE",game);
+            server.update(token,"MOVE",game);
             ChessBoard.main(args,game.game());
             return "";
         } else {
             return "Please enter a game. Expected: <Start Position> <End Position>";
         }
+    }
+
+    public String resign() throws ResponseException {
+        assertSignedIn();
+        if (state == GAMEPLAY) {
+            server.update(token, "RESIGN", game);
+        } else {
+            return "Please enter a game.";
+        }
+        return "";
+    }
+
+    public String highlightMoves(String...params) throws ResponseException {
+        assertSignedIn();
+
     }
 
     public String help() {

@@ -77,6 +77,9 @@ public class GameService {
             } else if (color.equals("MOVE")){
                 updateGame = new GameData(gameID,game.whiteUsername(),game.blackUsername(),game.gameName(),gameBoard);
                 gameData.updateGame(gameID,updateGame,color);
+            } else if (color.equals("RESIGN")){
+                game.game().setGameCompleted(true);
+                gameData.updateGame(gameID,game,color);
             }
         } catch(ResponseException | SQLException ex){
             throw new ResponseException(400, "Error: Bad request");

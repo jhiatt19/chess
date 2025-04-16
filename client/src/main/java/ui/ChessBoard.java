@@ -61,15 +61,17 @@ public class ChessBoard {
     private static void drawBlackChessBoard(PrintStream out,ChessGame game) {
         for (int boardRow = 1; boardRow <= BOARD_SIZE_IN_SQUARES; boardRow +=2){
             // black perspective
-            drawRowOfSquaresBlack(out,boardRow,game);
-            drawRowOfSquaresWhite(out,boardRow+1,game);
+            drawRowOfSquaresWhite(out,boardRow,game);
+            drawRowOfSquaresBlack(out,boardRow+1,game);
+
         }
     }
     private static void drawWhiteChessBoard(PrintStream out,ChessGame game) {
         for (int boardRow = 8; boardRow >= 1; boardRow -= 2){
             //white perspective
-            drawRowOfSquaresWhite(out,boardRow, game);
-            drawRowOfSquaresBlack(out,boardRow-1,game);
+            drawRowOfSquaresBlack(out,boardRow,game);
+            drawRowOfSquaresWhite(out,boardRow-1, game);
+
         }
     }
 

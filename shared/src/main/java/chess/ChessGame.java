@@ -15,6 +15,7 @@ public class ChessGame {
     private ChessGame.TeamColor color;
     private ChessBoard board;
     private Collection<ChessMove> moveHolder = new ArrayList<>();
+    private Boolean gameCompleted = false;
 
     public ChessGame() {
         this.color = TeamColor.WHITE;
@@ -22,6 +23,13 @@ public class ChessGame {
         board.resetBoard();
     }
 
+    public Boolean getGameCompleted() {
+        return gameCompleted;
+    }
+
+    public void setGameCompleted(boolean complete){
+        this.gameCompleted = complete;
+    }
     /**
      * @return Which team's turn it is
      */
@@ -80,6 +88,9 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        if (gameCompleted){
+            throw new InvalidMoveException("Game has been completed");
+        }
         if (move == null){
             throw new InvalidMoveException();
         }
