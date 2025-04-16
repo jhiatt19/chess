@@ -187,7 +187,12 @@ public class ChessGame {
                     return true;
                 }
             });
-            return moveHolder.isEmpty();
+            if (moveHolder.isEmpty()){
+                setGameCompleted(true);
+                return true;
+            }else {
+                return false;
+            }
         }
         return false;
     }
@@ -205,8 +210,12 @@ public class ChessGame {
             for (ChessPosition move : allPieceMoves) {
                 moveHolder.addAll(validMoves(move));
             }
-            System.out.println(moveHolder.size());
-            return moveHolder.isEmpty();
+            if (moveHolder.isEmpty()) {
+                setGameCompleted(true);
+                return true;
+            } else {
+                return false;
+            }
         }
         return false;
     }
