@@ -31,7 +31,7 @@ public class WebSocketHandler {
 
             saveSession(command.getGameID(),session);
             switch (command.getCommandType()) {
-                case CONNECT -> connect(session, username);
+                case CONNECT -> connect(session, username, command.getGameID());
                 case MAKE_MOVE -> makeMove(session, username, UserGameCommand.CommandType.MAKE_MOVE);
                 case LEAVE -> leaveGame(session, username, UserGameCommand.CommandType.LEAVE);
                 case RESIGN -> resign(session, username, UserGameCommand.CommandType.RESIGN);
@@ -45,9 +45,10 @@ public class WebSocketHandler {
         }
     }
 
-    private void connect(Session session, String username){
-        connections.add(username, session);
+    private void connect(Session session, String username, int gameID) throws IOException {
+        connections.add(username, session, gameID);
         var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+        connections.broadcast(username,serverMessage);
 
     }
 
