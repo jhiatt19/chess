@@ -11,18 +11,27 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ConnectionManager {
-    public final ConcurrentHashMap<String, Connection> connections = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<Integer, ConcurrentHashMap<String,Connection>> gameConnections = new ConcurrentHashMap<>();
+    //public final ConcurrentHashMap<String, Connection> connections = new ConcurrentHashMap<>();
 
     public void add(String username, Session session, int gameID){
+        if (gameConnections.get(gameID) == null){
+            gameConnections.put(gameID,new ConcurrentHashMap<>());
+        }
         var connection = new Connection(username, session, gameID);
-        connections.put(username, connection);
+        var specGame = gameConnections.get(gameID);
+        specGame.put(username,connection);
+        gameConnections.replace(gameID,specGame);
     }
 
-    public void remove(String username) {
-        connections.remove(username);
+    public void remove(String username, int gameID) {
+        var specGame = gameConnections.get(gameID);
+        specGame.remove(username);
+
     }
 
-    public void broadcastAll(ServerMessage notification) throws IOException {
+    public void broadcastAll(ServerMessage notification, int gameID) throws IOException {
+        var connections = gameConnections.get(gameID);
         for (var c : connections.values()){
             if (c.session.isOpen()) {
                 var note = new Gson().toJson(notification);
@@ -30,8 +39,9 @@ public class ConnectionManager {
             }
         }
     }
-    public void broadcast(String excludeUser, ServerMessage notification) throws IOException {
+    public void broadcast(String excludeUser, ServerMessage notification, int gameID) throws IOException {
         var removeList = new ArrayList<Connection>();
+        var connections = gameConnections.get(gameID);
         for (var c : connections.values()){
             if (c.session.isOpen()){
                 if (!c.username.equals(excludeUser)) {
@@ -48,7 +58,8 @@ public class ConnectionManager {
         }
     }
 
-    public void sendToSelf(String user, ServerMessage notification) throws IOException {
+    public void sendToSelf(String user, ServerMessage notification, int gameID) throws IOException {
+        var connections = gameConnections.get(gameID);
         for (var c : connections.values()){
             if (c.session.isOpen()){
                 if(c.username.equals(user)){

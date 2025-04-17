@@ -55,9 +55,6 @@ public class WebSocketHandler {
                 case RESIGN -> resign(session, username, command.getGameID());
             }
         }
-        catch (GameOverException ex){
-            connections.broadcastAll(new LoadGameMessage(ex.getGame()));
-        }
         catch (Exception ex) {
             sendMessage(session.getRemote(),new ErrorMessage(ex.getMessage()));
         }
@@ -65,7 +62,6 @@ public class WebSocketHandler {
 
     private void sendMessage(RemoteEndpoint remote, ErrorMessage error) throws IOException {
         var errorMessage = new Gson().toJson(error);
-        System.out.print(errorMessage);
         remote.sendString(errorMessage);
     }
 
@@ -80,9 +76,9 @@ public class WebSocketHandler {
         } else {
             serverMessage = new NotificationMessage(String.format("%s has joined as an observer",username));
         }
-        connections.broadcast(username,serverMessage);
+        connections.broadcast(username,serverMessage,gameID);
         LoadGameMessage loadGameMessage = new LoadGameMessage(game.game());
-        connections.sendToSelf(username,loadGameMessage);
+        connections.sendToSelf(username,loadGameMessage,gameID);
     }
 
     private String getUsername(String authToken) throws DataAccessException, ResponseException {
@@ -102,7 +98,8 @@ public class WebSocketHandler {
         }
     }
 
-    private void makeMove(Session session, String username, MakeMoveCommand msg) throws ResponseException, DataAccessException, InvalidMoveException, IOException, GameOverException {
+    private void makeMove(Session session, String username, MakeMoveCommand msg)
+            throws ResponseException, DataAccessException, InvalidMoveException, IOException, GameOverException {
         try {
             var move = msg.getMove();
             var id = msg.getGameID();
@@ -110,12 +107,19 @@ public class WebSocketHandler {
             if (game.game().getGameCompleted()){
                 throw new GameOverException("Game is over",game.game());
             }
-            var blackUser = game.blackUsername();
-            var whiteUser = game.whiteUsername();
+            var blackUser = "";
+            var whiteUser = "";
+            if (game.blackUsername() != null){
+                blackUser = game.blackUsername();
+            }
+            if (game.whiteUsername() != null) {
+                whiteUser = game.whiteUsername();
+            }
             if (!blackUser.equals(username) && !whiteUser.equals(username)){
                 throw new InvalidMoveException("Cannot make move as an observer");
             }
-            if ((blackUser.equals(username) && !game.game().getTeamTurn().equals(ChessGame.TeamColor.BLACK)) || (whiteUser.equals(username) && !game.game().getTeamTurn().equals(ChessGame.TeamColor.WHITE))){
+            if ((blackUser.equals(username) && !game.game().getTeamTurn().equals(ChessGame.TeamColor.BLACK))
+                    || (whiteUser.equals(username) && !game.game().getTeamTurn().equals(ChessGame.TeamColor.WHITE))){
                 throw new InvalidMoveException("Not your turn, wait till opponent moves");
             }
             var validMove = false;
@@ -131,14 +135,14 @@ public class WebSocketHandler {
             game.game().makeMove(move);
             gameService.updateGame(id, "MOVE", game.game());
             var moveMessage = new LoadGameMessage(game.game());
-            connections.broadcastAll(moveMessage);
+            connections.broadcastAll(moveMessage, game.gameID());
 
             if (game.game().isInCheckmate(game.game().getTeamTurn())) {
                 var finishedGame = new NotificationMessage(String.format("Game is over- %s is in checkmate", game.game().getTeamTurn()));
-                connections.broadcastAll(finishedGame);
+                connections.broadcastAll(finishedGame, game.gameID());
             } else if (game.game().isInCheck(game.game().getTeamTurn())) {
                 var checkMessage = new NotificationMessage(String.format("%s is in check", game.game().getTeamTurn()));
-                connections.broadcastAll(checkMessage);
+                connections.broadcastAll(checkMessage, game.gameID());
             }
 
 //        else if (game.game().isInStalemate(game.game().getTeamTurn())){
@@ -147,7 +151,7 @@ public class WebSocketHandler {
 //        }
 
             var moveNotification = new NotificationMessage(String.format("%s made move " + move.toString(), username));
-            connections.broadcast(username, moveNotification);
+            connections.broadcast(username, moveNotification, game.gameID());
 
         } catch (Exception ex){
             sendMessage(session.getRemote(),new ErrorMessage(ex.getMessage()));
@@ -162,9 +166,9 @@ public class WebSocketHandler {
         if(game.blackUsername() != null && game.blackUsername().equals(username)){
             gameService.updateGame(gameID,"BLACK",game.game());
         }
-        connections.remove(username);
+        connections.remove(username,gameID);
         NotificationMessage leave = new NotificationMessage(String.format("%s has left the game",username));
-        connections.broadcast(username,leave);
+        connections.broadcast(username,leave,gameID);
         var values = gameSessions.get(gameID);
         values.remove(session);
         gameSessions.replace(gameID,values);
@@ -180,7 +184,7 @@ public class WebSocketHandler {
         }
         gameService.updateGame(gameID,"RESIGN",game.game());
         var resignMessage = new NotificationMessage(String.format("%s has resigned",username));
-        connections.broadcastAll(resignMessage);
+        connections.broadcastAll(resignMessage,gameID);
 
     }
 
