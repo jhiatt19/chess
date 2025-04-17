@@ -11,6 +11,9 @@ import model.GameData;
 import model.UserData;
 import server.ServerFacade;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import java.net.http.WebSocket;
@@ -329,4 +332,16 @@ public class UserClient {
             throw new ResponseException(400, "You must enter a game.");
         }
     }
+
+//    public void notify(ServerMessage message){
+//        switch (message.getServerMessageType()) {
+//            case NOTIFICATION -> displayNotification((NotificationMessage) message);
+//            case ERROR -> displayError((ErrorMessage) message);
+//            case LOAD_GAME -> loadGame((LoadGameMessage) message);
+//        }
+//    }
+//
+//    public void displayNotification(NotificationMessage message){
+//
+//    }
 }
