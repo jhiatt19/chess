@@ -75,8 +75,9 @@ public class GameServiceTest {
         var game2 = GAMESERVICE.getGame(gameID2);
         var game3 = GAMESERVICE.getGame(gameID3);
 
-        gamesList.add(new GameData(gameID2,null,null,game2.gameName(),game2.game()));
         gamesList.add(new GameData(gameID3,null,null,game3.gameName(),game3.game()));
+        gamesList.add(new GameData(gameID2,null,null,game2.gameName(),game2.game()));
+
 
 
         assertEquals(gamesList,GAMESERVICE.listGame());
