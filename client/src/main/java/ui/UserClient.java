@@ -190,28 +190,28 @@ public class UserClient {
     public String joinGame(String... params) throws ResponseException {
         assertSignedIn();
         ws = new WebSocketFacade(serverUrl, notificationHandler);
-        if (params.length == 1) {
-            this.currGameID = Integer.parseInt(params[0]);
-            this.game = server.observe(token, currGameID.toString());
-            if (game.whiteUsername().equals(username)) {
-                this.color = "WHITE";
-                state = GAMEPLAY;
-                String[] args = new String[]{currGameID.toString(), color};
-                ChessBoard.main(args, game.game());
-                ws.connect(token,currGameID);
-                return "";
-            } else if (game.blackUsername().equals(username)) {
-                this.color = "BLACK";
-                state = GAMEPLAY;
-                String[] args = new String[]{currGameID.toString(), color};
-                ChessBoard.main(args, game.game());
-                ws.connect(token,currGameID);
-                return "";
-            } else {
-                return "Please choose color or find an open game.";
-            }
-        }
-        else if (params.length == 2) {
+//        if (params.length == 1) {
+//            this.currGameID = Integer.parseInt(params[0]);
+//            this.game = server.observe(token, currGameID.toString());
+//            if (game.whiteUsername().equals(username)) {
+//                this.color = "WHITE";
+//                state = GAMEPLAY;
+//                String[] args = new String[]{currGameID.toString(), color};
+//                ChessBoard.main(args, game.game());
+//                ws.connect(token,currGameID);
+//                return "";
+//            } else if (game.blackUsername().equals(username)) {
+//                this.color = "BLACK";
+//                state = GAMEPLAY;
+//                String[] args = new String[]{currGameID.toString(), color};
+//                ChessBoard.main(args, game.game());
+//                ws.connect(token,currGameID);
+//                return "";
+//            } else {
+//                return "Please choose color or find an open game.";
+//            }
+//        }
+        if (params.length == 2) {
             this.game = server.joinGame(token, params[1].toUpperCase(), Integer.parseInt(params[0]));
             if (game != null){
                 ChessBoard.main(params,game.game());
@@ -247,7 +247,7 @@ public class UserClient {
     public String leave() throws ResponseException {
         assertSignedIn();
         state = State.SIGNEDIN;
-        server.update(token,color,this.game);
+        //server.update(token,color,this.game);
         ws.leave(token,currGameID);
         return "";
     }
@@ -284,6 +284,7 @@ public class UserClient {
     public String resign() throws ResponseException {
         assertSignedIn();
         assertInGame();
+        ws.resign(token,currGameID);
         server.update(token, "RESIGN", game);
         return "";
     }

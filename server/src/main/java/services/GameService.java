@@ -70,7 +70,6 @@ public class GameService {
             if (color.equals("WHITE")) {
                 updateGame = new GameData(gameID, null, game.blackUsername(), game.gameName(), game.game());
                 gameData.updateGame(gameID, updateGame, color);
-
             }else if (color.equals("BLACK")){
                 updateGame = new GameData(gameID,game.whiteUsername(),null,game.gameName(),game.game());
                 gameData.updateGame(gameID, updateGame, color);

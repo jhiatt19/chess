@@ -52,7 +52,7 @@ public class WebSocketHandler {
                 case CONNECT -> connect(session, username, command.getGameID());
                 case MAKE_MOVE -> makeMove(session, username, new Gson().fromJson(msg, MakeMoveCommand.class));
                 case LEAVE -> leaveGame(session, username, command.getGameID());
-                case RESIGN -> resign(session, username, UserGameCommand.CommandType.RESIGN);
+                case RESIGN -> resign(session, username, command.getGameID());
             }
         }
         catch (GameOverException ex){
@@ -154,7 +154,14 @@ public class WebSocketHandler {
         }
     }
 
-    private void leaveGame(Session session, String username, int gameID) throws IOException {
+    private void leaveGame(Session session, String username, int gameID) throws IOException, ResponseException, DataAccessException {
+        var game = gameService.getGame(gameID);
+        if(game.whiteUsername() != null  && game.whiteUsername().equals(username)){
+            gameService.updateGame(gameID,"WHITE",game.game());
+        }
+        if(game.blackUsername() != null && game.blackUsername().equals(username)){
+            gameService.updateGame(gameID,"BLACK",game.game());
+        }
         connections.remove(username);
         NotificationMessage leave = new NotificationMessage(String.format("%s has left the game",username));
         connections.broadcast(username,leave);
@@ -163,7 +170,17 @@ public class WebSocketHandler {
         gameSessions.replace(gameID,values);
     }
 
-    private void resign(Session session, String username, UserGameCommand.CommandType command){
+    private void resign(Session session, String username, int gameID) throws ResponseException, DataAccessException, InvalidMoveException, IOException {
+        var game = gameService.getGame(gameID);
+        if (!game.whiteUsername().equals(username) && !game.blackUsername().equals(username)){
+            throw new InvalidMoveException("Cannot resign as the observer");
+        }
+        if (game.game().getGameCompleted()){
+            throw new InvalidMoveException("Game is finished");
+        }
+        gameService.updateGame(gameID,"RESIGN",game.game());
+        var resignMessage = new NotificationMessage(String.format("%s has resigned",username));
+        connections.broadcastAll(resignMessage);
 
     }
 
