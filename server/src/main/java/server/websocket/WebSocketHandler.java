@@ -147,12 +147,10 @@ public class WebSocketHandler {
             } else if (game.game().isInCheck(game.game().getTeamTurn())) {
                 var checkMessage = new NotificationMessage(String.format("%s is in check", game.game().getTeamTurn()));
                 connections.broadcastAll(checkMessage, game.gameID());
+            } else if (game.game().isInStalemate(game.game().getTeamTurn())){
+                var staleMate = new NotificationMessage("Game is over- STALEMATE");
+                connections.broadcastAll(staleMate, game.gameID());
             }
-
-//        else if (game.game().isInStalemate(game.game().getTeamTurn())){
-//            var staleMate = new NotificationMessage("Game is over- STALEMATE");
-//            connections.broadcastAll(staleMate);
-//        }
 
             var moveNotification = new NotificationMessage(String.format("%s made move " + move.toString(), username));
             connections.broadcast(username, moveNotification, game.gameID());
@@ -178,7 +176,8 @@ public class WebSocketHandler {
         gameSessions.replace(gameID,values);
     }
 
-    private void resign(Session session, String username, int gameID) throws ResponseException, DataAccessException, InvalidMoveException, IOException {
+    private void resign(Session session, String username, int gameID)
+            throws ResponseException, DataAccessException, InvalidMoveException, IOException {
         var game = gameService.getGame(gameID);
         if (!game.whiteUsername().equals(username) && !game.blackUsername().equals(username)){
             throw new InvalidMoveException("Cannot resign as the observer");

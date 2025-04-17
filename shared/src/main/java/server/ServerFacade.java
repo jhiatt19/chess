@@ -74,11 +74,6 @@ public class ServerFacade {
         return this.makeRequest("GET",path,null,GameData.class,authToken);
     }
 
-    public void update(String authToken, String color,GameData game) throws ResponseException {
-        var path = "/game/" + color;
-        request.put("GameData", game);
-        this.makeRequest("PUT",path,game, GameData.class,authToken);
-    }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
         try {

@@ -163,13 +163,6 @@ public class Server {
         }
     }
 
-//    private Object updateGame(Request req, Response res) throws ResponseException, DataAccessException {
-//        var color = req.params("color");
-//        var game = new Gson().fromJson(req.body(),GameData.class);
-//        gameService.updateGame(game.gameID(), color, game.game());
-//        return new Gson().toJson(Map.of());
-//    }
-
     private Object getGame(Request req, Response res) throws ResponseException, DataAccessException, SQLException {
         var auth = req.headers("authorization");
         var checkedAuth = authService.checkAuth(auth);

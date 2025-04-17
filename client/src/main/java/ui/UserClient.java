@@ -39,55 +39,46 @@ public class UserClient {
     HashMap<String, Integer> alphaConversionBlack = new HashMap<>();
     private final NotificationHandler notificationHandler;
 
-    public UserClient(String serverUrl){
+    public UserClient(String serverUrl) {
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
         this.notificationHandler = null;
-
-        alphaConversionWhite.put("a",1);
-        alphaConversionWhite.put("b",2);
-        alphaConversionWhite.put("c",3);
-        alphaConversionWhite.put("d",4);
-        alphaConversionWhite.put("e",5);
-        alphaConversionWhite.put("f",6);
-        alphaConversionWhite.put("g",7);
-        alphaConversionWhite.put("h",8);
-
-        alphaConversionBlack.put("h",1);
-        alphaConversionBlack.put("g",2);
-        alphaConversionBlack.put("f",3);
-        alphaConversionBlack.put("e",4);
-        alphaConversionBlack.put("d",5);
-        alphaConversionBlack.put("c",6);
-        alphaConversionBlack.put("b",7);
-        alphaConversionBlack.put("a",8);
+        addToMapWhite();
+        addtoMapBlack();
     }
-    public UserClient(String serverUrl, NotificationHandler notificationHandler){
+
+    public UserClient(String serverUrl, NotificationHandler notificationHandler) {
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
         this.notificationHandler = notificationHandler;
-
-        alphaConversionWhite.put("a",1);
-        alphaConversionWhite.put("b",2);
-        alphaConversionWhite.put("c",3);
-        alphaConversionWhite.put("d",4);
-        alphaConversionWhite.put("e",5);
-        alphaConversionWhite.put("f",6);
-        alphaConversionWhite.put("g",7);
-        alphaConversionWhite.put("h",8);
-
-        alphaConversionBlack.put("h",1);
-        alphaConversionBlack.put("g",2);
-        alphaConversionBlack.put("f",3);
-        alphaConversionBlack.put("e",4);
-        alphaConversionBlack.put("d",5);
-        alphaConversionBlack.put("c",6);
-        alphaConversionBlack.put("b",7);
-        alphaConversionBlack.put("a",8);
+        addToMapWhite();
+        addtoMapBlack();
     }
 
-    public State getState(){
+    public State getState() {
         return state;
+    }
+
+    public void addToMapWhite(){
+        alphaConversionWhite.put("a", 1);
+        alphaConversionWhite.put("b", 2);
+        alphaConversionWhite.put("c", 3);
+        alphaConversionWhite.put("d", 4);
+        alphaConversionWhite.put("e", 5);
+        alphaConversionWhite.put("f", 6);
+        alphaConversionWhite.put("g", 7);
+        alphaConversionWhite.put("h", 8);
+    }
+
+    public void addtoMapBlack(){
+        alphaConversionBlack.put("h", 1);
+        alphaConversionBlack.put("g", 2);
+        alphaConversionBlack.put("f", 3);
+        alphaConversionBlack.put("e", 4);
+        alphaConversionBlack.put("d", 5);
+        alphaConversionBlack.put("c", 6);
+        alphaConversionBlack.put("b", 7);
+        alphaConversionBlack.put("a", 8);
     }
     public String eval(String input) {
         try {
@@ -118,7 +109,7 @@ public class UserClient {
 
     public String register(String... params) throws ResponseException {
         if (params.length == 3) {
-            UserData user = new UserData(params[0],params[1],params[2]);
+            UserData user = new UserData(params[0], params[1], params[2]);
             var auth = server.createUser(user);
             state = State.SIGNEDIN;
             username = auth.username();
@@ -130,14 +121,14 @@ public class UserClient {
 
     public String login(String... params) throws ResponseException {
         if (params.length == 2) {
-            UserData user = new UserData(params[0],params[1],null);
+            UserData user = new UserData(params[0], params[1], null);
             var auth = server.loginUser(user);
             state = State.SIGNEDIN;
             username = auth.username();
             token = auth.authToken();
             return String.format("Welcome %s", username);
         }
-        throw new ResponseException(400,"Expected: <username> <password>");
+        throw new ResponseException(400, "Expected: <username> <password>");
     }
 
     private String quit() {
@@ -154,7 +145,7 @@ public class UserClient {
 
     }
 
-    public String clear() throws ResponseException{
+    public String clear() throws ResponseException {
         assertSignedIn();
         server.clear();
         state = SIGNEDOUT;
@@ -177,9 +168,9 @@ public class UserClient {
         assertSignedIn();
         var games = server.listGames(token);
         StringBuilder gamesList = new StringBuilder();
-        for (GameData game : games){
+        for (GameData game : games) {
             String g;
-            if (game.game().getGameCompleted()){
+            if (game.game().getGameCompleted()) {
                 g = "\nID: " + game.gameID() + ", gameName: " + game.gameName() + " has been completed.\n";
             } else {
                 g = "\nID: " + game.gameID() + " white: " + game.whiteUsername()
@@ -195,10 +186,10 @@ public class UserClient {
         if (params.length == 2) {
             ws = new WebSocketFacade(serverUrl, notificationHandler);
             this.game = server.joinGame(token, params[1].toUpperCase(), Integer.parseInt(params[0]));
-            if (game != null){
-                ChessBoard.main(params,game.game());
+            if (game != null) {
+                ChessBoard.main(params, game.game());
                 currGameID = Integer.parseInt(params[0]);
-                ws.connect(token,currGameID);
+                ws.connect(token, currGameID);
                 color = params[1].toUpperCase();
                 state = GAMEPLAY;
                 return "Join game " + params[1];
@@ -211,10 +202,10 @@ public class UserClient {
         assertSignedIn();
         if (params.length == 1) {
             ws = new WebSocketFacade(serverUrl, notificationHandler);
-            var game = server.observe(token,params[0]);
+            var game = server.observe(token, params[0]);
             currGameID = Integer.parseInt(params[0]);
-            ws.connect(token,currGameID);
-            ChessBoard.main(params,game.game());
+            ws.connect(token, currGameID);
+            ChessBoard.main(params, game.game());
             return "Watching game " + params[0];
         }
         throw new ResponseException(400, "Expected: <GameID>");
@@ -222,9 +213,9 @@ public class UserClient {
 
     public String redrawBoard() throws ResponseException {
         assertSignedIn();
-        this.game = server.observe(token,currGameID.toString());
-        String[] params = new String[]{currGameID.toString(),color};
-        ChessBoard.main(params,game.game());
+        this.game = server.observe(token, currGameID.toString());
+        String[] params = new String[]{currGameID.toString(), color};
+        ChessBoard.main(params, game.game());
         return "";
     }
 
@@ -232,15 +223,15 @@ public class UserClient {
         assertSignedIn();
         state = State.SIGNEDIN;
         //server.update(token,color,this.game);
-        ws.leave(token,currGameID);
+        ws.leave(token, currGameID);
         ws = null;
         return "";
     }
 
-    public String makeMove(String...params) throws ResponseException, InvalidMoveException {
+    public String makeMove(String... params) throws ResponseException, InvalidMoveException {
         assertSignedIn();
-        if (params.length == 2 && getState().equals(GAMEPLAY)){
-            String[] args = new String[]{currGameID.toString(),color};
+        if (params.length == 2 && getState().equals(GAMEPLAY)) {
+            String[] args = new String[]{currGameID.toString(), color};
             var startPosRaw = params[0].toCharArray();
             var endPosRaw = params[1].toCharArray();
             String str = String.valueOf(startPosRaw[0]);
@@ -254,12 +245,12 @@ public class UserClient {
                 startPosInt = alphaConversionBlack.get(str);
                 endPosInt = alphaConversionBlack.get(str1);
             }
-            ChessPosition startPos = new ChessPosition(Integer.parseInt(String.valueOf(startPosRaw[1])),startPosInt);
-            ChessPosition endPos = new ChessPosition(Integer.parseInt(String.valueOf(endPosRaw[1])),endPosInt);
-            ChessMove userMove = new ChessMove(startPos,endPos,null);
-            ws.makeMove(token,currGameID,userMove);
+            ChessPosition startPos = new ChessPosition(Integer.parseInt(String.valueOf(startPosRaw[1])), startPosInt);
+            ChessPosition endPos = new ChessPosition(Integer.parseInt(String.valueOf(endPosRaw[1])), endPosInt);
+            ChessMove userMove = new ChessMove(startPos, endPos, null);
+            ws.makeMove(token, currGameID, userMove);
             //server.update(token,"MOVE",game);
-            ChessBoard.main(args,game.game());
+            ChessBoard.main(args, game.game());
             return "";
         } else {
             return "Please enter a game. Expected: <Start Position> <End Position>";
@@ -269,15 +260,15 @@ public class UserClient {
     public String resign() throws ResponseException {
         assertSignedIn();
         assertInGame();
-        ws.resign(token,currGameID);
+        ws.resign(token, currGameID);
         //server.update(token, "RESIGN", game);
         return "";
     }
 
-    public String highlightMoves(String...params) throws ResponseException {
+    public String highlightMoves(String... params) throws ResponseException {
         assertSignedIn();
         assertInGame();
-        String[] args = new String[]{currGameID.toString(),color,"HIGHLIGHT"};
+        String[] args = new String[]{currGameID.toString(), color, "HIGHLIGHT"};
         var startPosRaw = params[0].toCharArray();
         String str = String.valueOf(startPosRaw[0]);
         int startPosInt;
@@ -288,19 +279,19 @@ public class UserClient {
         }
         var currPos = new ChessPosition(Integer.parseInt(String.valueOf(startPosRaw[1])), startPosInt);
         game.game().validMoves(currPos);
-        ChessBoard.main(args,game.game());
+        ChessBoard.main(args, game.game());
         return "";
     }
 
     public String help() {
-        if (state == SIGNEDOUT){
+        if (state == SIGNEDOUT) {
             return """
                     - login <username> <password>
                     - register <username> <password> <email>
                     - help
                     - quit
                     """;
-        } else if (state == GAMEPLAY){
+        } else if (state == GAMEPLAY) {
             return """
                     For commands in this section just type the first word.
                     - move <chessPiece coordinate start> <chessPiece coordinate end>
@@ -328,20 +319,9 @@ public class UserClient {
     }
 
     private void assertInGame() throws ResponseException {
-        if (state != GAMEPLAY){
+        if (state != GAMEPLAY) {
             throw new ResponseException(400, "You must enter a game.");
         }
     }
 
-//    public void notify(ServerMessage message){
-//        switch (message.getServerMessageType()) {
-//            case NOTIFICATION -> displayNotification((NotificationMessage) message);
-//            case ERROR -> displayError((ErrorMessage) message);
-//            case LOAD_GAME -> loadGame((LoadGameMessage) message);
-//        }
-//    }
-//
-//    public void displayNotification(NotificationMessage message){
-//
-//    }
 }
