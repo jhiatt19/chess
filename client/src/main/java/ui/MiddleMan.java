@@ -1,6 +1,9 @@
 package ui;
 
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import javax.management.Notification;
@@ -57,7 +60,17 @@ public class MiddleMan implements NotificationHandler {
     }
 
     public void notify(ServerMessage notification){
-        System.out.println(notification);
+        if (notification.getServerMessageType().equals(ServerMessage.ServerMessageType.LOAD_GAME)){
+            var note = (LoadGameMessage) notification;
+            String[] args = new String[]{note.getGame().toString(),note.getPlayerColor()};
+            ChessBoard.main(args,note.getGame());
+        } else if (notification.getServerMessageType().equals(ServerMessage.ServerMessageType.NOTIFICATION)){
+            var note = (NotificationMessage) notification;
+            System.out.println(note.getMessage());
+        } else if (notification.getServerMessageType().equals(ServerMessage.ServerMessageType.ERROR)){
+            var note = (ErrorMessage) notification;
+            System.out.println(note.getErrorMessage());
+        }
         printPrompt();
     }
 }

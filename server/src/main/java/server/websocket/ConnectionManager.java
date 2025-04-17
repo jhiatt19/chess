@@ -31,12 +31,19 @@ public class ConnectionManager {
     }
 
     public void broadcastAll(ServerMessage notification, int gameID) throws IOException {
+        var removeList = new ArrayList<Connection>();
         var connections = gameConnections.get(gameID);
         for (var c : connections.values()){
             if (c.session.isOpen()) {
                 var note = new Gson().toJson(notification);
                 c.send(note);
+            } else {
+                removeList.add(c);
             }
+        }
+
+        for (var c : removeList){
+            connections.remove(c.username);
         }
     }
     public void broadcast(String excludeUser, ServerMessage notification, int gameID) throws IOException {
@@ -59,6 +66,7 @@ public class ConnectionManager {
     }
 
     public void sendToSelf(String user, ServerMessage notification, int gameID) throws IOException {
+        var removeList = new ArrayList<Connection>();
         var connections = gameConnections.get(gameID);
         for (var c : connections.values()){
             if (c.session.isOpen()){
@@ -66,7 +74,12 @@ public class ConnectionManager {
                     var note = new Gson().toJson(notification);
                     c.send(note);
                 }
+            }else {
+                removeList.add(c);
             }
+        }
+        for (var c : removeList){
+            connections.remove(c.username);
         }
     }
 }

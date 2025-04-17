@@ -68,16 +68,19 @@ public class WebSocketHandler {
     private void connect(Session session, String username, int gameID) throws IOException, ResponseException, DataAccessException {
         connections.add(username, session, gameID);
         var game = gameService.getGame(gameID);
+        String playerColor = "Observer";
         NotificationMessage serverMessage;
         if (game.blackUsername().equals(username)){
+            playerColor = "BLACK";
             serverMessage = new NotificationMessage(String.format("%s has joined the game as BLACK",username));
         } else if (game.whiteUsername().equals(username)){
+            playerColor = "WHITE";
             serverMessage = new NotificationMessage(String.format("%s has joined the game as WHITE",username));
         } else {
             serverMessage = new NotificationMessage(String.format("%s has joined as an observer",username));
         }
         connections.broadcast(username,serverMessage,gameID);
-        LoadGameMessage loadGameMessage = new LoadGameMessage(game.game());
+        LoadGameMessage loadGameMessage = new LoadGameMessage(game.game(),playerColor);
         connections.sendToSelf(username,loadGameMessage,gameID);
     }
 
@@ -132,9 +135,10 @@ public class WebSocketHandler {
             if (!validMove){
                 throw new InvalidMoveException("Invalid move, try another move");
             }
+            String playerColor = game.game().getTeamTurn().toString();
             game.game().makeMove(move);
             gameService.updateGame(id, "MOVE", game.game());
-            var moveMessage = new LoadGameMessage(game.game());
+            var moveMessage = new LoadGameMessage(game.game(),playerColor);
             connections.broadcastAll(moveMessage, game.gameID());
 
             if (game.game().isInCheckmate(game.game().getTeamTurn())) {
