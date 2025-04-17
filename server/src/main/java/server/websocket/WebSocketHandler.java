@@ -1,8 +1,12 @@
 package server.websocket;
 
+import chess.ChessGame;
+import chess.ChessMove;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import exception.ErrorResponse;
+import exception.GameOverException;
 import exception.ResponseException;
 import org.eclipse.jetty.server.Authentication;
 import org.eclipse.jetty.websocket.api.RemoteEndpoint;
@@ -10,6 +14,7 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import services.GameService;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import services.AuthService;
 import dataaccess.*;
@@ -42,14 +47,18 @@ public class WebSocketHandler {
             UserGameCommand command = new Gson().fromJson(msg, UserGameCommand.class);
             String username = getUsername(command.getAuthToken());
 
-            saveSession(command.getGameID(),session);
+            saveSession(command.getGameID(), session);
             switch (command.getCommandType()) {
                 case CONNECT -> connect(session, username, command.getGameID());
-                case MAKE_MOVE -> makeMove(session, username, UserGameCommand.CommandType.MAKE_MOVE);
+                case MAKE_MOVE -> makeMove(session, username, new Gson().fromJson(msg, MakeMoveCommand.class));
                 case LEAVE -> leaveGame(session, username, command.getGameID());
                 case RESIGN -> resign(session, username, UserGameCommand.CommandType.RESIGN);
             }
-        } catch (Exception ex) {
+        }
+        catch (GameOverException ex){
+            connections.broadcastAll(new LoadGameMessage(ex.getGame()));
+        }
+        catch (Exception ex) {
             sendMessage(session.getRemote(),new ErrorMessage(ex.getMessage()));
         }
     }
@@ -93,12 +102,65 @@ public class WebSocketHandler {
         }
     }
 
-    private void makeMove(Session session, String username, UserGameCommand.CommandType command){
+    private void makeMove(Session session, String username, MakeMoveCommand msg) throws ResponseException, DataAccessException, InvalidMoveException, IOException, GameOverException {
+        try {
+            var move = msg.getMove();
+            var id = msg.getGameID();
+            var game = gameService.getGame(id);
+            if (game.game().getGameCompleted()){
+                throw new GameOverException("Game is over",game.game());
+            }
+            var blackUser = game.blackUsername();
+            var whiteUser = game.whiteUsername();
+            if (!blackUser.equals(username) && !whiteUser.equals(username)){
+                throw new InvalidMoveException("Cannot make move as an observer");
+            }
+            if ((blackUser.equals(username) && !game.game().getTeamTurn().equals(ChessGame.TeamColor.BLACK)) || (whiteUser.equals(username) && !game.game().getTeamTurn().equals(ChessGame.TeamColor.WHITE))){
+                throw new InvalidMoveException("Not your turn, wait till opponent moves");
+            }
+            var validMove = false;
+            var validMoves = game.game().validMoves(move.getStartPosition());
+            for (var m : validMoves){
+                if (m.getEndPosition().equals(move.getEndPosition())){
+                    validMove = true;
+                }
+            }
+            if (!validMove){
+                throw new InvalidMoveException("Invalid move, try another move");
+            }
+            game.game().makeMove(move);
+            gameService.updateGame(id, "MOVE", game.game());
+            var moveMessage = new LoadGameMessage(game.game());
+            connections.broadcastAll(moveMessage);
 
+            if (game.game().isInCheckmate(game.game().getTeamTurn())) {
+                var finishedGame = new NotificationMessage(String.format("Game is over- %s is in checkmate", game.game().getTeamTurn()));
+                connections.broadcastAll(finishedGame);
+            } else if (game.game().isInCheck(game.game().getTeamTurn())) {
+                var checkMessage = new NotificationMessage(String.format("%s is in check", game.game().getTeamTurn()));
+                connections.broadcastAll(checkMessage);
+            }
+
+//        else if (game.game().isInStalemate(game.game().getTeamTurn())){
+//            var staleMate = new NotificationMessage("Game is over- STALEMATE");
+//            connections.broadcastAll(staleMate);
+//        }
+
+            var moveNotification = new NotificationMessage(String.format("%s made move " + move.toString(), username));
+            connections.broadcast(username, moveNotification);
+
+        } catch (Exception ex){
+            sendMessage(session.getRemote(),new ErrorMessage(ex.getMessage()));
+        }
     }
 
-    private void leaveGame(Session session, String username, int gameID){
+    private void leaveGame(Session session, String username, int gameID) throws IOException {
         connections.remove(username);
+        NotificationMessage leave = new NotificationMessage(String.format("%s has left the game",username));
+        connections.broadcast(username,leave);
+        var values = gameSessions.get(gameID);
+        values.remove(session);
+        gameSessions.replace(gameID,values);
     }
 
     private void resign(Session session, String username, UserGameCommand.CommandType command){

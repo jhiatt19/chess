@@ -22,6 +22,14 @@ public class ConnectionManager {
         connections.remove(username);
     }
 
+    public void broadcastAll(ServerMessage notification) throws IOException {
+        for (var c : connections.values()){
+            if (c.session.isOpen()) {
+                var note = new Gson().toJson(notification);
+                c.send(note);
+            }
+        }
+    }
     public void broadcast(String excludeUser, ServerMessage notification) throws IOException {
         var removeList = new ArrayList<Connection>();
         for (var c : connections.values()){

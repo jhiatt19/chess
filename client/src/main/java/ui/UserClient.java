@@ -272,7 +272,7 @@ public class UserClient {
             ChessPosition startPos = new ChessPosition(Integer.parseInt(String.valueOf(startPosRaw[1])),startPosInt);
             ChessPosition endPos = new ChessPosition(Integer.parseInt(String.valueOf(endPosRaw[1])),endPosInt);
             ChessMove userMove = new ChessMove(startPos,endPos,null);
-            game.game().makeMove(userMove);
+            ws.makeMove(token,currGameID,userMove);
             server.update(token,"MOVE",game);
             ChessBoard.main(args,game.game());
             return "";
