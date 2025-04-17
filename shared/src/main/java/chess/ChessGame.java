@@ -35,8 +35,19 @@ public class ChessGame {
         return gameCompleted;
     }
 
-    public void setGameCompleted(boolean complete){
-        this.gameCompleted = complete;
+    public void setGameCompleted(){
+        if (isInStalemate(getTeamTurn())){
+            this.gameCompleted = true;
+        }
+        if (isInCheckmate(getTeamTurn())){
+            this.gameCompleted = true;
+        }
+    }
+
+    public void setGameCompleted(String resign){
+        if (resign.equals("RESIGN")){
+            this.gameCompleted = true;
+        }
     }
     /**
      * @return Which team's turn it is
@@ -85,7 +96,7 @@ public class ChessGame {
                 setBoard(tempBoard);
             }
         }
-        this.moveHolder = goodMoves;
+        //this.moveHolder = goodMoves;
         return goodMoves;
     }
 
@@ -195,12 +206,8 @@ public class ChessGame {
                     return true;
                 }
             });
-            if (moveHolder.isEmpty()){
-                setGameCompleted(true);
-                return true;
-            }else {
-                return false;
-            }
+            //                setGameCompleted(true);
+            return moveHolder.isEmpty();
         }
         return false;
     }
@@ -218,12 +225,8 @@ public class ChessGame {
             for (ChessPosition move : allPieceMoves) {
                 moveHolder.addAll(validMoves(move));
             }
-            if (moveHolder.isEmpty()) {
-                setGameCompleted(true);
-                return true;
-            } else {
-                return false;
-            }
+            //                setGameCompleted(true);
+            return moveHolder.isEmpty();
         }
         return false;
     }

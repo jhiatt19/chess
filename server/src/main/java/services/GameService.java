@@ -77,7 +77,7 @@ public class GameService {
                 updateGame = new GameData(gameID,game.whiteUsername(),game.blackUsername(),game.gameName(),gameBoard);
                 gameData.updateGame(gameID,updateGame,color);
             } else if (color.equals("RESIGN")){
-                game.game().setGameCompleted(true);
+                game.game().setGameCompleted("RESIGN");
                 gameData.updateGame(gameID,game,color);
             }
         } catch(ResponseException | SQLException ex){
